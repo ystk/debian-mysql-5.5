@@ -1,0 +1,1216 @@
+------------------------------------------------------------
+revno: 4248
+committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+branch nick: mysql-5.5.31-release
+timestamp: Mon 2013-03-25 13:50:21 +0100
+message:
+  Reverted MySQL Release Engineering mail address
+------------------------------------------------------------
+revno: 4247
+committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+branch nick: mysql-5.5.31-release
+timestamp: Thu 2013-03-21 14:59:57 +0100
+message:
+  Added SuSE RPM Build fix
+------------------------------------------------------------
+revno: 4246
+committer: Thayumanavar <thayumanavar.x.sachithanantha@oracle.com>
+branch nick: mysql-5.5.31-release
+timestamp: Fri 2013-03-08 15:51:20 +0530
+message:
+  Patch for Bug#16367483.
+------------------------------------------------------------
+revno: 4245 [merge]
+committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+branch nick: mysql-5.5.31-release
+timestamp: Wed 2013-03-06 17:05:32 +0100
+message:
+  Added fix for Bug#16445097
+    ------------------------------------------------------------
+    revno: 4145.1.8
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-BR16298542
+    timestamp: Wed 2013-03-06 16:33:26 +0100
+    message:
+      Added fix for Bug#16445097
+------------------------------------------------------------
+revno: 4244 [merge]
+committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+branch nick: mysql-5.5.31-release
+timestamp: Tue 2013-03-05 16:34:14 +0100
+message:
+  Updated Code for Bug#16235828 and Bug#16298542
+    ------------------------------------------------------------
+    revno: 4145.1.7
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-BR16298542
+    timestamp: Tue 2013-03-05 16:16:34 +0100
+    message:
+      Updated Code for Bug#16235828
+    ------------------------------------------------------------
+    revno: 4145.1.6
+    author: 
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-BR16298542
+    timestamp: Fri 2013-03-01 14:11:24 +0100
+    message:
+      Updated mysql.spec.sh file for br16298542
+    ------------------------------------------------------------
+    revno: 4145.1.5
+    author: balasubramanian.kandasamy@oracle.com
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-BR16298542
+    timestamp: Thu 2013-02-28 14:49:54 +0100
+    message:
+      Updated release number in mysql.spec.sh file for br16298542
+    ------------------------------------------------------------
+    revno: 4145.1.4
+    author: balasubramanian.kandasamy@oracle.com
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-BR16298542
+    timestamp: Thu 2013-02-28 14:36:00 +0100
+    message:
+      Updated mysql.spec.sh file for br16298542
+------------------------------------------------------------
+revno: 4243 [merge]
+tags: clone-5.5.31-build
+committer: Marc Alff <marc.alff@oracle.com>
+branch nick: mysql-5.5-bug16414644
+timestamp: Fri 2013-03-01 12:10:09 +0100
+message:
+  L0ocal merge
+    ------------------------------------------------------------
+    revno: 4241.1.2
+    committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+    branch nick: mysql-5.5
+    timestamp: Fri 2013-03-01 15:01:32 +0530
+    message:
+      BUG#11753923-SQL THREAD CRASHES ON DISK FULL
+      Fixing post push issue
+      Simulator name used needs to be changed to make it
+      work properly.
+      
+      Analysis: 
+      Debug control list addition (ListAddDel function
+      dbug.c file) code was written in such a way that
+      if new element is subset of already existing element,
+      then the new element is not added.
+      i.e., set @@global.debug = '+d,abcd', is existing in
+      the list then you cannot add "a" or "ab" or "abc"
+      in the list.
+    ------------------------------------------------------------
+    revno: 4241.1.1
+    committer: Jon Olav Hauglid <jon.hauglid@oracle.com>
+    branch nick: mysql-5.5-bug16385711
+    timestamp: Thu 2013-02-28 14:52:47 +0100
+    message:
+      Bug#16385711: HANDLER, CREATE TABLE IF NOT EXISTS,
+                    PROBLEM AFTER MYSQL_HA_FIND
+      
+      This problem occured if a prepared statement tried to create a table
+      for which there already existed a view with the same name while a
+      SQL handler was opened.
+      
+      Before DDL statements are executed, mysql_ha_rm_tables() is called
+      to remove any matching tables from the internal list of opened SQL
+      handler tables. This match was done on TABLE_LIST::db and 
+      TABLE_LIST::table_name. This is problematic for views (which use
+      TABLE_LIST::view_db and TABLE_LIST::view_name) and anonymous
+      derived tables.
+      
+      This patch fixes the problem by skipping TABLE_LISTs representing
+      anonymous derived tables and using get_db_name()/get_table_name()
+      which handles views when looking for SQL handler tables to remove.
+------------------------------------------------------------
+revno: 4242
+committer: Marc Alff <marc.alff@oracle.com>
+branch nick: mysql-5.5-bug16414644
+timestamp: Thu 2013-02-28 13:19:15 +0100
+message:
+  Bug#16414644 ASSERTION FAILED: SIZE == PFS_ALLOCATED_MEMORY
+  
+  Before this fix, the command
+    SHOW ENGINE PERFORMANCE_SCHEMA STATUS
+  could report wrong amount of memory allocated,
+  when the amount of memory used exceeds 4GB.
+  
+  The problem is that size computations are not done using size_t,
+  so that overflows do occur, truncating the results.
+  
+  This fix compute memory sizes properly with size_t.
+  
+  Tested manually.
+  
+  No test script provided, as the script would need to allocate too much 
+  memory for the test.
+------------------------------------------------------------
+revno: 4241
+committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-28 14:50:42 +0530
+message:
+  Bug#16218104: MYSQL YASSL - LUCKY THIRTEEN: BREAKING THE
+                TLS AND DTLS RECORD PROTOCOLS
+  
+  Description: Removing extra test file which remained due
+               to merge problems.
+------------------------------------------------------------
+revno: 4240 [merge]
+committer: Manish Kumar<manish.4.kumar@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-28 09:54:27 +0530
+message:
+  BUG#12400221 - 60926: BINARY LOG EVENTS LARGER THAN MAX_ALLOWED_PACKET
+  
+  Merge from mysql-5.1 -> mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.121 [merge]
+    committer: Manish Kumar<manish.4.kumar@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Thu 2013-02-28 09:52:55 +0530
+    message:
+      BUG#12400221 - 60926: BINARY LOG EVENTS LARGER THAN MAX_ALLOWED_PACKET
+            
+      Post push patch putting the rpl_max_allowed_packet_stress test in 
+      mysql-5.1 inside a new i_rpl_largedata test suite just to avoid any 
+      confusion.
+        ------------------------------------------------------------
+        revno: 2661.843.1
+        committer: Manish Kumar<manish.4.kumar@oracle.com>
+        branch nick: mysql-5.1
+        timestamp: Fri 2012-09-14 19:19:21 +0530
+        message:
+          BUG#12400221 - 60926: BINARY LOG EVENTS LARGER THAN MAX_ALLOWED_PACKET
+          
+          Post push patch putting the rpl_max_allowed_packet_stress test in 
+          mysql-5.1 inside a new i_rpl_largedata test suite just to avoid any 
+          confusion.
+           
+------------------------------------------------------------
+revno: 4239 [merge]
+committer: Gleb Shchepa <gleb.shchepa@oracle.com>
+branch nick: 5.5-16311231
+timestamp: Thu 2013-02-28 01:33:00 +0400
+message:
+  Manual up-merge (16311231 backport)
+    ------------------------------------------------------------
+    revno: 2661.830.120
+    committer: Gleb Shchepa <gleb.shchepa@oracle.com>
+    branch nick: 5.1-16311231
+    timestamp: Wed 2013-02-27 23:21:34 +0400
+    message:
+      Bug #16311231: MISSING DATA ON SUBQUERY WITH WHERE + XOR
+      IN IN-CLAUSE USING MYISAM OR MEMORY ENGINE
+      
+      Backport from 5.6. Original message:
+      
+      The coincidences caused a data loss:
+      * The query has IN subqueries nested twice,
+      * the WHERE clause of the inner subquery refers to the
+        outer field, and the whole WHERE clause returns FALSE,
+      * the inner subquery has a LEFT JOIN that joins a single
+        row with a row of NULLs; one of that NULL columns
+        represents the select list of the subquery.
+      
+      Normally, that inner subquery should return empty record set.
+      However, in our case:
+      * the Item_is_not_null_test item goes constant, since
+        its underlying field is NULL (because of LEFT JOIN ... ON 
+        FALSE of const table row with a row of nulls);
+      * we evaluate Item_is_not_null_test::val_int() as a part
+        of fake HAVING expression of the transformed subquery;
+      * as far as the underlying field is NULL, we optimize
+        out the whole fake HAVING expression as FALSE as well
+        as a whole subquery with a zero result:
+        Impossible HAVING noticed after reading const tables";
+      * thus, the optimizer ignores the presence of the WHERE
+        clause (the WHERE expression is FALSE in our case, so
+        the subquery should return empty set);
+      * however, during the evaluation of the 
+        Item_is_not_null_test::val_int() in the optimizer,
+        it marked its "owner" with the "was_null" flag -- that
+        forced the subquery to return UNKNOWN instead of empty
+        set.
+      That caused a wrong result.
+      
+      
+      The problem is a regression of the small cleanup in
+      the fix for the bug11827369 (the Item_is_not_null_test part)
+      that conflicts with optimizations in the fix for the bug11752543.
+      Before that regression the Item_is_not_null_test items
+      never were constants.
+      
+      The fix is the rollback of Item_is_not_null_test parts
+      of the bug11827369 fix.
+------------------------------------------------------------
+revno: 4238
+committer: kevin.lewis@oracle.com
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-27 12:44:58 -0600
+message:
+  Bug #16305265 	HANG IN RENAME TABLE
+  
+  This is a deadlock that will also be fixed in the server by
+  Bug #11844915 - HANG IN THDVAR MUTEX ACQUISITION.
+  So this is a simple alternate method of fixing the same problem,
+  but from within InnoDB.
+  
+  The simple change is to make rename table start a transaction
+  before locking dict_sys->mutex since thd_supports_xa() can call
+  THDVAR which can lock a mutex, LOCK_global_system_variables, that
+  is used in the server by many other activities.  At least one of
+  those, sys_var::update(), can call back into InnoDB and try to
+  lock dict_sys->mutex while holding LOCK_global_system_variables.
+  
+  The other bug fix for 11844915 eliminates the use of
+  LOCK_global_system_variables for calls to THDVAR.
+  
+  Approved by marko in http://rb.no.oracle.com/rb/r/2000/
+------------------------------------------------------------
+revno: 4237 [merge]
+committer: Marko M?kel? <marko.makela@oracle.com>
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-27 10:04:43 +0200
+message:
+  Merge mysql-5.1 to mysql-5.5.
+    ------------------------------------------------------------
+    revno: 2661.830.119
+    committer: Marko M?kel? <marko.makela@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Wed 2013-02-27 10:00:50 +0200
+    message:
+      Bug#16400920 INNODB TRIES TO PASS EMPTY BUFFER TO ZLIB, GETS Z_BUF_ERROR
+      
+      page_zip_compress_node_ptrs(): Do not attempt to invoke deflate() with
+      c_stream->avail_in, because it will result in Z_BUF_ERROR (and
+      page_zip_compress() failure and unnecessary further splits of the node
+      pointer page). A node pointer record can have empty payload, provided
+      that all key fields are empty.
+      
+      Approved by Jimmy Yang
+------------------------------------------------------------
+revno: 4236 [merge]
+committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-26 21:29:43 +0530
+message:
+  Bug#16372927: STACK OVERFLOW WITH LONG DATABASE NAME IN
+                GRANT STATEMENT
+  
+  Description: Merge from 5.1.
+    ------------------------------------------------------------
+    revno: 2661.830.118
+    committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Tue 2013-02-26 21:23:06 +0530
+    message:
+      Bug#16372927: STACK OVERFLOW WITH LONG DATABASE NAME IN
+                    GRANT STATEMENT
+      
+      Description: A missing length check causes problem while
+                   copying source to destination when
+                   lower_case_table_names is set to a value
+                   other than 0. This patch fixes the issue
+                   by ensuring that requried bound check is
+                   performed.
+------------------------------------------------------------
+revno: 4235
+committer: Tor Didriksen <tor.didriksen@oracle.com>
+branch nick: 5.5
+timestamp: Mon 2013-02-25 10:42:40 +0100
+message:
+  Bug#16062056 	REMOVE THE "DUMMY.BAK" FILE FROM THE TEST DATABASE, AND ADD DB.OPT
+  
+  1.  remove dummy.bak
+  2.  create a db.opt file containing two lines:
+  
+  ---
+  default-character-set=latin1
+  default-collation=latin1_swedish_ci
+------------------------------------------------------------
+revno: 4234
+committer: Aditya A <aditya.a@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-26 17:57:05 +0530
+message:
+  Bug#14653504  CRASH WHEN TRUNCATING PARTITIONS FROM A VIEW!
+  
+  ANALYSIS
+  --------
+   
+  When we open the view using open_new_frm() ,it doesnt set the
+  table-list->table variable and any access to table_list->table 
+  will cause a crash.
+   
+  FIX
+  ---
+   
+  Added a check during execution of the alter partition to return 
+  error if table is view.
+  
+  [http://rb.no.oracle.com/rb/r/2001/  Approved by Mattias J ]
+------------------------------------------------------------
+revno: 4233 [merge]
+committer: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-26 06:35:17 +0100
+message:
+  Updated/added copyright headers
+    ------------------------------------------------------------
+    revno: 2661.830.117
+    committer: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Mon 2013-02-25 15:26:00 +0100
+    message:
+      Updated/added copyright headers.
+------------------------------------------------------------
+revno: 4232
+committer: Akhila Maddukuri<akhila.x.maddukuri@oracle.com>
+branch nick: 5.5
+timestamp: Mon 2013-02-25 19:37:46 +0530
+message:
+  Bug#16103072 TEST MYSQL_PLUGIN USES UNSAFE WRITE_FILE TO WRITE 
+                                                  TO EXPECT FILE
+------------------------------------------------------------
+revno: 4231
+committer: Mattias Jonsson <mattias.jonsson@oracle.com>
+branch nick: test-5.5
+timestamp: Mon 2013-02-25 13:45:00 +0100
+message:
+  post-push fix to prevent test to run without symlink support
+------------------------------------------------------------
+revno: 4230
+committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+branch nick: mysql-5.5
+timestamp: Mon 2013-02-25 10:28:25 +0530
+message:
+  Bug #16044655 CRASH: SETTING DEFAULT VALUE FOR SOME VARIABLES
+  
+  Problem:
+  
+  When a system variable is being set to the DEFAULT value, the server
+  segfaults if there is no 'default' defined for that system variable.
+  For example, for the following statements server segfaults.
+  
+  set session rand_seed1=DEFAULT;
+  set session rand_seed2=DEFAULT;
+  
+  Analysis:
+  
+  The class sys_var represents one system variable.  The class set_var represents
+  one system variable that is to be updated.   The class set_var contains two 
+  pieces of information, the system variable to object (set_var::var) member
+  and the value to be updated (set_var::value).
+  
+  When the given value is 'default', the set_var::value will be NULL.
+  
+  To update a system variable the member set_var::update() will be called, 
+  which in turn will call sys_var::update() or sys_var::set_default() depending
+  on whether a value has been provided or not.  
+  
+  If the sys_var::set_default() is called, then the default value is obtained
+  either from the session scope or the global scope.  This default value is
+  stored in a local temporary set_var object and then passed on to the 
+  sys_var::update() call.  A local temporary set_var object is needed because
+  sys_var::set_default() does not take set_var as an argument.
+  
+  In the given scenario, the set_var::update() called sys_var::set_default().
+  And this sys_var::set_default() obtains the default value and then calls
+  sys_var::update().  To pass this value to sys_var::update() a local set_var
+  object is being created.   While creating this local set_var object, its member
+  set_var::var was incorrectly left as 0.  
+  
+  Solution:
+  
+  Instead of creating a local set_var object, the sys_var::set_default() can take
+  the set_var object as an argument just like sys_var::update().
+  
+  rb://1996 approved by Nirbhay and Ramil.
+------------------------------------------------------------
+revno: 4229 [merge]
+committer: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+branch nick: mysql-5.5
+timestamp: Sat 2013-02-23 10:47:30 +0100
+message:
+  Upmerging the changes from 5.1 for copyright changes.
+    ------------------------------------------------------------
+    revno: 2661.830.116
+    committer: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Sat 2013-02-23 10:38:28 +0100
+    message:
+      Eventum ticket#45161: Adding copyright statement to all *.test and *.inc 
+      files under internal/mysql-test directory.
+------------------------------------------------------------
+revno: 4228
+committer: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+branch nick: mysql-5.5
+timestamp: Sat 2013-02-23 10:40:23 +0100
+message:
+  Eventum ticket#45161: Adding copyright statement to all *.test and *.inc 
+  files under internal/mysql-test directory.
+------------------------------------------------------------
+revno: 4227
+committer: Satya Bodapati <satya.bodapati@oracle.com>
+branch nick: mysql-5.5
+timestamp: Sat 2013-02-23 00:16:36 +0530
+message:
+  Testcase fix for Bug#14147491
+  
+  Sleep 1sec before remove_file to solve windows pb2 issues. We hope that
+  after sleep, the access to the file will not be denied.
+------------------------------------------------------------
+revno: 4226
+committer: sayantan.dutta@oracle.com
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-22 15:22:15 +0100
+message:
+  Bug #13619394 - MAKE TEST FAILS ON MY_VSNPRINTF 
+------------------------------------------------------------
+revno: 4225 [merge]
+committer: Daniel Fischer <daniel.fischer@oracle.com>
+branch nick: mysql-5.5-13071597-push
+timestamp: Fri 2013-02-22 12:32:29 +0100
+message:
+  merge
+    ------------------------------------------------------------
+    revno: 4220.1.1
+    committer: Daniel Fischer <daniel.fischer@oracle.com>
+    branch nick: mysql-5.5-13071597
+    timestamp: Wed 2013-02-20 12:41:43 +0100
+    message:
+      Bug #13071597: MYSQL SERVER COMMUNITY TO ADVANCED USING MSI THE INSTALLER
+      
+      Cross-upgrades between GPL and commercial versions should be allowed by
+      the MSI package even when both packages are the same version.
+      
+      Fixed by allowing upgrades to the same numeric version.
+------------------------------------------------------------
+revno: 4224 [merge]
+committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-22 15:15:14 +0530
+message:
+  Merge from mysql-5.1 to mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.115
+    committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-22 14:56:17 +0530
+    message:
+      Bug #14211565 CRASH WHEN ATTEMPTING TO SET SYSTEM VARIABLE TO RESULT OF VALUES()
+      
+      Problem:
+      
+      When the VALUES() function is inappropriately used in the SET stmt the server
+      exits.  
+      
+      set port = values(v);
+      
+      This happens because the values(v) will be parsed as an Item_insert_value by
+      the parser.  Both Item_field and Item_insert_value return the type as
+      FIELD_ITEM.  But for Item_insert_value the field_name member is NULL.  In
+      set_var constructor, when the type of the item is FIELD_ITEM we try to access
+      the non-existent field_name. 
+      
+      The class hierarchy is as follows:
+      Item -> Item_ident -> Item_field -> Item_insert_value
+      
+      The Item_ident::field_name is NULL for Item_insert_value.  
+      
+      Solution:
+      
+      In the parsing stage, in the set_var constructor if the item type is
+      FIELD_ITEM and if the field_name is non-existent, then it is probably
+      the Item_insert_value.  So leave it as it is for later evaluation.
+      
+      rb://2004 approved by Roy and Norvald.
+------------------------------------------------------------
+revno: 4223
+committer: Tor Didriksen <tor.didriksen@oracle.com>
+branch nick: 5.5
+timestamp: Wed 2013-02-20 11:24:16 +0100
+message:
+  Bug#14300733 CMAKE DOES NOT CHECK FOR ZLIB VERSION
+  
+  Add check for compressBound() and deflateBound()
+  Keep existing functionality: fallback to bundled zlib if functions not found.
+------------------------------------------------------------
+revno: 4222
+committer: Satya Bodapati <satya.bodapati@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-21 12:16:59 +0530
+message:
+  Testcase fix for Bug#14147491
+  
+  move_file fails randomly on windows if the destination file exists.
+  Using remove_file before move_file mtr test command.
+------------------------------------------------------------
+revno: 4221
+committer: Satya Bodapati <satya.bodapati@oracle.com>
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-20 18:25:18 +0530
+message:
+  Testcase fix for BUG#14147491
+  
+  The random failure will be fixed by Bug#16263506 and this patch
+  
+  Approved by Marko. rb#1988
+------------------------------------------------------------
+revno: 4220 [merge]
+committer: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+branch nick: Bug11746817_mysql-5.5
+timestamp: Tue 2013-02-19 14:36:30 +0530
+message:
+  Merge from mysq-5.1 to mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.114
+    committer: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+    branch nick: Bug11746817_mysql-5.1
+    timestamp: Tue 2013-02-19 14:31:11 +0530
+    message:
+      Bug#11746817:MYSQL_INSTALL_DB CREATES WILDCARD GRANTS WHEN
+      HOST HAS '_' IN THE HOSTNAME
+      
+      Problem:
+      =======
+      '_' and '%' are treated as a wildcards by the ACL code and
+      this is documented in the manual. The problem with
+      mysql_install_db is that it does not take this into account
+      when creating the initial GRANT tables:
+      
+      --- cut ---
+      REPLACE INTO tmp_user SELECT @current_hostname,'root','','Y',
+      'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y',
+      'Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','Y','','','','',
+      0,0,0,0 FROM dual WHERE LOWER( @current_hostname) != 'localhost';
+      --- cut ---
+      
+      If @current_hostname contains any wildcard characters, then 
+      a wildcard entry will be defined for the 'root' user, 
+      which is a flaw.
+      
+      Analysis:
+      ========
+      As per the bug description when we have a hostname with a
+      wildcard character in it, it allows clients from several other
+      hosts with similar name pattern to connect to the server as root.
+      For example, if the hostname is like 'host_.com' then the same
+      name is logged in mysql.user table. This allows 'root' users
+      from other hosts like 'host1.com', 'host2.com' ... to connect
+      to the server as root user.
+      
+      While creating the intial GRANT tables we do not have a check
+      for wildcard characters in hostname.
+      
+      Fix:
+      ===
+      As part of fix escape character "\" is added before wildcard
+      character to make it a plain character, so that the one and
+      only host with the exact name will be able to connect to the
+      server.
+------------------------------------------------------------
+revno: 4219 [merge]
+committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-19 12:19:10 +0530
+message:
+  Bug#16235681: TURN OFF DEFAULT COMPRESSION WHILE USING
+                OPENSSL
+  
+  Description: Merge from 5.1.
+    ------------------------------------------------------------
+    revno: 2661.830.113
+    committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Tue 2013-02-19 12:17:31 +0530
+    message:
+      Bug#16235681: TURN OFF DEFAULT COMPRESSION WHILE USING
+                    OPENSSL
+      
+      Description: Specify preference to disable compression
+                   while using OpenSSL library. OpenSSL uses
+                   zlib compression by default which may
+                   lead to some problems.
+------------------------------------------------------------
+revno: 4218 [merge]
+committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-19 10:59:45 +0530
+message:
+  Null merge from mysql-5.1 to mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.112
+    committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Tue 2013-02-19 10:55:55 +0530
+    message:
+      Instead of using rm command, use perl code.
+------------------------------------------------------------
+revno: 4217
+committer: Shivji Kumar Jha <shivji.jha@oracle.com>
+branch nick: mysql-5.5_B15965353
+timestamp: Tue 2013-02-19 01:58:57 +0530
+message:
+  BUG#15965353- RPL.RPL_ROW_UNTIL FAILS ON PB2,
+                PLATFORM= MACOSX10.6 X86_64 MAX
+  
+              post push fix
+------------------------------------------------------------
+revno: 4216 [merge]
+committer: Pedro Gomes  <pedro.gomes@oracle.com>
+branch nick: mysql-5.5
+timestamp: Mon 2013-02-18 17:06:00 +0000
+message:
+  BUG#13545447: RPL_ROTATE_LOGS FAILS DUE TO CONCURRENCY ISSUES IN REP. CODE
+  
+  Null merge
+    ------------------------------------------------------------
+    revno: 2661.830.111
+    committer: Pedro Gomes  <pedro.gomes@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Mon 2013-02-18 17:02:26 +0000
+    message:
+      BUG#13545447: RPL_ROTATE_LOGS FAILS DUE TO CONCURRENCY ISSUES IN REP. CODE
+      
+      Post-push fix, broken build:
+      sql/rpl_master.cc:1049:70: error: converting ?false? to pointer type ?bool*? [-Werror=conversion-null]
+------------------------------------------------------------
+revno: 4215
+committer: Anirudh Mangipudi <anirudh.mangipudi@oracle.com>
+branch nick: 5.5
+timestamp: Mon 2013-02-18 19:13:06 +0530
+message:
+  Bug #12546953   "SHOW VARIABLES LIKE 'DATADIR';" RETURN EMPTY.
+  Problem:
+  ===========================================================
+  If mysqld daemon is started without a --datadir option
+  option, and we issue the SHOW VARIABLES LIKE 'DATADIR';SQL command
+  at the client it returns an empty path. This is because
+  mysql_real_data_home_ptr is being reset to NULL by Sys_var_charptr
+  constructor call when the datadir is not given either through
+  configuration file (no-defaults) or through mysqld parameters.
+  
+  Solution:
+  ===========================================================
+  mysql_real_data_home is an array which stores the path of the datadir
+  and mysql_real_data_home_ptr is the pointer to it. The pointer is
+  being set to NULL at the Sys_datadir, which is of type Sys_var_charptr,
+  constructor call. This is because at Sys_datadir call the def_val 
+  parameter was being passed with DEFAULT(0) which is now replaced with
+  DEFAULT(mysql_real_data_home). The patch has been tested manually as it
+  is not possible to start mtr without a default config file.
+------------------------------------------------------------
+revno: 4214
+committer: Tor Didriksen <tor.didriksen@oracle.com>
+branch nick: 5.5
+timestamp: Mon 2013-02-18 11:12:24 +0100
+message:
+  BUG#13545447: RPL_ROTATE_LOGS FAILS DUE TO CONCURRENCY ISSUES IN REP. CODE
+  Post-push fix, broken build:
+  sql/rpl_master.cc:1049:70: error: converting ?false? to pointer type ?bool*? [-Werror=conversion-null]
+------------------------------------------------------------
+revno: 4213
+committer: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+branch nick: Bug15977988_mysql-5.5
+timestamp: Mon 2013-02-18 11:13:48 +0530
+message:
+  Bug#15977988 TEST RPL_ROW_BACKTICK FAILS VALGRIND TEST
+  
+  Problem:
+  =======
+  rpl_row_backtick, rpl_mixed_backtick scripts
+  are failing with result content mismatch error in 
+  mysql-cluster-5.5 code.
+  
+  Analysis:
+  ========
+  There are two reasons for the test script failure.
+  1) The result file in cluster code was incorrect. When
+  replication is started in row or mixed based mode all SQL
+  statements will be generating base64 bit encoded value,
+  which should not be recorded as part of result file. This
+  is required as the base64 bit output will be different for
+  different execution options.
+  
+  2) As part of the test script regular expressions have
+  been added to remove the base64 bit encoded output. But
+  still the new pattern that was generated on the cluster
+  code was not getting removed from these expressions.
+  
+  Fix:
+  ===
+  Another regular expression is being added to replace the
+  new pattern.
+------------------------------------------------------------
+revno: 4212 [merge]
+committer: Shivji Kumar Jha <shivji.jha@oracle.com>
+branch nick: mysql-5.5_B15965353
+timestamp: Sun 2013-02-17 01:45:10 +0530
+message:
+  BUG#15965353- RPL.RPL_ROW_UNTIL FAILS ON PB2,
+                PLATFORM= MACOSX10.6 X86_64 MAX
+  
+  bzr merge 5.1=>5.5
+    ------------------------------------------------------------
+    revno: 2661.830.110
+    committer: Shivji Kumar Jha <shivji.jha@oracle.com>
+    branch nick: mysql-5.1_B15965353
+    timestamp: Sun 2013-02-17 01:42:28 +0530
+    message:
+      BUG#15965353- RPL.RPL_ROW_UNTIL FAILS ON PB2,
+                    PLATFORM= MACOSX10.6 X86_64 MAX
+      
+      Problem: The test was failing on pb2's mac machine because
+               it was not cleaned up properly. The test checks if
+               the command 'start slave until' throws a proper
+               error when issued with a wrong number/type of
+               parameters. After this,the replication stream was
+               stopped using the include file 'rpl_end.inc'.
+               The errors thrown earlier left the slave in an
+               inconsistent state to be closed by the include
+               file which was caught by the mac machine.
+      
+      Fix: Started slave by invoking start_slave.inc to have a
+           working slave before calling rpl_reset.inc
+      
+      Problem: The test file was not in a good shape. It tested
+               start slave until relay log file/pos combination 
+               wrongly. A couple of commands were executed at 
+               master and replicated at slave. Next, the 
+               coordinates in terms of relay log file and pos 
+               were noted down followed by reset slave and start
+               slave until saved relay log file/pos. Reset slave
+               deletes  all relay log files and makes the slave 
+               forget its replication position. So, using the 
+               saved coordiantes after reset slave is wrong.
+      
+      Fix: Split the test in two parts:
+           a) Test for start slave until master log file/pos and
+              checking for correct errors in the failure 
+              scenarios.
+           b) Test for start slave until relay log file/pos.
+      
+      Problem: The variables auto_increment_increment and 
+               auto_increment_offset were set in the the include
+               file rpl_init.inc. This was only configured for 
+               some connections that are rarely used by test 
+               cases, so likely that it will cause confusion. 
+               If replication tests want to setup these variables
+               they should do so explicitly.
+      
+      Fix:
+           a) Removed code to set the variables
+              auto_increment_increment and auto_increment_offset
+              in the include file.
+           b) Updated tests files using the same.
+------------------------------------------------------------
+revno: 4211 [merge]
+committer: Pedro Gomes  <pedro.gomes@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-15 22:18:37 +0000
+message:
+  BUG#13545447: RPL_ROTATE_LOGS FAILS DUE TO CONCURRENCY ISSUES IN REP. CODE
+  
+  Merge from mysql 5.1 to mysql 5.5
+    ------------------------------------------------------------
+    revno: 2661.830.109
+    committer: Pedro Gomes  <pedro.gomes@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-15 21:57:35 +0000
+    message:
+      BUG#13545447: RPL_ROTATE_LOGS FAILS DUE TO CONCURRENCY ISSUES IN REP. CODE
+      
+      In method mysql_binlog_send, right after detecting a EOF in the
+      read event loop, and before deciding if we should change to a new
+      binlog file there is a execution window where new events can be
+      written to the binlog and a rotation can happen. When reaching
+      the test, the function will then change to a new binlog file
+      ignoring all the events written in this window. This will result
+      in events not being replicated.
+      
+      Only when the binlog is detected as deactivated in the event loop
+      of the dump thread, can we really know that no more events
+      remain. For this reason, this test is now made under the log lock
+      in the beginning of the event loop when reading the events.
+------------------------------------------------------------
+revno: 4210
+committer: Alexander Nozdrin <alexander.nozdrin@oracle.com>
+branch nick: 5.5-bug16056537
+timestamp: Fri 2013-02-15 16:01:37 +0400
+message:
+  Bug#16056537: MYSQLD CRASHES IN ITEM_FUNC_GET_USER_VAR::FIX_LENGTH_AND_DEC()
+  
+  The technical problem was that THD::user_var_events_alloc was reset to NULL
+  from a valid value when a stored program is executed during the PREPARE statement.
+  
+  The user visible problem was that the server crashed if user issued a PREPARE
+  statement using some combination of stored functions and user variables.
+  
+  The fix is to restore THD::user_var_events_alloc to the original value.
+  This is a minimal fix for 5.5.
+  
+  More proper patch has been already implemented for 5.6+. It avoids
+  evaluation of stored functions for the PREPARE phase.
+  
+  From the user point of view, this bug is a regression, introduced by the patch for WL2649
+  (Number-to-string conversions), revid: bar@mysql.com-20100211041725-ijbox021olab82nv
+  However, the code resetting THD::user_var_events_alloc exists even in 5.1.
+  The WL just changed the way arguments are converted to strings and the bug became visible.
+------------------------------------------------------------
+revno: 4209 [merge]
+committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-15 12:37:21 +0530
+message:
+  Bug#16218104: MYSQL YASSL - LUCKY THIRTEEN: BREAKING THE
+                TLS AND DTLS RECORD PROTOCOLS
+  
+  Description: Merge from 5.1.
+    ------------------------------------------------------------
+    revno: 2661.830.108
+    committer: Harin Vadodaria <harin.vadodaria@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-15 12:35:54 +0530
+    message:
+      Bug#16218104: MYSQL YASSL - LUCKY THIRTEEN: BREAKING THE
+                    TLS AND DTLS RECORD PROTOCOLS
+      
+      Description: In yassl, decryption phase in TLS protocol
+                   depends on type of padding. This patch
+                   removes this dependancy and makes error
+                   generation/decryption process independent
+                   of padding type.
+------------------------------------------------------------
+revno: 4208 [merge]
+committer: Shivji Kumar Jha <shivji.jha@oracle.com>
+branch nick: mysql-5.5_b12359942
+timestamp: Fri 2013-02-15 00:40:32 +0530
+message:
+  BUG#12359942- REPLICATION TEST FROM ENGINE SUITE RPL_ROW_UNTIL TIMES OUT
+        
+  post push fix: 
+  rpl_stm_until.test was disabled because of
+  this bug. Enabled and fixed it.
+  
+  Removed a part of the test that was obsolete.
+  It tested replication from 4.0 master to 5.0
+  slave.
+    ------------------------------------------------------------
+    revno: 2661.830.107
+    committer: Shivji Kumar Jha <shivji.jha@oracle.com>
+    branch nick: mysql-5.1_b12359942
+    timestamp: Fri 2013-02-15 00:38:42 +0530
+    message:
+      BUG#12359942- REPLICATION TEST FROM ENGINE SUITE RPL_ROW_UNTIL TIMES OUT
+            
+      post push fix: 
+      rpl_stm_until.test was disabled because of
+      this bug. Enabled and fixed it.
+      
+      Removed a part of the test that was obsolete.
+      It tested replication from 4.0 master to 5.0
+      slave.
+------------------------------------------------------------
+revno: 4207
+committer: Mattias Jonsson <mattias.jonsson@oracle.com>
+branch nick: topush-5.5
+timestamp: Thu 2013-02-14 17:03:49 +0100
+message:
+  Bug#16274455: CAN NOT ACESS PARTITIONED TABLES WHEN
+  DOWNGRADED FROM 5.6.11 TO 5.6.10
+  
+  Problem was new syntax not accepted by previous version.
+  
+  Fixed by adding version comment of /*!50531 around the
+  new syntax.
+  
+  Like this in the .frm file:
+  'PARTITION BY KEY /*!50611 ALGORITHM = 2 */ () PARTITIONS 3'
+  and also changing the output from SHOW CREATE TABLE to:
+  CREATE TABLE t1 (a INT)
+  /*!50100 PARTITION BY KEY */ /*!50611 ALGORITHM = 1 */ /*!50100 ()
+  PARTITIONS 3 */
+  
+  It will always add the ALGORITHM into the .frm for KEY [sub]partitioned
+  tables, but for SHOW CREATE TABLE it will only add it in case it is the non
+  default ALGORITHM = 1.
+  
+  Also notice that for 5.5, it will say /*!50531 instead of /*!50611, which
+  will make upgrade from 5.5 > 5.5.31 to 5.6 < 5.6.11 fail!
+  If one downgrades an fixed version to the same major version (5.5 or 5.6) the
+  bug 14521864 will be visible again, but unless the .frm is updated, it will
+  work again when upgrading again.
+  
+  Also fixed so that the .frm does not get updated version
+  if a single partition check passes.
+------------------------------------------------------------
+revno: 4206 [merge]
+committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-14 16:35:40 +0530
+message:
+  Merge from mysql-5.1 to mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.106
+    committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Thu 2013-02-14 16:33:31 +0530
+    message:
+      For the error code ER_TOO_LONG_IDENT, the identifier is expected in the my_error call.  So removing this line from here.  
+------------------------------------------------------------
+revno: 4205 [merge]
+committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-12 15:35:56 +0530
+message:
+  Merge from mysql-5.1 to mysql-5.5.
+    ------------------------------------------------------------
+    revno: 2661.830.105
+    committer: Annamalai Gurusami <annamalai.gurusami@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Tue 2013-02-12 14:52:48 +0530
+    message:
+      Bug #11753153 INNODB GENERATES SYMBOLS THAT ARE TOO LONG, INVALID DDL
+      FROM SHOW CREATE
+      
+      Problem: The length of the internally generated foreign key name 
+      is not checked. 
+      
+      Solution: The length of the internally generated foreign key name is
+      checked.  If it is greater than the allowed limit, an error message
+      is reported. Also, the constraint name is printed in the same manner
+      as the table name, using the system charset information.
+      
+      rb://1969 approved by Marko.
+------------------------------------------------------------
+revno: 4204
+committer: Mattias Jonsson <mattias.jonsson@oracle.com>
+branch nick: topush-5.5
+timestamp: Mon 2013-02-04 14:09:48 +0100
+message:
+  post-push test result update for bug#14521864.
+------------------------------------------------------------
+revno: 4203 [merge]
+committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-08 16:36:47 +0530
+message:
+  BUG#16247322-MTR NOT RUNNING SYS_VARS TEST SUITE FOR 5.1 
+  Null merge from mysql-5.1
+    ------------------------------------------------------------
+    revno: 2661.830.104
+    committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-08 16:34:32 +0530
+    message:
+      BUG#16247322-MTR NOT RUNNING SYS_VARS TEST SUITE FOR 5.1 
+      
+      Reverting back the previous changes as they are causing
+      issues in PB2.
+------------------------------------------------------------
+revno: 4202 [merge]
+committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-08 15:42:36 +0530
+message:
+  BUG#16247322-MTR NOT RUNNING SYS_VARS TEST SUITE FOR 5.1 
+  Null merge from mysql-5.1
+    ------------------------------------------------------------
+    revno: 2661.830.103
+    committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-08 15:41:18 +0530
+    message:
+      BUG#16247322-MTR NOT RUNNING SYS_VARS TEST SUITE FOR 5.1
+      
+      Problem: Sys_vars suite is disabled in mysql-5.1 branch.
+      Fix: To enable sys_vars suite in mysql-5.1, add it in
+      mysql-test-run.pl file and also sys_vars suite should be
+      added to Makefile.am inorder to get that test directory
+------------------------------------------------------------
+revno: 4201 [merge]
+committer: Marko M?kel? <marko.makela@oracle.com>
+branch nick: mysql-5.5
+timestamp: Fri 2013-02-08 09:33:21 +0200
+message:
+  Merge mysql-5.1 to mysql-5.5.
+    ------------------------------------------------------------
+    revno: 2661.830.102
+    committer: Marko M?kel? <marko.makela@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-08 09:23:12 +0200
+    message:
+      Add missing linkage specifiers, so that ha_innodb_plugin.so
+      will not export internal symbols.
+    ------------------------------------------------------------
+    revno: 2661.830.101
+    committer: Marko M?kel? <marko.makela@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Fri 2013-02-08 09:22:46 +0200
+    message:
+      Bug#16292043 RACE CONDITION IN SRV_EXPORT_INNODB_STATUS() WHEN ACCESSING PURGE_SYS->VIEW
+      
+      srv_export_innodb_status(): Read the purge_sys fields while holding
+      purge_sys->latch.
+      
+      Approved by Sunny Bains
+------------------------------------------------------------
+revno: 4200 [merge]
+committer: Igor Solodovnikov <igor.solodovnikov@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-07 19:46:45 +0200
+message:
+  Null-merge from mysql-5.1
+    ------------------------------------------------------------
+    revno: 2661.830.100
+    committer: Igor Solodovnikov <igor.solodovnikov@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Thu 2013-02-07 19:46:08 +0200
+    message:
+      bug#14163155 COM_CHANGE_USER DOESN'T WORK WITH CHARACTER-SET-SERVER=UCS2 IN
+                   5.1 SERVER
+      
+      Problem was caused by the COM_CHANGE_USER parsing code. That code ignored
+      character set number passed in COM_CHANGE_USER packet. Instead
+      character_set_client values was used. User name was not converted at all.
+      
+      Fixed by using passed character set number to convert both db and user names.
+      If COM_CHANGE_USER does not contain character set number then
+      character_set_client is used to convert both names.
+------------------------------------------------------------
+revno: 4199 [merge]
+committer: Tor Didriksen <tor.didriksen@oracle.com>
+branch nick: 5.5-merge
+timestamp: Thu 2013-02-07 17:08:59 +0100
+message:
+  merge 5.1 => 5.5
+    ------------------------------------------------------------
+    revno: 2661.830.99
+    committer: Tor Didriksen <tor.didriksen@oracle.com>
+    branch nick: 5.1
+    timestamp: Thu 2013-02-07 17:05:07 +0100
+    message:
+      Bug#16192219 CRASH IN TEST_IF_SKIP_SORT_ORDER ON SELECT DISTINCT WITH ORDER BY
+      
+      This is a backport of the fix for:
+      
+      Bug#13633549 HANDLE_FATAL_SIGNAL IN TEST_IF_SKIP_SORT_ORDER/CREATE_SORT_INDEX
+      Don't invoke the range optimizer for a NULL select.
+------------------------------------------------------------
+revno: 4198 [merge]
+committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+branch nick: mysql-5.5
+timestamp: Thu 2013-02-07 17:27:32 +0530
+message:
+  Bug #16247322 MTR NOT RUNNING SYS_VARS TEST SUITE FOR 5.1
+  Null-Merge from mysql-5.5
+    ------------------------------------------------------------
+    revno: 2661.830.98
+    committer: Venkatesh Duggirala<venkatesh.duggirala@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Thu 2013-02-07 17:23:37 +0530
+    message:
+      Bug#16247322- MTR NOT RUNNING SYS_VARS TEST
+      SUITE FOR 5.1
+      
+      SYS_VARS suite is not enabled in MTR by default
+      run. Enabling it with this check-in.
+------------------------------------------------------------
+revno: 4197
+committer: kevin.lewis@oracle.com
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-06 13:49:56 -0600
+message:
+  Bug#16263506 - INNODB; USE ABORT() ON ALL PLATFORMS INSTEAD OF
+                 DEREFERENCING UT_DBG_NULL_PTR
+  The abort() call is standard C but InnoDB only uses it in GCC
+  environments.  UT_DBG_USE_ABORT is not defined the code crashed
+  by dereferencing a null pointer instead of calling abort().
+  Other code throughout MySQL including ndb, sql, mysys and other
+  places call abort() directly.
+  
+  This bug also affects innodb.innodb_bug14147491.test which fails
+  randomly on windows because of this issue. 
+  
+  Approved by marko in http://rb.no.oracle.com/rb/r/1936/
+------------------------------------------------------------
+revno: 4196
+committer: Ravinder Thakur <ravinder.thakur@oracle.com>
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-06 13:52:32 +0530
+message:
+  Bug#14711808 MSI INSTALLATION / UPGRADE CAN CORRUPT EXISTING INSTALLATION
+  
+  Currently MySQL MSI installer on Windows installs MySQL in 
+  "per user" mode. It means that if a Windows machine has 
+  multiple users, they each can install MySQL independently. 
+  However the default path of MySQL is "C:\Program Files (x86)\MySQL\"
+  and when two users install MySQL on same machine, the installation
+  by second user just overwrites the MySQL files. This default shared 
+  location leads to the issue where if the second user uninstalls MySQL,
+  the installation files are removed for the first user as well.
+  
+  In this fix, we are now making the default installation "per machine".
+  It means that when MySQL is installed with defaults options, all
+  users can see the shortcuts for MySQL in start menu(since installations 
+  is for all users). Also when any user relaunches the installer, it will 
+  consider that action uninstallation rather than installation for that user.
+  
+  There are command line options in installer that can be used to undo the
+  "per machine" installation but will not consider that scenario.MySQL 
+  is a server product and it does not make a lot of sense to install it
+  differently for each user.
+------------------------------------------------------------
+revno: 4195 [merge]
+committer: sayantan.dutta@oracle.com
+branch nick: mysql-5.5
+timestamp: Wed 2013-02-06 13:04:41 +0530
+message:
+  13625278 5.1 => 5.5 
+    ------------------------------------------------------------
+    revno: 2661.830.97
+    committer: sayantan.dutta@oracle.com
+    branch nick: mysql-5.1
+    timestamp: Wed 2013-02-06 13:02:14 +0530
+    message:
+      BUG #13625278 - PB2 SHOULD PROVIDE MORE USEFUL INFORMATION FOR TIMEOUTS 
+------------------------------------------------------------
+revno: 4194 [merge]
+committer: Hery Ramilison <hery.ramilison@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-05 21:29:49 +0100
+message:
+  Upmerge of the 5.1.68 build
+    ------------------------------------------------------------
+    revno: 2661.830.96 [merge]
+    author: hery.ramilison@oracle.com
+    committer: Hery Ramilison <hery.ramilison@oracle.com>
+    branch nick: mysql-5.1
+    timestamp: Tue 2013-02-05 20:47:45 +0100
+    message:
+      Merge from mysql-5.1.68-release
+        ------------------------------------------------------------
+        revno: 2661.842.1
+        tags: mysql-5.1.68
+        committer: Hery Ramilison <hery.ramilison@oracle.com>
+        branch nick: mysql-5.1.68-release
+        timestamp: Tue 2013-01-08 13:29:11 +0100
+        message:
+          Applying patch for Bug#67177 Bug#15967374 from Kent
+------------------------------------------------------------
+revno: 4193 [merge]
+author: sunanda.menon@oracle.com
+committer: Sunanda Menon<sunanda.menon@oracle.com>
+branch nick: mysql-5.5
+timestamp: Tue 2013-02-05 10:50:02 +0100
+message:
+  Merge from mysql-5.5.30-release
+    ------------------------------------------------------------
+    revno: 4145.1.3
+    tags: mysql-5.5.30
+    committer: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+    branch nick: mysql-5.5.30-release
+    timestamp: Wed 2013-01-16 08:09:26 +0100
+    message:
+      Removed Conflicts: mysql-libs mysql-libs-advanced from spec file
