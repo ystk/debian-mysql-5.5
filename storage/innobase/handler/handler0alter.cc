@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-Copyright (c) 2005, 2012, Oracle and/or its affiliates. All Rights Reserved.
+Copyright (c) 2005, 2013, Oracle and/or its affiliates. All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -110,16 +110,16 @@ innobase_col_to_mysql(
 		/* These column types should never be shipped to MySQL. */
 		ut_ad(0);
 
-	case DATA_FIXBINARY:
 	case DATA_FLOAT:
 	case DATA_DOUBLE:
 	case DATA_DECIMAL:
 		/* Above are the valid column types for MySQL data. */
 		ut_ad(flen == len);
 		/* fall through */
+	case DATA_FIXBINARY:
 	case DATA_CHAR:
 		/* We may have flen > len when there is a shorter
-		prefix on a CHAR column. */
+		prefix on the CHAR and BINARY column. */
 		ut_ad(flen >= len);
 #else /* UNIV_DEBUG */
 	default:
@@ -702,7 +702,8 @@ ha_innobase::add_index(
 		DBUG_RETURN(-1);
 	}
 
-	indexed_table = dict_table_get(prebuilt->table->name, FALSE);
+	indexed_table = dict_table_get(prebuilt->table->name, FALSE,
+				       DICT_ERR_IGNORE_NONE);
 
 	if (UNIV_UNLIKELY(!indexed_table)) {
 		DBUG_RETURN(HA_ERR_NO_SUCH_TABLE);

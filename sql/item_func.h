@@ -1,7 +1,7 @@
 #ifndef ITEM_FUNC_INCLUDED
 #define ITEM_FUNC_INCLUDED
 
-/* Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA */
 
 
 /* Function items used by mysql */
@@ -1492,6 +1492,14 @@ public:
     :Item_func(b), cached_result_type(INT_RESULT),
      entry(NULL), entry_thread_id(0), delayed_non_constness(delayed), name(a)
   {}
+  Item_func_set_user_var(THD *thd, Item_func_set_user_var *item)
+    :Item_func(thd, item), cached_result_type(item->cached_result_type),
+    entry(item->entry), entry_thread_id(item->entry_thread_id),
+    value(item->value), decimal_buff(item->decimal_buff),
+    null_item(item->null_item), save_result(item->save_result),
+    name(item->name)
+  {}
+
   enum Functype functype() const { return SUSERVAR_FUNC; }
   double val_real();
   longlong val_int();

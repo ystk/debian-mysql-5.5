@@ -1231,7 +1231,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 730 "/export/home/pb2/build/sb_0-8792293-1364217028.61/mysql-5.5.31-release-export-4981782_gpl/sql/sql_yacc.yy"
+#line 737 "/export/home/pb2/build/sb_0-11763266-1394823213.64/mysql-5.5.37-release-export-6436381_gpl/sql/sql_yacc.yy"
 
   int  num;
   ulong ulong_num;
@@ -1278,11 +1278,12 @@ typedef union YYSTYPE
   enum Foreign_key::fk_option m_fk_option;
   enum enum_yes_no_unknown m_yes_no_unk;
   Diag_condition_item_name diag_condition_item_name;
+  bool is_not_empty;
 
 
 
 /* Line 1676 of yacc.c  */
-#line 1286 "/export/home/pb2/build/sb_0-8792293-1364217028.61/dist_GPL/sql/sql_yacc.h"
+#line 1287 "/export/home/pb2/build/sb_0-11763266-1394823213.64/dist_GPL/sql/sql_yacc.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
