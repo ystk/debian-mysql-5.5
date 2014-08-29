@@ -1,4 +1,4 @@
-/* Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA */
 
 
 /**
@@ -1218,9 +1218,11 @@ bool LOGGER::slow_log_print(THD *thd, const char *query, uint query_length,
     user_host_len= (strxnmov(user_host_buff, MAX_USER_HOST_SIZE,
                              sctx->priv_user ? sctx->priv_user : "", "[",
                              sctx->user ? sctx->user : "", "] @ ",
-                             sctx->host ? sctx->host : "", " [",
-                             sctx->ip ? sctx->ip : "", "]", NullS) -
-                    user_host_buff);
+                             sctx->get_host()->length() ?
+                             sctx->get_host()->ptr() : "", " [",
+                             sctx->get_ip()->length() ? sctx->get_ip()->ptr() :
+                             "", "]", NullS) - user_host_buff);
+
 
     current_time= my_time_possible_from_micro(current_utime);
     if (thd->start_utime)

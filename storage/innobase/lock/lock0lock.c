@@ -11,8 +11,8 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
+this program; if not, write to the Free Software Foundation, Inc., 
+51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 *****************************************************************************/
 
@@ -4980,6 +4980,7 @@ lock_rec_validate_page(
 {
 	const lock_t*	lock;
 	const rec_t*	rec;
+	dict_index_t*	index;
 	ulint		nth_lock	= 0;
 	ulint		nth_bit		= 0;
 	ulint		i;
@@ -5029,6 +5030,7 @@ loop:
 
 		if (i == 1 || lock_rec_get_nth_bit(lock, i)) {
 
+			index = lock->index;
 			rec = page_find_rec_with_heap_no(block->frame, i);
 			ut_a(rec);
 			offsets = rec_get_offsets(rec, lock->index, offsets,
@@ -5045,7 +5047,7 @@ loop:
 			check WILL break the latching order and may
 			cause a deadlock of threads. */
 
-			lock_rec_queue_validate(block, rec, lock->index,
+			lock_rec_queue_validate(block, rec, index,
 						offsets);
 
 			lock_mutex_enter_kernel();

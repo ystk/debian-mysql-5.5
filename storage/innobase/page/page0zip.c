@@ -11,8 +11,8 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
+this program; if not, write to the Free Software Foundation, Inc., 
+51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 *****************************************************************************/
 
@@ -2148,8 +2148,19 @@ page_zip_decompress_node_ptrs(
 		      - PAGE_ZIP_START - PAGE_DIR);
 		switch (inflate(d_stream, Z_SYNC_FLUSH)) {
 		case Z_STREAM_END:
-			/* Apparently, n_dense has grown
-			since the time the page was last compressed. */
+			if (d_stream->next_out
+			    != rec - REC_N_NEW_EXTRA_BYTES) {
+				/* n_dense has grown since the page
+				was last compressed. */
+			} else {
+				/* Skip the REC_N_NEW_EXTRA_BYTES. */
+				d_stream->next_out = rec;
+
+				/* Set heap_no and the status bits. */
+				mach_write_to_2(rec - REC_NEW_HEAP_NO,
+						heap_status);
+				heap_status += 1 << REC_HEAP_NO_SHIFT;
+			}
 			goto zlib_done;
 		case Z_OK:
 		case Z_BUF_ERROR:
@@ -2271,13 +2282,12 @@ zlib_done:
 
 	if (UNIV_UNLIKELY
 	    (page_zip_get_trailer_len(page_zip,
-				      dict_index_is_clust(index), NULL)
+				      dict_index_is_clust(index))
 	     + page_zip->m_end >= page_zip_get_size(page_zip))) {
 		page_zip_fail(("page_zip_decompress_node_ptrs:"
 			       " %lu + %lu >= %lu, %lu\n",
 			       (ulong) page_zip_get_trailer_len(
-				       page_zip, dict_index_is_clust(index),
-				       NULL),
+				       page_zip, dict_index_is_clust(index)),
 			       (ulong) page_zip->m_end,
 			       (ulong) page_zip_get_size(page_zip),
 			       (ulong) dict_index_is_clust(index)));
@@ -2338,8 +2348,19 @@ page_zip_decompress_sec(
 		if (UNIV_LIKELY(d_stream->avail_out)) {
 			switch (inflate(d_stream, Z_SYNC_FLUSH)) {
 			case Z_STREAM_END:
-				/* Apparently, n_dense has grown
-				since the time the page was last compressed. */
+				if (d_stream->next_out
+				    != rec - REC_N_NEW_EXTRA_BYTES) {
+					/* n_dense has grown since the page
+					was last compressed. */
+				} else {
+					/* Skip the REC_N_NEW_EXTRA_BYTES. */
+					d_stream->next_out = rec;
+
+					/* Set heap_no and the status bits. */
+					mach_write_to_2(rec - REC_NEW_HEAP_NO,
+							heap_status);
+					heap_status += 1 << REC_HEAP_NO_SHIFT;
+				}
 				goto zlib_done;
 			case Z_OK:
 			case Z_BUF_ERROR:
@@ -2428,12 +2449,12 @@ zlib_done:
 		page_zip->m_nonempty = mod_log_ptr != d_stream->next_in;
 	}
 
-	if (UNIV_UNLIKELY(page_zip_get_trailer_len(page_zip, FALSE, NULL)
+	if (UNIV_UNLIKELY(page_zip_get_trailer_len(page_zip, FALSE)
 			  + page_zip->m_end >= page_zip_get_size(page_zip))) {
 
 		page_zip_fail(("page_zip_decompress_sec: %lu + %lu >= %lu\n",
 			       (ulong) page_zip_get_trailer_len(
-				       page_zip, FALSE, NULL),
+				       page_zip, FALSE),
 			       (ulong) page_zip->m_end,
 			       (ulong) page_zip_get_size(page_zip)));
 		return(FALSE);
@@ -2597,8 +2618,19 @@ page_zip_decompress_clust(
 		err = inflate(d_stream, Z_SYNC_FLUSH);
 		switch (err) {
 		case Z_STREAM_END:
-			/* Apparently, n_dense has grown
-			since the time the page was last compressed. */
+			if (d_stream->next_out
+			    != rec - REC_N_NEW_EXTRA_BYTES) {
+				/* n_dense has grown since the page
+				was last compressed. */
+			} else {
+				/* Skip the REC_N_NEW_EXTRA_BYTES. */
+				d_stream->next_out = rec;
+
+				/* Set heap_no and the status bits. */
+				mach_write_to_2(rec - REC_NEW_HEAP_NO,
+						heap_status);
+				heap_status += 1 << REC_HEAP_NO_SHIFT;
+			}
 			goto zlib_done;
 		case Z_OK:
 		case Z_BUF_ERROR:
@@ -2759,12 +2791,12 @@ zlib_done:
 		page_zip->m_nonempty = mod_log_ptr != d_stream->next_in;
 	}
 
-	if (UNIV_UNLIKELY(page_zip_get_trailer_len(page_zip, TRUE, NULL)
+	if (UNIV_UNLIKELY(page_zip_get_trailer_len(page_zip, TRUE)
 			  + page_zip->m_end >= page_zip_get_size(page_zip))) {
 
 		page_zip_fail(("page_zip_decompress_clust: %lu + %lu >= %lu\n",
 			       (ulong) page_zip_get_trailer_len(
-				       page_zip, TRUE, NULL),
+				       page_zip, TRUE),
 			       (ulong) page_zip->m_end,
 			       (ulong) page_zip_get_size(page_zip)));
 		return(FALSE);
@@ -4639,8 +4671,7 @@ page_zip_copy_recs(
 		memcpy(page_zip, src_zip, sizeof *page_zip);
 		page_zip->data = data;
 	}
-	ut_ad(page_zip_get_trailer_len(page_zip,
-				       dict_index_is_clust(index), NULL)
+	ut_ad(page_zip_get_trailer_len(page_zip, dict_index_is_clust(index))
 	      + page_zip->m_end < page_zip_get_size(page_zip));
 
 	if (!page_is_leaf(src)

@@ -11,7 +11,7 @@
 
    You should have received a copy of the GNU General Public License
    along with this program; if not, write to the Free Software
-   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA */
+   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA */
 
 
 /* HANDLER ... commands - direct access to ISAM */
@@ -589,7 +589,10 @@ retry:
     /*
       Always close statement transaction explicitly,
       so that the engine doesn't have to count locks.
+      There should be no need to perform transaction
+      rollback due to deadlock.
     */
+    DBUG_ASSERT(! thd->transaction_rollback_request);
     trans_rollback_stmt(thd);
     mysql_ha_close_table(thd, hash_tables);
     goto retry;

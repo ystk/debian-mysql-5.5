@@ -1,4 +1,4 @@
-/* Copyright (c) 2006, 2010, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2006, 2013, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -186,7 +186,7 @@ int compare_lengths(Field *field, enum_field_types source_type, uint16 metadata)
   DBUG_PRINT("result", ("%d", result));
   DBUG_RETURN(result);
 }
-
+#endif //MYSQL_CLIENT
 /*********************************************************************
  *                   table_def member definitions                    *
  *********************************************************************/
@@ -197,7 +197,7 @@ int compare_lengths(Field *field, enum_field_types source_type, uint16 metadata)
 */
 uint32 table_def::calc_field_size(uint col, uchar *master_data) const
 {
-  uint32 length;
+  uint32 length= 0;
 
   switch (type(col)) {
   case MYSQL_TYPE_NEWDECIMAL:
@@ -285,7 +285,6 @@ uint32 table_def::calc_field_size(uint col, uchar *master_data) const
   case MYSQL_TYPE_VARCHAR:
   {
     length= m_field_metadata[col] > 255 ? 2 : 1; // c&p of Field_varstring::data_length()
-    DBUG_ASSERT(uint2korr(master_data) > 0);
     length+= length == 1 ? (uint32) *master_data : uint2korr(master_data);
     break;
   }
@@ -295,17 +294,6 @@ uint32 table_def::calc_field_size(uint col, uchar *master_data) const
   case MYSQL_TYPE_BLOB:
   case MYSQL_TYPE_GEOMETRY:
   {
-#if 1
-    /*
-      BUG#29549: 
-      This is currently broken for NDB, which is using big-endian
-      order when packing length of BLOB. Once they have decided how to
-      fix the issue, we can enable the code below to make sure to
-      always read the length in little-endian order.
-    */
-    Field_blob fb(m_field_metadata[col]);
-    length= fb.get_packed_size(master_data, TRUE);
-#else
     /*
       Compute the length of the data. We cannot use get_length() here
       since it is dependent on the specific table (and also checks the
@@ -331,7 +319,6 @@ uint32 table_def::calc_field_size(uint col, uchar *master_data) const
     }
 
     length+= m_field_metadata[col];
-#endif
     break;
   }
   default:
@@ -340,7 +327,7 @@ uint32 table_def::calc_field_size(uint col, uchar *master_data) const
   return length;
 }
 
-
+#ifndef MYSQL_CLIENT
 /**
  */
 void show_sql_type(enum_field_types type, uint16 metadata, String *str, CHARSET_INFO *field_cs)
@@ -878,6 +865,7 @@ TABLE *table_def::create_conversion_table(THD *thd, Relay_log_info *rli, TABLE *
   DBUG_ENTER("table_def::create_conversion_table");
 
   List<Create_field> field_list;
+  TABLE *conv_table= NULL;
   /*
     At slave, columns may differ. So we should create
     min(columns@master, columns@slave) columns in the
@@ -919,10 +907,15 @@ TABLE *table_def::create_conversion_table(THD *thd, Relay_log_info *rli, TABLE *
       break;
 
     case MYSQL_TYPE_DECIMAL:
-      precision= field_metadata(col);
-      decimals= static_cast<Field_num*>(target_table->field[col])->dec;
-      max_length= field_metadata(col);
-      break;
+      sql_print_error("In RBR mode, Slave received incompatible DECIMAL field "
+                      "(old-style decimal field) from Master while creating "
+                      "conversion table. Please consider changing datatype on "
+                      "Master to new style decimal by executing ALTER command for"
+                      " column Name: %s.%s.%s.",
+                      target_table->s->db.str,
+                      target_table->s->table_name.str,
+                      target_table->field[col]->field_name);
+      goto err;
 
     case MYSQL_TYPE_TINY_BLOB:
     case MYSQL_TYPE_MEDIUM_BLOB:
@@ -950,7 +943,9 @@ TABLE *table_def::create_conversion_table(THD *thd, Relay_log_info *rli, TABLE *
     field_def->interval= interval;
   }
 
-  TABLE *conv_table= create_virtual_tmp_table(thd, field_list);
+  conv_table= create_virtual_tmp_table(thd, field_list);
+
+err:
   if (conv_table == NULL)
     rli->report(ERROR_LEVEL, ER_SLAVE_CANT_CREATE_CONVERSION,
                 ER(ER_SLAVE_CANT_CREATE_CONVERSION),

@@ -1,4 +1,113 @@
-mysql-5.5 (5.5.31+dfsg-0+wheezy1) stable-security; urgency=high
+mysql-5.5 (5.5.37-1) unstable; urgency=medium
+
+  * SECURITY UPDATE: Update to 5.5.37 to fix security issues (Closes: #744910)
+    - http://www.oracle.com/technetwork/topics/security/cpuapr2014-1972952.html
+    - CVE-2014-0001 (Closes: #737596).
+    - CVE-2014-0384
+    - CVE-2014-2419
+    - CVE-2014-2430
+    - CVE-2014-2431
+    - CVE-2014-2432
+    - CVE-2014-2436
+    - CVE-2014-2438
+    - CVE-2014-2440
+  * d/mysql-server-5.5.mysql.init: Fixup indentation on previous change
+    (Closes: #739846).
+  * d/rules: Always install apparmor profile, not just on Ubuntu
+    (Closes: #736087).
+  * d/control: Update for use of virtual-* packages for switching to/from
+    MySQL alternatives.
+  * d/watch,repack.*: Drop repackaging as upstream tarball is now DFSG
+    compliant.
+
+ -- James Page <jamespage@debian.org>  Thu, 24 Apr 2014 18:03:59 +0100
+
+mysql-5.5 (5.5.35+dfsg-2) unstable; urgency=low
+
+  [ Clint Byrum ]
+  * d/mysql-server-5.5.mysql.init: Increase timeout to 30s (Closes: #736452).
+  * d/mysql-server-5.5.postinst: Run mysql_install_db as mysql so tables are
+    not created as root (Closes: #737224).
+
+  [ Robie Basak ]
+  * Re-sync relevant Ubuntu changes:
+    - d/control: Make innotop usable without installing Suggests.
+    - d/rules: Build with debug symbols.
+    - d/{additions/my.cnf,mysql-server-5.5.mysql-server.logrotate}:
+      Write an error log and logrotate it.
+    - d/control,rules,apparmor-profile,mysql-server-5.5.files:
+      Add AppArmor profile (Closes: #736087).
+    - d/control: Move mailx from Recommends to Suggests.
+    - d/control,d/tests/*: Add DEP-8 tests.
+    - d/control: Re-add mysql-testsuite metapackage.
+
+  [ James Page ]
+  * d/control: Drop Nicholas from Uploaders, MIA (Closes: #739361).
+
+ -- James Page <jamespage@debian.org>  Wed, 19 Feb 2014 12:37:01 +0000
+
+mysql-5.5 (5.5.35+dfsg-1) unstable; urgency=low
+
+  [ Clint Byrum ]
+  * Drop creation of insecure database permissions (Closes: #732306):
+    - d/p/33_scripts__mysql_create_system_tables__no_test.patch,
+      d/p/41_scripts__mysql_install_db.sh__no_test.patch,
+      d/p/50_mysql-test__db_test.patch: Restored from mysql-5.1
+      package, inadvertently dropped in 5.5 transition. This
+      removes the global anonymous access to the database which
+      is a security concern.
+
+  [ James Page ]
+  * New upstream release:
+    - d/p/fix-racey-rpltests.patch: Dropped - no longer required.
+    - d/p/50_mysql-test__db_test.patch: Add extra permissions to
+      mysql-run-tests.pl for test_% accounts, fixing failing tests.
+    - d/p/*: Refreshed patches.
+    - SECURITY UPDATE:
+      http://www.oracle.com/technetwork/topics/security/cpujan2014-1972949.html
+      - CVE-2013-5891
+      - CVE-2013-5908
+      - CVE-2014-0386
+      - CVE-2014-0393
+      - CVE-2014-0401
+      - CVE-2014-0402
+      - CVE-2014-0412
+      - CVE-2014-0420
+      - CVE-2014-0437
+  * Sync changes from NMU 5.5.33+dfsg-0+wheezy1:
+    - d/NEWS: Add NEWS file to document changes needed to existing databases
+      to drop insecure database permissions.
+    - SECURITY UPDATE: Insecure creation of the credential file debian.cnf.
+      - d/mysql-server-5.5.postinst: Set umask to 066 before creating
+        debian.cnf file (Closes: #711600).
+      - CVE-2013-2162
+    - d/copyright: Update copyright years for upstream files.
+  * d/control: Update VCS field for new git location.
+  * d/control: Add myself to Uploaders.
+  * d/*: Wrap and sort.
+  * d/control: Bumped Standards-Version, no changes.
+
+ -- James Page <jamespage@debian.org>  Sat, 18 Jan 2014 21:38:18 +0000
+
+mysql-5.5 (5.5.33+dfsg-1) unstable; urgency=low
+
+  * d/rules, d/control: Remove gcc-4.4 dependency and disable X86
+    assembly in taocrypt. (Closes: #707280) (Closes: #678252)
+  * d/patches/fix-mips64el-ftbfs.patch: Fix FTBFS on mips64el.
+    (Closes: #719196) Thanks YunQuiang Su.
+  * New upstream release.
+    SECURITY UPDATE: CVE-2013-1861 CVE-2013-3783 CVE-2013-3793
+    CVE-2013-3804 CVE-2013-3802 CVE-2013-3809 CVE-2013-3812
+    (Closes: #706715) (Closes: #712730)
+  * d/patches/work_around_failing_rpl_deadlock.patch: Test suite
+    changes upstream have left some connections active. This
+    patch fixes that. Thanks Kristian Nielsen!
+  * d/patches/fix-racey-rpltests.patch: Fix from Oracle for failing
+    tests.
+
+ -- Clint Byrum <spamaps@debian.org>  Thu, 26 Sep 2013 09:14:47 -0700
+
+mysql-5.5 (5.5.31+dfsg-1) unstable; urgency=high
 
   * New upstream release.
     SECURITY UPDATE: CVE-2013-2375 CVE-2013-1544 CVE-2013-1532
@@ -7,9 +116,8 @@ mysql-5.5 (5.5.31+dfsg-0+wheezy1) stable-security; urgency=high
     - Patches refreshed.
     - d/p/yassl.patch - dropped, applied upstream
     - d/p/debian-mdev382-fixup.patch: dropped, fixed upstream.
-  * d/control: Updating Vcs-* fields to point at wheezy branch.
 
- -- Clint Byrum <clint@ubuntu.com>  Wed, 08 May 2013 21:33:08 -0700
+ -- Clint Byrum <clint@ubuntu.com>  Mon, 06 May 2013 12:22:55 -0700
 
 mysql-5.5 (5.5.30+dfsg-1.1) unstable; urgency=low
 

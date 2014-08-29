@@ -143,7 +143,7 @@ EOF
     # Debian: beware of the bashisms... 
     # Debian: can safely run on upgrades with existing databases 
     set +e
-    bash /usr/bin/mysql_install_db --rpm 2>&1 | $ERR_LOGGER
+    bash /usr/bin/mysql_install_db --user mysql --rpm 2>&1 | $ERR_LOGGER
     if [ "$?" != "0" ]; then
       echo "ATTENTION: An error has occured. More info is in the syslog!"
     fi
@@ -173,7 +173,9 @@ EOF
     else
 	pass=`perl -e 'print map{("a".."z","A".."Z",0..9)[int(rand(62))]}(1..16)'`;
         if [ ! -d "$mysql_cfgdir" ]; then install -o 0 -g 0 -m 0755 -d $mysql_cfgdir; fi
+	umask 066
         cat /dev/null > $dc
+	umask 022
         echo "# Automatically generated for Debian scripts. DO NOT TOUCH!" >>$dc
         echo "[client]"                                                    >>$dc
         echo "host     = localhost"                                        >>$dc

@@ -1,7 +1,7 @@
 #ifndef TABLE_INCLUDED
 #define TABLE_INCLUDED
 
-/* Copyright (c) 2000, 2011, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -893,6 +893,9 @@ enum index_hint_type
   INDEX_HINT_USE,
   INDEX_HINT_FORCE
 };
+
+/* Bitmap of table's fields */
+typedef Bitmap<MAX_FIELDS> Field_map;
 
 struct TABLE
 {

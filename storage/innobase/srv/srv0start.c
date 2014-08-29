@@ -1,6 +1,6 @@
 /*****************************************************************************
 
-Copyright (c) 1996, 2010, Innobase Oy. All Rights Reserved.
+Copyright (c) 1996, 2013, Oracle and/or its affiliates. All rights reserved.
 Copyright (c) 2008, Google Inc.
 Copyright (c) 2009, Percona Inc.
 
@@ -26,8 +26,8 @@ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License along with
-this program; if not, write to the Free Software Foundation, Inc., 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA
+this program; if not, write to the Free Software Foundation, Inc., 
+51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 *****************************************************************************/
 
@@ -147,7 +147,7 @@ UNIV_INTERN mysql_pfs_key_t	srv_purge_thread_key;
 #endif /* UNIV_PFS_THREAD */
 
 /*********************************************************************//**
-Convert a numeric string that optionally ends in G or M, to a number
+Convert a numeric string that optionally ends in G or M or K, to a number
 containing megabytes.
 @return	next character in string */
 static
@@ -169,6 +169,10 @@ srv_parse_megabytes(
 		size *= 1024;
 		/* fall through */
 	case 'M': case 'm':
+		str++;
+		break;
+	case 'K': case 'k':
+		size /= 1024;
 		str++;
 		break;
 	default:
@@ -818,6 +822,7 @@ open_or_create_data_files(
 		}
 
 		if (ret == FALSE) {
+			const char* check_msg;
 			/* We open the data file */
 
 			if (one_created) {
@@ -915,12 +920,19 @@ open_or_create_data_files(
 				return(DB_ERROR);
 			}
 skip_size_check:
-			fil_read_first_page(
+			check_msg = fil_read_first_page(
 				files[i], one_opened, &flags,
 #ifdef UNIV_LOG_ARCHIVE
 				min_arch_log_no, max_arch_log_no,
 #endif /* UNIV_LOG_ARCHIVE */
 				min_flushed_lsn, max_flushed_lsn);
+
+			if (check_msg) {
+				fprintf(stderr,
+					"InnoDB: Error: %s in data file %s\n",
+					check_msg, name);
+				return(DB_ERROR);
+			}
 
 			if (!one_opened
 			    && UNIV_PAGE_SIZE

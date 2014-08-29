@@ -1,13 +1,13 @@
 '\" t
 .\"     Title: \fBmysqldump\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
-.\" Generator: DocBook XSL Stylesheets v1.77.1 <http://docbook.sf.net/>
-.\"      Date: 03/22/2013
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 03/14/2014
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBMYSQLDUMP\FR" "1" "03/22/2013" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBMYSQLDUMP\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -41,9 +41,10 @@ mysqldump \- a database backup program
 .PP
 The
 \fBmysqldump\fR
-client is a backup program originally written by Igor Romanenko\&. It can be used to dump a database or a collection of databases for backup or transfer to another SQL server (not necessarily a MySQL server)\&. The dump typically contains SQL statements to create the table, populate it, or both\&. However,
+client is a utility that performs
+logical backups, producing a set of SQL statements that can be run to reproduce the original schema objects, table data, or both\&. It dumps one or more MySQL database for backup or transfer to another SQL server\&. The
 \fBmysqldump\fR
-can also be used to generate files in CSV, other delimited text, or XML format\&.
+command can also generate output in CSV, other delimited text, or XML format\&.
 .PP
 \fBmysqldump\fR
 requires at least the
@@ -62,15 +63,97 @@ To reload a dump file, you must have the same privileges needed to create each o
 CREATE
 statements manually\&.
 .PP
-If you are doing a backup on the server and your tables all are
+\fBmysqldump\fR
+output can include
+ALTER DATABASE
+statements that change the database collation\&. These may be used when dumping stored programs to preserve their character encodings\&. To reload a dump file containing such statements, the
+ALTER
+privilege for the affected database is required\&.
+.PP
+If you are performing a backup on the server and your tables all are
+MyISAM
+tables, you can also use
+\fBmysqlhotcopy\fR
+for this purpose\&.
+        Performance and Scalability Considerations
+.PP
+mysqldump
+advantages include the convenience and flexibility of viewing or even editing the output before restoring\&. You can clone databases for development and DBA work, or produce slight variations of an existing database for testing\&. It is not intended as a fast or scalable solution for backing up substantial amounts of data\&. With large data sizes, even if the backup step takes a reasonable time, restoring the data can be very slow because replaying the SQL statements involves disk I/O for insertion, index creation, and so on\&.
+.PP
+For large\-scale backup and restore, a
+physical
+backup is more appropriate, to copy the data files in their original format that can be restored quickly:
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If your tables are primarily
+InnoDB
+tables, or if you have a mix of
+InnoDB
+and
+MyISAM
+tables, consider using the
+\fBmysqlbackup\fR
+command of the MySQL Enterprise Backup product\&. (Available as part of the Enterprise subscription\&.) It provides the best performance for
+InnoDB
+backups with minimal disruption; it can also back up tables from
+MyISAM
+and other storage engines; and it provides a number of convenient options to accommodate different backup scenarios\&. See
+Section\ \&24.2, \(lqMySQL Enterprise Backup\(rq\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+If your tables are primarily
 MyISAM
 tables, consider using the
 \fBmysqlhotcopy\fR
-instead because it can accomplish faster backups and faster restores\&. See
+instead, for better performance than
+\fBmysqldump\fR
+of backup and restore operations\&. See
 \fBmysqlhotcopy\fR(1)\&.
+.RE
 .PP
-There are three general ways to invoke
-\fBmysqldump\fR:
+\fBmysqldump\fR
+can retrieve and dump table contents row by row, or it can retrieve the entire content from a table and buffer it in memory before dumping it\&. Buffering in memory can be a problem if you are dumping large tables\&. To dump tables row by row, use the
+\fB\-\-quick\fR
+option (or
+\fB\-\-opt\fR, which enables
+\fB\-\-quick\fR)\&. The
+\fB\-\-opt\fR
+option (and hence
+\fB\-\-quick\fR) is enabled by default, so to enable memory buffering, use
+\fB\-\-skip\-quick\fR\&.
+.PP
+If you are using a recent version of
+\fBmysqldump\fR
+to generate a dump to be reloaded into a very old MySQL server, use the
+\fB\-\-skip\-opt\fR
+option instead of the
+\fB\-\-opt\fR
+or
+\fB\-\-extended\-insert\fR
+option\&.
+.PP
+For additional information about
+\fBmysqldump\fR, see
+Section\ \&7.4, \(lqUsing mysqldump for Backups\(rq\&.
+        Syntax
+.PP
+There are in general three ways to use
+\fBmysqldump\fR\(emin order to dump a set of one or more tables, a set of one or more complete databases, or an entire MySQL server\(emas shown here:
 .sp
 .if n \{\
 .RS 4
@@ -84,13 +167,12 @@ shell> \fBmysqldump [\fR\fB\fIoptions\fR\fR\fB] \-\-all\-databases\fR
 .RE
 .\}
 .PP
-If you do not name any tables following
-\fIdb_name\fR
-or if you use the
+To dump entire databases, do not name any tables following
+\fIdb_name\fR, or use the
 \fB\-\-databases\fR
 or
 \fB\-\-all\-databases\fR
-option, entire databases are dumped\&.
+option\&.
 .PP
 \fBmysqldump\fR
 does not dump the
@@ -656,8 +738,8 @@ statements are included in the output before each new database\&.
 Write a debugging log\&. A typical
 \fIdebug_options\fR
 string is
-\*(Aqd:t:o,\fIfile_name\fR\*(Aq\&. The default value is
-\*(Aqd:t:o,/tmp/mysqldump\&.trace\*(Aq\&.
+d:t:o,\fIfile_name\fR\&. The default value is
+d:t:o,/tmp/mysqldump\&.trace\&.
 .RE
 .sp
 .RS 4
@@ -846,13 +928,20 @@ This option is similar to
 \fB\-\-master\-data\fR
 except that it is used to dump a replication slave server to produce a dump file that can be used to set up another server as a slave that has the same master as the dumped server\&. It causes the dump output to include a
 CHANGE MASTER TO
-statement that indicates the binary log coordinates (file name and position) of the dumped slave\*(Aqs master (rather than the coordinates of the dumped server, as is done by the
+statement that indicates the binary log coordinates (file name and position) of the dumped slave\*(Aqs master\&. These are the master server coordinates from which the slave should start replicating\&.
+.sp
+\fB\-\-dump\-slave\fR
+causes the coordinates from the master to be used rather than those of the dumped server, as is done by the
 \fB\-\-master\-data\fR
-option)\&. These are the master server coordinates from which the slave should start replicating\&. This option was added in MySQL 5\&.5\&.3\&.
+option\&. In addition, specfiying this option causes the
+\fB\-\-master\-data\fR
+option to be overridden, if used, and effectively ignored\&.
 .sp
 The option value is handled the same way as for
 \fB\-\-master\-data\fR
-and has the same effect as
+(setting no value or 1 causes a
+CHANGE MASTER TO
+statement to be written to the dump, setting 2 causes the statement to be written but encased in SQL comments) and has the same effect as
 \fB\-\-master\-data\fR
 in terms of enabling or disabling other options and in how locking is handled\&.
 .sp
@@ -866,6 +955,8 @@ In conjunction with
 and
 \fB\-\-include\-master\-host\-port\fR
 options can also be used\&.
+.sp
+This option was added in MySQL 5\&.5\&.3\&.
 .RE
 .sp
 .RS 4
@@ -994,9 +1085,9 @@ together with
 .\" flush-privileges option: mysqldump
 \fB\-\-flush\-privileges\fR
 .sp
-Send a
+Add a
 FLUSH PRIVILEGES
-statement to the server after dumping the
+statement to the dump output after dumping the
 mysql
 database\&. This option should be used any time the dump contains the
 mysql
@@ -1088,7 +1179,7 @@ CHANGE MASTER TO
 statement in a slave dump produced with the
 \fB\-\-dump\-slave\fR
 option, add
-MASTER_PORT
+MASTER_HOST
 and
 MASTER_PORT
 options for the host name and TCP/IP port number of the slave\*(Aqs master\&. This option was added in MySQL 5\&.5\&.3\&.
@@ -1245,7 +1336,13 @@ option automatically turns off
 also is specified, in which case, a global read lock is acquired only for a short time at the beginning of the dump (see the description for
 \fB\-\-single\-transaction\fR)\&. In all cases, any action on logs happens at the exact moment of the dump\&.
 .sp
-It is also possible to set up a slave by dumping an existing slave of the master\&. To do this, use the following procedure on the existing slave:
+It is also possible to set up a slave by dumping an existing slave of the master\&. In MySQL 5\&.5\&.3 and later, you can create such a dump using the
+\fB\-\-dump\-slave\fR
+option, which overrides
+\fB\-\-master\-data\fR
+and causes it to be ignored if both options are used\&.
+.sp
+In MySQL 5\&.2\&.2 and earlier, use the following procedure on the existing slave:
 .sp
 .RS 4
 .ie n \{\
@@ -1844,7 +1941,7 @@ or
 MEMORY
 tables dumped while using this option may still change state\&.
 .sp
-Before MySQL 5\&.5\&.3, while a
+While a
 \fB\-\-single\-transaction\fR
 dump is in process, to ensure a valid dump file (correct table contents and binary log coordinates), no other connection should use the following statements:
 ALTER TABLE,
@@ -1855,7 +1952,7 @@ TRUNCATE TABLE\&. A consistent read is not isolated from those statements, so us
 SELECT
 that is performed by
 \fBmysqldump\fR
-to retrieve the table contents to obtain incorrect contents or fail\&. As of MySQL 5\&.5\&.3, metadata locking prevents this situation\&.
+to retrieve the table contents to obtain incorrect contents or fail\&.
 .sp
 The
 \fB\-\-single\-transaction\fR
@@ -1873,10 +1970,11 @@ transaction isolation level\&. You should always use
 NDB
 backup and restore instead\&.
 .sp
-To dump large tables, you should combine the
+To dump large tables, combine the
 \fB\-\-single\-transaction\fR
-option with
-\fB\-\-quick\fR\&.
+option with the
+\fB\-\-quick\fR
+option\&.
 .RE
 .sp
 .RS 4
@@ -1945,7 +2043,7 @@ localhost, the Unix socket file to use, or, on Windows, the name of the named pi
 Options that begin with
 \fB\-\-ssl\fR
 specify whether to connect to the server using SSL and indicate where to find SSL keys and certificates\&. See
-Section\ \&6.3.8.4, \(lqSSL Command Options\(rq\&.
+Section\ \&6.3.9.4, \(lqSSL Command Options\(rq\&.
 .RE
 .sp
 .RS 4
@@ -2275,7 +2373,7 @@ syntax:
 .\}
 max_allowed_packet
 .sp
-The maximum size of the buffer for client/server communication\&. The maximum is 1GB\&.
+The maximum size of the buffer for client/server communication\&. The default is 24MB, the maximum is 1GB\&.
 .RE
 .sp
 .RS 4
@@ -2455,42 +2553,13 @@ Section\ \&E.5, \(lqRestrictions on Views\(rq\&.
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2013, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
 .PP
-This software and related documentation are provided under a license agreement containing restrictions on use and disclosure and are protected by intellectual property laws. Except as expressly permitted in your license agreement or allowed by law, you may not use, copy, reproduce, translate, broadcast, modify, license, transmit, distribute, exhibit, perform, publish, or display any part, in any form, or by any means. Reverse engineering, disassembly, or decompilation of this software, unless required by law for interoperability, is prohibited.
+This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP
-The information contained herein is subject to change without notice and is not warranted to be error-free. If you find any errors, please report them to us in writing.
+This documentation is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 .PP
-If this software or related documentation is delivered to the U.S. Government or anyone licensing it on behalf of the U.S. Government, the following notice is applicable:
-.PP
-U.S. GOVERNMENT RIGHTS Programs, software, databases, and related documentation and technical data delivered to U.S. Government customers are "commercial computer software" or "commercial technical data" pursuant to the applicable Federal Acquisition Regulation and agency-specific supplemental regulations. As such, the use, duplication, disclosure, modification, and adaptation shall be subject to the restrictions and license terms set forth in the applicable Government contract, and, to the extent applicable by the terms of the Government contract, the additional rights set forth in FAR 52.227-19, Commercial Computer Software License (December 2007). Oracle USA, Inc., 500 Oracle Parkway, Redwood City, CA 94065.
-.PP
-This software is developed for general use in a variety of information management applications. It is not developed or intended for use in any inherently dangerous applications, including applications which may create a risk of personal injury. If you use this software in dangerous applications, then you shall be responsible to take all appropriate fail-safe, backup, redundancy, and other measures to ensure the safe use of this software. Oracle Corporation and its affiliates disclaim any liability for any damages caused by use of this software in dangerous applications.
-.PP
-Oracle is a registered trademark of Oracle Corporation and/or its affiliates. MySQL is a trademark of Oracle Corporation and/or its affiliates, and shall not be used without Oracle's express written authorization. Other names may be trademarks of their respective owners.
-.PP
-This software and documentation may provide access to or information on content, products, and services from third parties. Oracle Corporation and its affiliates are not responsible for and expressly disclaim all warranties of any kind with respect to third-party content, products, and services. Oracle Corporation and its affiliates will not be responsible for any loss, costs, or damages incurred due to your access to or use of third-party content, products, or services.
-.PP
-This document in any form, software or printed matter, contains proprietary information that is the exclusive property of Oracle. Your access to and use of this material is subject to the terms and conditions of your Oracle Software License and Service Agreement, which has been executed and with which you agree to comply. This document and information contained herein may not be disclosed, copied, reproduced, or distributed to anyone outside Oracle without prior written consent of Oracle or as specifically provided below. This document is not part of your license agreement nor can it be incorporated into any contractual agreement with Oracle or its subsidiaries or affiliates.
-.PP
-This documentation is NOT distributed under a GPL license. Use of this documentation is subject to the following terms:
-.PP
-You may create a printed copy of this documentation solely for your own personal use. Conversion to other formats is allowed as long as the actual content is not altered or edited in any way. You shall not publish or distribute this documentation in any form or on any media, except if you distribute the documentation in a manner similar to how Oracle disseminates it (that is, electronically for download on a Web site with the software) or on a CD-ROM or similar medium, provided however that the documentation is disseminated together with the software on the same medium. Any other use, such as any dissemination of printed copies or use of this documentation, in whole or in part, in another publication, requires the prior written consent from an authorized representative of Oracle. Oracle and/or its affiliates reserve any and all rights to this documentation not expressly granted above.
-.PP
-For more information on the terms of this license, or for details on how the MySQL documentation is built and produced, please visit
-\m[blue]\fBMySQL Contact & Questions\fR\m[].
-.PP
-For additional licensing information, including licenses for third-party libraries used by MySQL products, see
-Preface and Legal Notices.
-.PP
-For help with using MySQL, please visit either the
-\m[blue]\fBMySQL Forums\fR\m[]
-or
-\m[blue]\fBMySQL Mailing Lists\fR\m[]
-where you can discuss your issues with other MySQL users.
-.PP
-For additional documentation on MySQL products, including translations of the documentation into other languages, and downloadable versions in variety of formats, including HTML and PDF formats, see the
-\m[blue]\fBMySQL Documentation Library\fR\m[].
+You should have received a copy of the GNU General Public License along with the program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA or see http://www.gnu.org/licenses/.
 .sp
 .SH "SEE ALSO"
 For more information, please refer to the MySQL Reference Manual,
