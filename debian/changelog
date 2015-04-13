@@ -1,3 +1,51 @@
+mysql-5.5 (5.5.42-1) unstable; urgency=medium
+
+  [ James Page ]
+  * SECURITY UPDATE: Update to 5.5.41 to fix security issues:
+    - http://www.oracle.com/technetwork/topics/security/cpujan2015-1972971.html
+    - CVE-2015-0411, CVE-2015-0382, CVE-2015-0381, CVE-2015-0432,
+      CVE-2014-6568, CVE-2015-0374
+    (Closes: #775881).
+  * d/p/fix-func_math-test-failure.patch: Dropped, included upstream.
+
+  [ Akhil Mohan ]
+  * New upstream version, resolving date driven test failures in certs.
+  * Example option in log_slow_queries d/additions/my.cnf is deprecated
+    and replaced with options slow_query_log_file and slow_query_log.
+    (Closes: #677222)
+
+ -- James Page <james.page@ubuntu.com>  Mon, 09 Feb 2015 14:12:44 +0000
+
+mysql-5.5 (5.5.40-1) unstable; urgency=medium
+
+  * SECURITY UPDATE: Update to 5.5.40 to fix security issues:
+    - http://www.oracle.com/technetwork/topics/security/cpuoct2014-1972960.html
+    - CVE-2012-5615, CVE-2014-4274, CVE-2014-4287, CVE-2014-6463,
+      CVE-2014-6464, CVE-2014-6469, CVE-2014-6478, CVE-2014-6484,
+      CVE-2014-6491, CVE-2014-6494, CVE-2014-6495, CVE-2014-6496,
+      CVE-2014-6500, CVE-2014-6505, CVE-2014-6507, CVE-2014-6520,
+      CVE-2014-6530, CVE-2014-6551, CVE-2014-6555, CVE-2014-6559
+    (Closes: #765663, #769337)
+  * d/p/fix-mysqlhotcopy-test-failure.patch: Add return code 255 to the list
+    of allowable return codes for mysqlhotcopy tests.
+  * d/rules: Enable parallel builds.
+
+ -- James Page <james.page@ubuntu.com>  Mon, 24 Nov 2014 16:31:57 +0000
+
+mysql-5.5 (5.5.39-1) unstable; urgency=medium
+
+  * SECURITY UPDATE: Update to 5.5.38 to fix security issues:
+    - http://www.oracle.com/technetwork/topics/security/cpujul2014-1972956.html
+    - CVE-2014-2494
+    - CVE-2014-4207
+    - CVE-2014-4258
+    - CVE-2014-4260
+  * New upstream release.
+  * d/p/fix-func_math-test-failure.patch: Fix for failing func_math test
+    (Closes: #753196, #746883).
+
+ -- James Page <james.page@ubuntu.com>  Mon, 01 Sep 2014 13:20:20 +0100
+
 mysql-5.5 (5.5.37-1) unstable; urgency=medium
 
   * SECURITY UPDATE: Update to 5.5.37 to fix security issues (Closes: #744910)

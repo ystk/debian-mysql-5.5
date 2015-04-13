@@ -143,6 +143,7 @@ row_ins_alloc_sys_fields(
 	const dict_col_t*	col;
 	dfield_t*		dfield;
 	byte*			ptr;
+	uint			len;
 
 	row = node->row;
 	table = node->table;
@@ -151,35 +152,37 @@ row_ins_alloc_sys_fields(
 	ut_ad(row && table && heap);
 	ut_ad(dtuple_get_n_fields(row) == dict_table_get_n_cols(table));
 
-	/* 1. Allocate buffer for row id */
+	/* allocate buffer to hold the needed system created hidden columns. */
+	len = DATA_ROW_ID_LEN + DATA_TRX_ID_LEN + DATA_ROLL_PTR_LEN;
+	ptr = mem_heap_zalloc(heap, len);
 
+	/* 1. Populate row-id */
 	col = dict_table_get_sys_col(table, DATA_ROW_ID);
 
 	dfield = dtuple_get_nth_field(row, dict_col_get_no(col));
-
-	ptr = mem_heap_zalloc(heap, DATA_ROW_ID_LEN);
 
 	dfield_set_data(dfield, ptr, DATA_ROW_ID_LEN);
 
 	node->row_id_buf = ptr;
 
-	/* 3. Allocate buffer for trx id */
+	ptr += DATA_ROW_ID_LEN;
 
+	/* 2. Populate trx id */
 	col = dict_table_get_sys_col(table, DATA_TRX_ID);
 
 	dfield = dtuple_get_nth_field(row, dict_col_get_no(col));
-	ptr = mem_heap_zalloc(heap, DATA_TRX_ID_LEN);
 
 	dfield_set_data(dfield, ptr, DATA_TRX_ID_LEN);
 
 	node->trx_id_buf = ptr;
 
-	/* 4. Allocate buffer for roll ptr */
+	ptr += DATA_TRX_ID_LEN;
+
+	/* 3. Populate roll ptr */
 
 	col = dict_table_get_sys_col(table, DATA_ROLL_PTR);
 
 	dfield = dtuple_get_nth_field(row, dict_col_get_no(col));
-	ptr = mem_heap_zalloc(heap, DATA_ROLL_PTR_LEN);
 
 	dfield_set_data(dfield, ptr, DATA_ROLL_PTR_LEN);
 }
@@ -1699,7 +1702,7 @@ row_ins_scan_sec_index_for_duplicate(
 	do {
 		const rec_t*		rec	= btr_pcur_get_rec(&pcur);
 		const buf_block_t*	block	= btr_pcur_get_block(&pcur);
-		ulint			lock_type;
+		const ulint		lock_type = LOCK_ORDINARY;
 
 		if (page_rec_is_infimum(rec)) {
 
@@ -1708,16 +1711,6 @@ row_ins_scan_sec_index_for_duplicate(
 
 		offsets = rec_get_offsets(rec, index, offsets,
 					  ULINT_UNDEFINED, &heap);
-
-		/* If the transaction isolation level is no stronger than
-		READ COMMITTED, then avoid gap locks. */
-		if (!page_rec_is_supremum(rec)
-		    && thr_get_trx(thr)->isolation_level
-					<= TRX_ISO_READ_COMMITTED) {
-			lock_type = LOCK_REC_NOT_GAP;
-		} else {
-			lock_type = LOCK_ORDINARY;
-		}
 
 		if (allow_duplicates) {
 

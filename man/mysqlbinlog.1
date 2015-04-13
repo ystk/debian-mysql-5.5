@@ -2,12 +2,12 @@
 .\"     Title: \fBmysqlbinlog\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 03/14/2014
+.\"      Date: 01/06/2015
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBMYSQLBINLOG\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBMYSQLBINLOG\FR" "1" "01/06/2015" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -43,7 +43,7 @@ utility\&. You can also use
 \fBmysqlbinlog\fR
 to display the contents of relay log files written by a slave server in a replication setup because relay logs have the same format as binary logs\&. The binary log and relay log are discussed further in
 Section\ \&5.2.4, \(lqThe Binary Log\(rq, and
-Section\ \&16.2.2, \(lqReplication Relay and Status Logs\(rq\&.
+Section\ \&17.2.2, \(lqReplication Relay and Status Logs\(rq\&.
 .PP
 Invoke
 \fBmysqlbinlog\fR
@@ -74,7 +74,7 @@ shell> \fBmysqlbinlog binlog\&.0000003\fR
 .PP
 The output includes events contained in
 binlog\&.000003\&. For statement\-based logging, event information includes the SQL statement, the ID of the server on which it was executed, the timestamp when the statement was executed, how much time it took, and so forth\&. For row\-based logging, the event indicates a row change rather than an SQL statement\&. See
-Section\ \&16.1.2, \(lqReplication Formats\(rq, for information about logging modes\&.
+Section\ \&17.1.2, \(lqReplication Formats\(rq, for information about logging modes\&.
 .PP
 Events are preceded by header comments that provide additional information\&. For example:
 .sp
@@ -92,7 +92,7 @@ Events are preceded by header comments that provide additional information\&. Fo
 .PP
 In the first line, the number following
 at
-indicates the starting position of the event in the binary log file\&.
+indicates the file offset, or starting position, of the event in the binary log file\&.
 .PP
 The second line starts with a date and time indicating when the statement started on the server where the event originated\&. For replication, this timestamp is propagated to slave servers\&.
 server id
@@ -107,6 +107,22 @@ exec_time
 is the time spent executing the event, on a master server\&. On a slave, it is the difference of the end execution time on the slave minus the beginning execution time on the master\&. The difference serves as an indicator of how much replication lags behind the master\&.
 error_code
 indicates the result from executing the event\&. Zero means that no error occurred\&.
+.if n \{\
+.sp
+.\}
+.RS 4
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+.ps +1
+\fBNote\fR
+.ps -1
+.br
+.PP
+When using event groups, the file offsets of events may be grouped together and the comments of events may be grouped together\&. Do not mistake these grouped events for blank file offsets\&.
+.sp .5v
+.RE
 .PP
 The output from
 \fBmysqlbinlog\fR
@@ -128,15 +144,21 @@ option\&. To read remote binary logs, the connection parameter options can be gi
 \fB\-\-read\-from\-remote\-server\fR
 option\&.
 .PP
+When running
+\fBmysqlbinlog\fR
+against a large binary log, be careful that the filesystem has enough space for the resulting files\&. To configure the directory that
+\fBmysqlbinlog\fR
+uses for temporary files, use the
+TMPDIR
+environment variable\&.
+.PP
 \fBmysqlbinlog\fR
 supports the following options, which can be specified on the command line or in the
 [mysqlbinlog]
 and
 [client]
-groups of an option file\&.
-\fBmysqlbinlog\fR
-also supports the options for processing option files described at
-Section\ \&4.2.3.4, \(lqCommand-Line Options that Affect Option-File Handling\(rq\&.
+groups of an option file\&. For information about option files used by MySQL programs, see
+Section\ \&4.2.6, \(lqUsing Option Files\(rq\&.
 .sp
 .RS 4
 .ie n \{\
@@ -301,7 +323,7 @@ the section called \(lqMYSQLBINLOG ROW EVENT DISPLAY\(rq\&.
 .\" bind-address option: mysqlbinlog
 \fB\-\-bind\-address=\fR\fB\fIip_address\fR\fR
 .sp
-On a computer having multiple network interfaces, this option can be used to select which interface is employed when connecting to the MySQL server\&.
+On a computer having multiple network interfaces, use this option to select which interface to use for connecting to the MySQL server\&.
 .sp
 This option is supported beginning with MySQL 5\&.5\&.8\&.
 .RE
@@ -563,6 +585,70 @@ This option was added in MySQL 5\&.5\&.10\&.
 .sp -1
 .IP \(bu 2.3
 .\}
+.\" mysqlbinlog: defaults-extra-file option
+.\" defaults-extra-file option: mysqlbinlog
+\fB\-\-defaults\-extra\-file=\fR\fB\fIfile_name\fR\fR
+.sp
+Read this option file after the global option file but (on Unix) before the user option file\&. If the file does not exist or is otherwise inaccessible, an error occurs\&. Before MySQL 5\&.5\&.8,
+\fIfile_name\fR
+must be the full path name to the file\&. As of MySQL 5\&.5\&.8, the name is interpreted relative to the current directory if given as a relative path name\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+.\" mysqlbinlog: defaults-file option
+.\" defaults-file option: mysqlbinlog
+\fB\-\-defaults\-file=\fR\fB\fIfile_name\fR\fR
+.sp
+Use only the given option file\&. If the file does not exist or is otherwise inaccessible, an error occurs\&. Before MySQL 5\&.5\&.8,
+\fIfile_name\fR
+must be the full path name to the file\&. As of MySQL 5\&.5\&.8, the name is interpreted relative to the current directory if given as a relative path name\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+.\" mysqlbinlog: defaults-group-suffix option
+.\" defaults-group-suffix option: mysqlbinlog
+\fB\-\-defaults\-group\-suffix=\fR\fB\fIstr\fR\fR
+.sp
+Read not only the usual option groups, but also groups with the usual names and a suffix of
+\fIstr\fR\&. For example,
+\fBmysqlbinlog\fR
+normally reads the
+[client]
+and
+[mysqlbinlog]
+groups\&. If the
+\fB\-\-defaults\-group\-suffix=_other\fR
+option is given,
+\fBmysqlbinlog\fR
+also reads the
+[client_other]
+and
+[mysqlbinlog_other]
+groups\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 .\" mysqlbinlog: disable-log-bin option
 .\" disable-log-bin option: mysqlbinlog
 \fB\-\-disable\-log\-bin\fR,
@@ -697,6 +783,23 @@ or any other MySQL program\&.
 .sp -1
 .IP \(bu 2.3
 .\}
+.\" mysqlbinlog: no-defaults option
+.\" no-defaults option: mysqlbinlog
+\fB\-\-no\-defaults\fR
+.sp
+Do not read any option files\&. If program startup fails due to reading unknown options from an option file,
+\fB\-\-no\-defaults\fR
+can be used to prevent them from being read\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
 .\" mysqlbinlog: offset option
 .\" offset option: mysqlbinlog
 \fB\-\-offset=\fR\fB\fIN\fR\fR,
@@ -791,6 +894,21 @@ Deprecated\&. Use
 instead\&.
 \fB\-\-position\fR
 was removed in MySQL 5\&.5\&.3\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+.\" mysqlbinlog: print-defaults option
+.\" print-defaults option: mysqlbinlog
+\fB\-\-print\-defaults\fR
+.sp
+Print the program name and all options that it gets from option files\&.
 .RE
 .sp
 .RS 4
@@ -908,6 +1026,26 @@ supplied with the MySQL Cluster distribution, or built from the MySQL Cluster so
 Add a
 SET NAMES \fIcharset_name\fR
 statement to the output to specify the character set to be used for processing log files\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04'\(bu\h'+03'\c
+.\}
+.el \{\
+.sp -1
+.IP \(bu 2.3
+.\}
+.\" mysqlbinlog: shared-memory-base-name option
+.\" shared-memory-base-name option: mysqlbinlog
+\fB\-\-shared\-memory\-base\-name=\fR\fB\fIname\fR\fR
+.sp
+On Windows, the shared\-memory name to use, for connections made using shared memory to a local server\&. The default value is
+MYSQL\&. The shared\-memory name is case sensitive\&.
+.sp
+The server must be started with the
+\fB\-\-shared\-memory\fR
+option to enable shared\-memory connections\&.
 .RE
 .sp
 .RS 4
@@ -2053,7 +2191,7 @@ for variable\-length strings\&.
 .sp -1
 .IP \(bu 2.3
 .\}
-For multi\-byte character sets, the maximum number of bytes per character is not present in the binary log, so the length for string types is displayed in bytes rather than in characters\&. For example,
+For multibyte character sets, the maximum number of bytes per character is not present in the binary log, so the length for string types is displayed in bytes rather than in characters\&. For example,
 STRING(4)
 will be used as the data type for values from either of these column types:
 .sp
@@ -2102,7 +2240,7 @@ option can be used to prevent this header from being written\&.
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2015, Oracle and/or its affiliates. All rights reserved.
 .PP
 This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP
