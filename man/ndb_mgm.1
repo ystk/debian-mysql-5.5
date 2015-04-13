@@ -2,12 +2,12 @@
 .\"     Title: \fBndb_mgm\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 03/14/2014
+.\"      Date: 01/06/2015
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBNDB_MGM\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBNDB_MGM\FR" "1" "01/06/2015" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -87,7 +87,7 @@ Options Common to MySQL Cluster Programs(1)\&.
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&17.13.\ \&ndb_mgm Options and Variables: MySQL Cluster NDB 7.2
+.B Table\ \&18.72.\ \& This table describes command-line options for the ndb_mgm program
 .TS
 allbox tab(:);
 lB lB lB.
@@ -96,7 +96,7 @@ Format
 T}:T{
 Description
 T}:T{
-Added / Removed
+Added or Removed
 T}
 .T&
 l l l
@@ -110,7 +110,7 @@ T}:T{
 Specify number of tries for connecting to ndb_mgmd (0 = infinite)
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
@@ -121,7 +121,7 @@ T}:T{
 Execute command and exit
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 .TE
 .sp 1
@@ -140,17 +140,11 @@ T}
 \fB\-e \fR\fBcommand\fR
 .TS
 allbox tab(:);
-l l s s
 l l s s.
 T{
 \fBCommand\-Line Format\fR
 T}:T{
 \-\-execute=name
-T}
-T{
-\ \&
-T}:T{
-\-e
 T}
 .TE
 .sp 1
@@ -176,7 +170,7 @@ or
 option works with the
 \fBmysql\fR
 command\-line client\&. See
-Section\ \&4.2.3.1, \(lqUsing Options on the Command Line\(rq\&.
+Section\ \&4.2.4, \(lqUsing Options on the Command Line\(rq\&.
 .if n \{\
 .sp
 .\}
@@ -208,9 +202,7 @@ be enclosed in quotation marks\&. Either single or double quotation marks may be
 .TS
 allbox tab(:);
 l l s s
-l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -218,16 +210,8 @@ T}:T{
 \-\-try\-reconnect=#
 T}
 T{
-\ \&
-T}:T{
-\-t
-T}
-T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -247,11 +231,11 @@ before giving up and reporting an error instead\&.
 Additional information about using
 \fBndb_mgm\fR
 can be found in
-Section\ \&17.5.2, \(lqCommands in the MySQL Cluster Management Client\(rq\&.
+Section\ \&18.5.2, \(lqCommands in the MySQL Cluster Management Client\(rq\&.
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2015, Oracle and/or its affiliates. All rights reserved.
 .PP
 This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP

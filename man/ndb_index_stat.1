@@ -2,12 +2,12 @@
 .\"     Title: \fBndb_index_stat\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 03/14/2014
+.\"      Date: 01/06/2015
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBNDB_INDEX_STAT\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBNDB_INDEX_STAT\FR" "1" "01/06/2015" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -36,9 +36,10 @@ ndb_index_stat \- NDB index statistics utility
 .SH "DESCRIPTION"
 .PP
 \fBndb_index_stat\fR
-\&.\&.\&.
-        Usage
-.PP
+provides per\-fragment statistical information about indexes on
+NDB
+tables\&. This includes cache version and age, number of index entries per partition, and memory consumption by indexes\&.
+Usage.PP
 To obtain basic index statistics about a given
 NDB
 table, invoke
@@ -66,21 +67,70 @@ mytable
 in the
 test
 database:
+.\" ndb_index_stat: interpreting output
+.\" ndb_index_stat: example
 .sp
 .if n \{\
 .RS 4
 .\}
 .nf
 shell> \fBndb_index_stat \-d test mytable\fR
-table:mytable index:PRIMARY fragCount:4
-sampleVersion:2 loadTime:1336751773 sampleCount:0 keyBytes:0
-query cache: valid:1 sampleCount:0 totalBytes:0
-times in ms: save: 12\&.380 sort: 0\&.001
+table:City index:PRIMARY fragCount:2
+sampleVersion:3 loadTime:1399585986 sampleCount:1994 keyBytes:7976
+query cache: valid:1 sampleCount:1994 totalBytes:27916
+times in ms: save: 7\&.133 sort: 1\&.974 sort per sample: 0\&.000
 NDBT_ProgramExit: 0 \- OK
 .fi
 .if n \{\
 .RE
 .\}
+.PP
+sampleVersion
+is the version number of the cache from which the statistics data is taken\&. Running
+\fBndb_index_stat\fR
+with the
+\fB\-\-update\fR
+option causes sampleVersion to be incremented\&.
+.PP
+loadTime
+shows when the cache was last updated\&. This is expressed as seconds since the Unix Epoch\&.
+.PP
+sampleCount
+is the number of index entries found per partition\&. You can estimate the total number of entries by multiplying this by the number of fragments (shown as
+fragCount)\&.
+.PP
+sampleCount
+can be compared with the cardinality of
+SHOW INDEX
+or
+INFORMATION_SCHEMA\&.STATISTICS, although the latter two provide a view of the table as a whole, while
+\fBndb_index_stat\fR
+provides a per\-fragment average\&.
+.PP
+keyBytes
+is the number of bytes used by the index\&. In this example, the primary key is an integer, which requires four bytes for each index, so
+keyBytes
+can be calculated in this case as shown here:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+    keyBytes = sampleCount * (4 bytes per index) = 1994 * 4 = 7976
+.fi
+.if n \{\
+.RE
+.\}
+.PP
+This information can also be obtained using the corresponding column definitions from
+INFORMATION_SCHEMA\&.COLUMNS
+(this requires a MySQL Server and a MySQL client application)\&.
+.PP
+totalBytes
+is the total memory consumed by all indexes on the table, in bytes\&.
+.PP
+Timings shown in the preceding examples are specific to each invocation of
+\fBndb_index_stat\fR\&.
 .PP
 The
 \fB\-\-verbose\fR
@@ -108,8 +158,7 @@ shell>
 .RE
 .\}
 .sp
-        Options
-.PP
+Options.PP
 The following table includes options that are specific to the MySQL Cluster
 \fBndb_index_stat\fR
 utility\&. Additional descriptions are listed following the table\&. For options common to most MySQL Cluster programs (including
@@ -120,7 +169,7 @@ Options Common to MySQL Cluster Programs(1)\&.
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&17.21.\ \&ndb_index_stat Options and Variables: MySQL Cluster NDB 7.2
+.B Table\ \&18.80.\ \& This table describes command-line options for the ndb_index_stat program
 .TS
 allbox tab(:);
 lB lB lB.
@@ -129,7 +178,7 @@ Format
 T}:T{
 Description
 T}:T{
-Added / Removed
+Added or Removed
 T}
 .T&
 l l l
@@ -148,146 +197,146 @@ l l l
 l l l.
 T{
 .PP
-\-\-database=name,
+--database=name,
 .PP
-\-d
+-d
 T}:T{
-Name of the database containing the table\&.
+Name of the database containing the table.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-delete
+--delete
 T}:T{
-Delete index statistics for the given table, stopping any auto\-update
-            previously configured\&.
+Delete index statistics for the given table, stopping any
+      auto-update previously configured.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-update
+--update
 T}:T{
-Update index statistics for the given table, restarting any auto\-update
-            previously configured\&.
+Update index statistics for the given table, restarting any
+      auto-update previously configured.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-dump
+--dump
 T}:T{
-Print the query cache\&.
+Print the query cache.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-query=#
+--query=#
 T}:T{
-Perform a number of random range queries on first key attr (must be int
-            unsigned)\&.
+Perform a number of random range queries on first key attr (must
+      be int unsigned).
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-drop
+--sys-drop
 T}:T{
-Drop any statistics tables and events in NDB kernel (all statistics are
-            lost)
+Drop any statistics tables and events in NDB kernel (all
+      statistics are lost)
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-create
+--sys-create
 T}:T{
-Create all statistics tables and events in NDB kernel, if none of them
-            already exist
+Create all statistics tables and events in NDB kernel, if none of
+      them already exist
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-create\-if\-not\-exist
+--sys-create-if-not-exist
 T}:T{
 Create any statistics tables and events in NDB kernel that do not
-            already exist\&.
+      already exist.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-create\-if\-not\-valid
+--sys-create-if-not-valid
 T}:T{
-Create any statistics tables or events that do not already exist in the
-            NDB kernel\&. after dropping any that are invalid\&.
+Create any statistics tables or events that do not already exist
+      in the NDB kernel. after dropping any that are invalid.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-check
+--sys-check
 T}:T{
-Verify that NDB system index statistics and event tables exist\&.
+Verify that NDB system index statistics and event tables exist.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-skip\-tables
+--sys-skip-tables
 T}:T{
-Do not apply sys\-* options to tables\&.
+Do not apply sys-* options to tables.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-sys\-skip\-events
+--sys-skip-events
 T}:T{
-Do not apply sys\-* options to events\&.
+Do not apply sys-* options to events.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-verbose,
+--verbose,
 .PP
-\-v
+-v
 T}:T{
 Turn on verbose output
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
-\-\-loops=#
+--loops=#
 T}:T{
-Set the number of times to perform a given command\&. Default is 0\&.
+Set the number of times to perform a given command. Default is 0.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 .TE
 .sp 1
 .PP
-\fBndb_index_stat statistics options\fR. The following options are used to generate index statistics\&. They work with a given table and database\&. They cannot be mixed with
-ndb_index_stat system options\&.
+\fBndb_index_stat statistics options\fR. The following options are used to generate index statistics\&. They work with a given table and database\&. They cannot be mixed with system options (see
+ndb_index_stat system options)\&.
 .sp
 .RS 4
 .ie n \{\
@@ -304,8 +353,7 @@ ndb_index_stat system options\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -315,16 +363,8 @@ T}:T{
 \-\-database=name
 T}
 T{
-\ \&
-T}:T{
-\-d
-T}
-T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 string
@@ -335,9 +375,12 @@ T}:T{
 [none]
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -357,7 +400,7 @@ The name of the database that contains the table being queried\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -367,11 +410,8 @@ T}:T{
 \-\-delete
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -379,12 +419,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -404,7 +447,7 @@ Delete the index statistics for the given table, stopping any auto\-update that 
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -414,11 +457,8 @@ T}:T{
 \-\-update
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -426,16 +466,19 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
-Update the index statistics for the given table, and restart any auto\-update that previously configured\&.
+Update the index statistics for the given table, and restart any auto\-update that was previously configured\&.
 .RE
 .sp
 .RS 4
@@ -451,7 +494,7 @@ Update the index statistics for the given table, and restart any auto\-update th
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -461,11 +504,8 @@ T}:T{
 \-\-dump
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -473,12 +513,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -498,7 +541,7 @@ Dump the contents of the query cache\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -508,11 +551,8 @@ T}:T{
 \-\-query=#
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 numeric
@@ -523,17 +563,22 @@ T}:T{
 0
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-0 \&.\&. MAX_INT
+0
+T}
+:T{
+\fBMax Value\fR
+T}:T{
+MAX_INT
 T}
 .TE
 .sp 1
 Perform random range queries on first key attribute (must be int unsigned)\&.
 .RE
 .PP
-\fBndb_index_stat system options\fR. The following options are used to generate and update the statistics tables in the NDB kernel\&. They cannot be mixed with
-ndb_index_stat statistics options\&.
+\fBndb_index_stat system options\fR. The following options are used to generate and update the statistics tables in the NDB kernel\&. None of these options can be mixed with statistics options (see
+ndb_index_stat statistics options)\&.
 .sp
 .RS 4
 .ie n \{\
@@ -548,7 +593,7 @@ ndb_index_stat statistics options\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -558,11 +603,8 @@ T}:T{
 \-\-sys\-drop
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -570,12 +612,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -596,7 +641,7 @@ Drop all statistics tables and events in the NDB kernel\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -606,11 +651,8 @@ T}:T{
 \-\-sys\-create
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -618,12 +660,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -643,7 +688,7 @@ Create all statistics tables and events in the NDB kernel\&. This works only if 
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -653,11 +698,8 @@ T}:T{
 \-\-sys\-create\-if\-not\-exist
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -665,12 +707,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -690,7 +735,7 @@ Create any NDB system statistics tables or events (or both) that do not already 
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -700,11 +745,8 @@ T}:T{
 \-\-sys\-create\-if\-not\-valid
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -712,12 +754,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -737,7 +782,7 @@ Create any NDB system statistics tables or events that do not already exist, aft
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -747,11 +792,8 @@ T}:T{
 \-\-sys\-check
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -759,12 +801,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -784,7 +829,7 @@ Verify that all required system statistics tables and events exist in the NDB ke
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -794,11 +839,8 @@ T}:T{
 \-\-sys\-skip\-tables
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -806,12 +848,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -833,7 +878,7 @@ options to any statistics tables\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -843,11 +888,8 @@ T}:T{
 \-\-sys\-skip\-events
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -855,12 +897,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -882,8 +927,7 @@ options to any events\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -893,16 +937,8 @@ T}:T{
 \-\-verbose
 T}
 T{
-\ \&
-T}:T{
-\-v
-T}
-T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -910,12 +946,15 @@ T}
 :T{
 \fBDefault\fR
 T}:T{
-true
+false
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-\&.\&.
+T}
+:T{
+\fBMax Value\fR
+T}:T{
 T}
 .TE
 .sp 1
@@ -935,7 +974,7 @@ Turn on verbose output\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
+l l l s
 ^ l l s
 ^ l l s
 ^ l l s.
@@ -945,11 +984,8 @@ T}:T{
 \-\-loops=#
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 numeric
@@ -960,9 +996,14 @@ T}:T{
 0
 T}
 :T{
-\fBRange\fR
+\fBMin Value\fR
 T}:T{
-0 \&.\&. MAX_INT
+0
+T}
+:T{
+\fBMax Value\fR
+T}:T{
+MAX_INT
 T}
 .TE
 .sp 1
@@ -971,7 +1012,7 @@ Repeat commands this number of times (for use in testing)\&.
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2015, Oracle and/or its affiliates. All rights reserved.
 .PP
 This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP

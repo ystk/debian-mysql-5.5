@@ -2,12 +2,12 @@
 .\"     Title: \fBndb_blob_tool\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 03/14/2014
+.\"      Date: 01/06/2015
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBNDB_BLOB_TOOL\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBNDB_BLOB_TOOL\FR" "1" "01/06/2015" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -94,7 +94,7 @@ Options Common to MySQL Cluster Programs(1)\&.
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&17.14.\ \&ndb_blob_tool Options and Variables: MySQL Cluster NDB 7.2
+.B Table\ \&18.73.\ \& This table describes command-line options for the ndb_blob_tool program
 .TS
 allbox tab(:);
 lB lB lB.
@@ -103,7 +103,7 @@ Format
 T}:T{
 Description
 T}:T{
-Added / Removed
+Added or Removed
 T}
 .T&
 l l l
@@ -118,7 +118,7 @@ T}:T{
 Check for orphan blob parts
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
@@ -126,10 +126,10 @@ T{
 .PP
 -d
 T}:T{
-Database to find the table in\&.
+Database to find the table in.
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
@@ -138,7 +138,7 @@ T}:T{
 Delete orphan blob parts
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
@@ -147,7 +147,7 @@ T}:T{
 Write orphan keys to specified file
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 T{
 .PP
@@ -158,7 +158,7 @@ T}:T{
 Verbose output
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 .TE
 .sp 1
@@ -177,8 +177,7 @@ T}
 .TS
 allbox tab(:);
 l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -186,11 +185,8 @@ T}:T{
 \-\-check\-orphans
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -220,9 +216,7 @@ Check for orphaned BLOB parts in MySQL Cluster tables\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -230,16 +224,8 @@ T}:T{
 \-\-database=db_name
 T}
 T{
-\ \&
-T}:T{
-\-d
-T}
-T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 string
@@ -268,8 +254,7 @@ Specify the database to find the table in\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -277,11 +262,8 @@ T}:T{
 \-\-delete\-orphans
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -310,8 +292,7 @@ Remove orphaned BLOB parts from MySQL Cluster tables\&.
 .TS
 allbox tab(:);
 l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -319,11 +300,8 @@ T}:T{
 \-\-dump\-file=file
 T}
 T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 file name
@@ -353,9 +331,7 @@ Writes a list of orphaned BLOB column parts to
 .TS
 allbox tab(:);
 l l s s
-l l s s
-l l s s
-^ l l s
+l l l s
 ^ l l s.
 T{
 \fBCommand\-Line Format\fR
@@ -363,16 +339,8 @@ T}:T{
 \-\-verbose
 T}
 T{
-\ \&
-T}:T{
-\-v
-T}
-T{
-\ \&
-T}:T{
 \fBPermitted Values\fR
-T}
-:T{
+T}:T{
 \fBType\fR
 T}:T{
 boolean
@@ -386,8 +354,7 @@ T}
 .sp 1
 Provide extra information in the tool\*(Aqs output regarding its progress\&.
 .RE
-        Example
-.PP
+Example.PP
 First we create an
 NDB
 table in the
@@ -479,11 +446,11 @@ BLOB
 column parts are created by
 NDB
 for this column\&. See
-Section\ \&11.6, \(lqData Type Storage Requirements\(rq, for more information\&.
+Section\ \&11.7, \(lqData Type Storage Requirements\(rq, for more information\&.
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2015, Oracle and/or its affiliates. All rights reserved.
 .PP
 This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP

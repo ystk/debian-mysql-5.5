@@ -2,12 +2,12 @@
 .\"     Title: \fBndb_drop_index\fR
 .\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
 .\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
-.\"      Date: 03/14/2014
+.\"      Date: 01/06/2015
 .\"    Manual: MySQL Database System
 .\"    Source: MySQL 5.5
 .\"  Language: English
 .\"
-.TH "\FBNDB_DROP_INDEX\FR" "1" "03/14/2014" "MySQL 5\&.5" "MySQL Database System"
+.TH "\FBNDB_DROP_INDEX\FR" "1" "01/06/2015" "MySQL 5\&.5" "MySQL Database System"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -40,7 +40,7 @@ drops the specified index from an
 NDB
 table\&.
 \fIIt is recommended that you use this utility only as an example for writing NDB API applications\fR\(emsee the Warning later in this section for details\&.
-        Usage
+Usage
 .sp
 .if n \{\
 .RS 4
@@ -68,7 +68,7 @@ Options Common to MySQL Cluster Programs(1)\&.
 .nr an-no-space-flag 1
 .nr an-break-flag 1
 .br
-.B Table\ \&17.18.\ \&ndb_drop_index Options and Variables: MySQL Cluster NDB 7.2
+.B Table\ \&18.77.\ \& This table describes command-line options for the ndb_drop_index program
 .TS
 allbox tab(:);
 lB lB lB.
@@ -77,20 +77,20 @@ Format
 T}:T{
 Description
 T}:T{
-Added / Removed
+Added or Removed
 T}
 .T&
 l l l.
 T{
 .PP
-\-\-database=dbname,
+--database=dbname,
 .PP
-\-d
+-d
 T}:T{
 Name of the database in which the table is found
 T}:T{
 .PP
-All MySQL 5\&.5 based releases
+All MySQL 5.5 based releases
 T}
 .TE
 .sp 1
@@ -123,7 +123,7 @@ Enter password: *******
 Reading table information for completion of table and column names
 You can turn off this feature to get a quicker startup with \-A
 Welcome to the MySQL monitor\&.  Commands end with ; or \eg\&.
-Your MySQL connection id is 7 to server version: 5\&.5\&.36\-ndb\-7\&.2\&.16
+Your MySQL connection id is 7 to server version: 5\&.5\&.41\-ndb\-7\&.2\&.19
 Type \*(Aqhelp;\*(Aq or \*(Aq\eh\*(Aq for help\&. Type \*(Aq\ec\*(Aq to clear the buffer\&.
 mysql> \fBSHOW TABLES;\fR
 +\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-+
@@ -154,7 +154,7 @@ utility (see
 .SH "COPYRIGHT"
 .br
 .PP
-Copyright \(co 1997, 2014, Oracle and/or its affiliates. All rights reserved.
+Copyright \(co 1997, 2015, Oracle and/or its affiliates. All rights reserved.
 .PP
 This documentation is free software; you can redistribute it and/or modify it only under the terms of the GNU General Public License as published by the Free Software Foundation; version 2 of the License.
 .PP
