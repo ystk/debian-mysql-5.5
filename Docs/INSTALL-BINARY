@@ -13,11 +13,11 @@
    distributions, see Section 2.3, "Installing MySQL on
    Microsoft Windows."
 
-   To obtain MySQL, see Section 2.1.3, "How to Get MySQL."
+   To obtain MySQL, see Section 2.1.2, "How to Get MySQL."
 
    MySQL compressed tar file binary distributions have names of
    the form mysql-VERSION-OS.tar.gz, where VERSION is a number
-   (for example, 5.5.42), and OS indicates the type of operating
+   (for example, 5.5.44), and OS indicates the type of operating
    system for which the distribution is intended (for example,
    pc-linux-i686 or winx64).
 
@@ -40,12 +40,25 @@
    If you have previously installed MySQL using your operating
    system native package management system, such as yum or
    apt-get, you may experience problems installing using a
-   native binary. Make sure your previous MySQL previous
-   installation has been removed entirely (using your package
-   management system), and that any additional files, such as
-   old versions of your data files, have also been removed. You
-   should also check the existence of configuration files such
-   as /etc/my.cnf or the /etc/mysql directory have been deleted.
+   native binary. Make sure your previous MySQL installation has
+   been removed entirely (using your package management system),
+   and that any additional files, such as old versions of your
+   data files, have also been removed. You should also check the
+   existence of configuration files such as /etc/my.cnf or the
+   /etc/mysql directory have been deleted.
+   Warning
+
+   MySQL has a dependency on the libaio library. The
+   mysql_install_db and subsequent mysqld_safe steps will fail
+   if this library is not installed locally. If necessary,
+   install it using the appropriate package manager. For
+   example, on Yum-based systems:
+shell> yum search libaio  # search for info
+shell> yum install libaio # install library
+
+   Or, on APT-based systems:
+shell> apt-cache search libaio # search for info
+shell> apt-get install libaio1 # install library
 
    If you run into problems and need to file a bug report,
    please use the instructions in Section 1.7, "How to Report
@@ -85,11 +98,10 @@ shell> cd /usr/local
 shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
 shell> ln -s full-path-to-mysql-VERSION-OS mysql
 shell> cd mysql
-shell> chown -R mysql .
-shell> chgrp -R mysql .
-shell> scripts/mysql_install_db --user=mysql
 shell> chown -R root .
 shell> chown -R mysql data
+shell> chgrp -R mysql .
+shell> scripts/mysql_install_db --user=mysql
 # Next command is optional
 shell> cp support-files/my-medium.cnf /etc/my.cnf
 shell> bin/mysqld_safe --user=mysql &
@@ -141,7 +153,7 @@ Obtain and Unpack the Distribution
 shell> cd /usr/local
 
    Obtain a distribution file using the instructions in Section
-   2.1.3, "How to Get MySQL." For a given release, binary
+   2.1.2, "How to Get MySQL." For a given release, binary
    distributions for all platforms are built from the same MySQL
    source distribution.
 
@@ -273,13 +285,13 @@ Additional Installation Information
        for you.
 
    MySQL distributions for Windows can be downloaded from
-   http://dev.mysql.com/downloads/. See Section 2.1.3, "How to
+   http://dev.mysql.com/downloads/. See Section 2.1.2, "How to
    Get MySQL."
 
    MySQL for Windows is available in several distribution
    formats, detailed below. Generally speaking, you should use
    MySQL Installer. It contains more features and MySQL products
-   than the older MSI, is simpler to use than the ZIP file, and
+   than the older MSI, is simpler to use than the Zip file, and
    you need no additional tools to get MySQL up and running.
    MySQL Installer automatically installs MySQL Server and
    additional MySQL products, creates an options file, starts
@@ -405,8 +417,8 @@ Additional Installation Information
    Package."
 
      * MySQL Installer: This package has a file name similar to
-       mysql-installer-community-5.5.42.0.msi or
-       mysql-installer-commercial-5.5.42.0.msi, and utilizes
+       mysql-installer-community-5.5.44.0.msi or
+       mysql-installer-commercial-5.5.44.0.msi, and utilizes
        MSIs to automatically install MySQL server and other
        products. It will download and apply updates to itself,
        and for each of the installed products. It also
@@ -430,16 +442,16 @@ Additional Installation Information
        Microsoft Windows Using MySQL Installer."
 
      * The Complete Package: This package has a file name
-       similar to mysql-5.5.42-win32.msi or
-       mysql-5.5.42-winx64.zip, and contains all files needed
+       similar to mysql-5.5.44-win32.msi or
+       mysql-5.5.44-winx64.zip, and contains all files needed
        for a complete Windows installation, including the
        Configuration Wizard. This package includes optional
        components such as the embedded server and benchmark
        suite.
 
      * The Noinstall Archive: This package has a file name
-       similar to mysql-5.5.42-win32.zip or
-       mysql-5.5.42-winx64.zip, and contains all the files found
+       similar to mysql-5.5.44-win32.zip or
+       mysql-5.5.44-winx64.zip, and contains all the files found
        in the Complete install package, with the exception of
        the GUI. This package does not include an automated
        installer, and must be manually installed and configured.
@@ -1854,7 +1866,7 @@ Common Errors
    installation directory. In a default installation it contains
    C:\Program Files\MySQL\MySQL Server 5.5\. The Version string
    contains the release number. For example, for an installation
-   of MySQL Server 5.5.42, the key contains a value of 5.5.42.
+   of MySQL Server 5.5.44, the key contains a value of 5.5.44.
 
    These registry keys are used to help external tools identify
    the installed location of the MySQL server, preventing a
@@ -1946,7 +1958,7 @@ the MSI Package
    from the command line (or within a script), you need to use
    the msiexec.exe tool. For example, to perform a quiet
    installation (which shows no dialog boxes or progress):
-shell> msiexec /i mysql-5.5.42.msi /quiet
+shell> msiexec /i mysql-5.5.44.msi /quiet
 
    The /i indicates that you want to perform an installation.
    The /quiet option indicates that you want no interactive
@@ -1956,7 +1968,7 @@ shell> msiexec /i mysql-5.5.42.msi /quiet
    installation, and the dialog boxes providing information on
    the installation and registration of MySQL, use /passive mode
    instead of /quiet:
-shell> msiexec /i mysql-5.5.42.msi /passive
+shell> msiexec /i mysql-5.5.44.msi /passive
 
    Regardless of the mode of the installation, installing the
    package in this manner performs a 'Typical' installation, and
@@ -1964,7 +1976,7 @@ shell> msiexec /i mysql-5.5.42.msi /passive
 
    You can also use this method to uninstall MySQL by using the
    /uninstall or /x options:
-shell> msiexec /x mysql-5.5.42.msi /uninstall
+shell> msiexec /x mysql-5.5.44.msi /uninstall
 
    To install MySQL and configure a MySQL instance from the
    command line, see Section 2.3.6.13, "MySQL Server Instance
@@ -2578,7 +2590,7 @@ from the Command Line
    to 1234.
 shell> MySQLInstanceConfig.exe -i -q "-lC:\mysql_install_log.txt" »
    "-nMySQL Server 5.5" "-pC:\Program Files\MySQL\MySQL Server 5.5" -v
-5.5.42 »
+5.5.44 »
    "-tmy-template.ini" "-cC:\mytest.ini" ServerType=DEVELOPMENT Databa
 seType=MIXED »
    ConnectionUsage=DSS Port=3311 ServiceName=MySQL55 RootPassword=1234
@@ -2593,7 +2605,7 @@ Date: 2009-10-27 17:07:21
 Installing service ...
 
 Product Name:         MySQL Server 5.5
-Version:              5.5.42
+Version:              5.5.44
 Installation Path:    C:\Program Files\MySQL\MySQL Server 5.5\
 
 Creating configuration file C:\mytest.ini using template my-template.i
@@ -2871,7 +2883,7 @@ InnoDB: foreign key constraint system tables created
    something like this, which indicates that the server is ready
    to service client connections:
 mysqld: ready for connections
-Version: '5.5.42'  socket: ''  port: 3306
+Version: '5.5.44'  socket: ''  port: 3306
 
    The server continues to write to the console any further
    diagnostic output it produces. You can open a new console
@@ -3446,7 +3458,7 @@ C:\> C:\mysql\bin\mysqld --remove
        products.
 
      * MySQL Workbench: Manages the MySQL server and edits SQL
-       queries.
+       statements.
 
      * MySQL Notifier: Starts, stops, or restarts the MySQL
        server, and monitors its status.
@@ -3470,9 +3482,14 @@ C:\> C:\mysql\bin\mysqld --remove
    some client programs to make sure that you can connect to the
    server and that it is operating properly. Make sure that the
    server is running (see Section 2.3.7.4, "Starting the Server
-   for the First Time"), and then issue the following commands
-   to verify that you can retrieve information from the server.
-   You may need to specify directory different from C:\mysql\bin
+   for the First Time"). If you are running a version of Windows
+   that supports services, you can set up the MySQL server to
+   run automatically when Windows starts (see Section 2.3.7.7,
+   "Starting MySQL as a Windows Service").
+
+   With the server running, issue the following commands to
+   verify that you can retrieve information from the server. You
+   may need to specify a directory different from C:\mysql\bin
    on the command line. If you installed MySQL using MySQL
    Installer, the default directory is C:\Program
    Files\MySQL\MySQL Server 5.5, and the mysql and mysqlshow
@@ -3499,13 +3516,12 @@ C:\> C:\mysql\bin\mysqlshow
    such as mysql) may not work if the correct MySQL account does
    not exist. For example, the program may fail with an error,
    or you may not be able to view all databases. If you
-   installed MySQL using MySQL Installer, then the root user
-   will have been created automatically with the password you
+   installed MySQL using MySQL Installer, the root user will
+   have been created automatically with the password you
    supplied. In this case, you should use the -u root and -p
-   options. (You will also need to use the -u root and -p
-   options if you have already secured the initial MySQL
-   accounts.) With -p, you will be prompted for the root
-   password. For example:
+   options. (You must use those options if you have already
+   secured the initial MySQL accounts.) With -p, the client
+   program prompts for the root password. For example:
 C:\> C:\mysql\bin\mysqlshow -u root -p
 Enter password: (enter root password here)
 +--------------------+
@@ -3559,8 +3575,3 @@ C:\> C:\mysql\bin\mysql -e "SELECT Host,Db,User FROM mysql.db"
    4.5.6, "mysqlshow --- Display Database, Table, and Column
    Information," and Section 4.5.1, "mysql --- The MySQL
    Command-Line Tool."
-
-   If you are running a version of Windows that supports
-   services, you can set up the MySQL server to run
-   automatically when Windows starts. See Section 2.3.7.7,
-   "Starting MySQL as a Windows Service."
