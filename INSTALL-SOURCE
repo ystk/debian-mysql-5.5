@@ -36,13 +36,13 @@ Chapter 2 Installing and Upgrading MySQL
        our current source tree for those who want to see our
        most recent developments and help us test new code. To
        determine which version and type of distribution you
-       should use, see Section 2.1.2, "Which MySQL Version and
+       should use, see Section 2.1.1, "Which MySQL Version and
        Distribution to Install."
 
     3. Download the distribution that you want to install.
-       For instructions, see Section 2.1.3, "How to Get MySQL."
+       For instructions, see Section 2.1.2, "How to Get MySQL."
        To verify the integrity of the distribution, use the
-       instructions in Section 2.1.4, "Verifying Package
+       instructions in Section 2.1.3, "Verifying Package
        Integrity Using MD5 Checksums or GnuPG."
 
     4. Install the distribution.
@@ -100,22 +100,22 @@ Chapter 2 Installing and Upgrading MySQL
 
      * Microsoft Windows
        For instructions on installing MySQL on Microsoft
-       Windows, using either a Zipped binary or an MSI package,
-       see Section 2.3, "Installing MySQL on Microsoft Windows."
-       For information on using the MySQL Server Instance Config
-       Wizard, see Section 2.3.6, "MySQL Server Instance
-       Configuration Wizard."
+       Windows, using either the MySQL Installer standalone MSI,
+       or Zipped binary, see Section 2.3, "Installing MySQL on
+       Microsoft Windows."
+       For information about managing MySQL instances, see
+       Section 2.3.4, "MySQL Notifier."
        For details and instructions on building MySQL from
        source code using Microsoft Visual Studio, see Section
        2.9, "Installing MySQL from Source."
 
-     * Mac OS X
-       For installation on Mac OS X, including using both the
-       binary package and native PKG formats, see Section 2.4,
-       "Installing MySQL on Mac OS X."
-       For information on making use of the MySQL Startup Item
-       to automatically start and stop MySQL, see Section 2.4.4,
-       "Installing the MySQL Startup Item."
+     * OS X
+       For installation on OS X, including using both the binary
+       package and native PKG formats, see Section 2.4,
+       "Installing MySQL on OS X."
+       For information on making use of an OS X Launch Daemon to
+       automatically start and stop MySQL, see Section 2.4.3,
+       "Installing a MySQL Launch Daemon."
        For information on the MySQL Preference Pane, see Section
        2.4.5, "Installing and Using the MySQL Preference Pane."
 
@@ -131,15 +131,13 @@ Chapter 2 Installing and Upgrading MySQL
    build MySQL from source, use the instructions in Section 2.9,
    "Installing MySQL from Source."
 
-2.1.1 Operating Systems Supported by MySQL Community Server
+2.1.1 Which MySQL Version and Distribution to Install
 
    MySQL is available on a number of operating systems and
    platforms. For information about those platforms that are
    officially supported, see
    http://www.mysql.com/support/supportedplatforms/database.html
    on the MySQL Web site.
-
-2.1.2 Which MySQL Version and Distribution to Install
 
    When preparing to install MySQL, you should decide which
    version to use, and which distribution format (binary or
@@ -212,10 +210,10 @@ Chapter 2 Installing and Upgrading MySQL
    system. For most use cases, a binary distribution is the
    right choice. Binary distributions are available in native
    format for many platforms, such as RPM packages for Linux, or
-   DMG packages for Mac OS X. Distributions are also available
-   in more generic formats such as Zip archives or compressed
-   tar files. On Windows, you can use the MySQL Installer to
-   install a binary distribution.
+   DMG packages for OS X. Distributions are also available in
+   more generic formats such as Zip archives or compressed tar
+   files. On Windows, you can use the MySQL Installer to install
+   a binary distribution.
 
    Under some circumstances, you may be better off installing
    MySQL from a source distribution:
@@ -262,7 +260,7 @@ Chapter 2 Installing and Upgrading MySQL
      * Source distributions contain more tests and examples than
        binary distributions.
 
-2.1.3 How to Get MySQL
+2.1.2 How to Get MySQL
 
    Check our downloads page at http://dev.mysql.com/downloads/
    for information about the current version of MySQL and for
@@ -275,7 +273,7 @@ Chapter 2 Installing and Upgrading MySQL
    To obtain the latest development source, see Section 2.9.3,
    "Installing MySQL Using a Development Source Tree."
 
-2.1.4 Verifying Package Integrity Using MD5 Checksums or GnuPG
+2.1.3 Verifying Package Integrity Using MD5 Checksums or GnuPG
 
    After you have downloaded the MySQL package that suits your
    needs and before you attempt to install it, you should make
@@ -296,7 +294,7 @@ Chapter 2 Installing and Upgrading MySQL
    match, first try to download the respective package one more
    time, perhaps from another mirror site.
 
-2.1.4.1 Verifying the MD5 Checksum
+2.1.3.1 Verifying the MD5 Checksum
 
    After you have downloaded a MySQL package, you should make
    sure that its MD5 checksum matches the one provided on the
@@ -322,12 +320,12 @@ Chapter 2 Installing and Upgrading MySQL
    Microsoft Windows examples will assume the name md5.exe.
 
    Linux and Microsoft Windows examples:
-shell> md5sum mysql-standard-5.5.42-linux-i686.tar.gz
-aaab65abbec64d5e907dcd41b8699945  mysql-standard-5.5.42-linux-i686.tar
+shell> md5sum mysql-standard-5.5.44-linux-i686.tar.gz
+aaab65abbec64d5e907dcd41b8699945  mysql-standard-5.5.44-linux-i686.tar
 .gz
 
-shell> md5.exe mysql-installer-community-5.5.42.msi
-aaab65abbec64d5e907dcd41b8699945  mysql-installer-community-5.5.42.msi
+shell> md5.exe mysql-installer-community-5.5.44.msi
+aaab65abbec64d5e907dcd41b8699945  mysql-installer-community-5.5.44.msi
 
    You should verify that the resulting checksum (the string of
    hexadecimal digits) matches the one displayed on the download
@@ -339,7 +337,7 @@ aaab65abbec64d5e907dcd41b8699945  mysql-installer-community-5.5.42.msi
    files that are contained inside of the archive. In other
    words, verify the file before extracting its contents.
 
-2.1.4.2 Signature Checking Using GnuPG
+2.1.3.2 Signature Checking Using GnuPG
 
    Another method of verifying the integrity and authenticity of
    a package is to use cryptographic signatures. This is more
@@ -488,7 +486,7 @@ gpg:         new signatures: 53
 shell> rpm --import mysql_pubkey.asc
 
    If you experience problems or require RPM specific
-   information, see Section 2.1.4.4, "Signature Checking Using
+   information, see Section 2.1.3.4, "Signature Checking Using
    RPM."
 
    After you have downloaded and imported the public build key,
@@ -500,8 +498,8 @@ shell> rpm --import mysql_pubkey.asc
 
    Table 2.1 MySQL Package and Signature Files for Source files
        File Type                      File Name
-   Distribution file mysql-standard-5.5.42-linux-i686.tar.gz
-   Signature file    mysql-standard-5.5.42-linux-i686.tar.gz.asc
+   Distribution file mysql-standard-5.5.44-linux-i686.tar.gz
+   Signature file    mysql-standard-5.5.44-linux-i686.tar.gz.asc
 
    Make sure that both files are stored in the same directory
    and then run the following command to verify the signature
@@ -510,7 +508,7 @@ shell> gpg --verify package_name.asc
 
    If the downloaded package is valid, you will see a "Good
    signature" similar to:
-shell> gpg --verify mysql-standard-5.5.42-linux-i686.tar.gz.asc
+shell> gpg --verify mysql-standard-5.5.44-linux-i686.tar.gz.asc
 gpg: Signature made Tue 01 Feb 2011 02:38:30 AM CST using DSA key ID 5
 072E1F5
 gpg: Good signature from "MySQL Release Engineering <mysql-build@oss.o
@@ -519,7 +517,7 @@ racle.com>"
    The Good signature message indicates that the file signature
    is valid, when compared to the signature listed on our site.
    But you might also see warnings, like so:
-shell> gpg --verify mysql-standard-5.5.42-linux-i686.tar.gz.asc
+shell> gpg --verify mysql-standard-5.5.44-linux-i686.tar.gz.asc
 gpg: Signature made Wed 23 Jan 2013 02:25:45 AM PST using DSA key ID 5
 072E1F5
 gpg: checking the trustdb
@@ -553,9 +551,9 @@ Primary key fingerprint: A4A9 4068 76FC BD3C 4567  70C8 8C71 8D3B 5072
    See the GPG documentation for more information on how to work
    with public keys.
 
-2.1.4.3 Signature Checking Using Gpg4win for Windows
+2.1.3.3 Signature Checking Using Gpg4win for Windows
 
-   The Section 2.1.4.2, "Signature Checking Using GnuPG" section
+   The Section 2.1.3.2, "Signature Checking Using GnuPG" section
    describes how to verify MySQL downloads using GPG. That guide
    also applies to Microsoft Windows, but another option is to
    use a GUI tool like Gpg4win (http://www.gpg4win.org/). You
@@ -603,8 +601,8 @@ Primary key fingerprint: A4A9 4068 76FC BD3C 4567  70C8 8C71 8D3B 5072
    Table 2.2 MySQL Package and Signature Files for MySQL
    Installer for Microsoft Windows
        File Type                    File Name
-   Distribution file mysql-installer-community-5.5.42.msi
-   Signature file    mysql-installer-community-5.5.42.msi.asc
+   Distribution file mysql-installer-community-5.5.44.msi
+   Signature file    mysql-installer-community-5.5.44.msi.asc
 
    Make sure that both files are stored in the same directory
    and then run the following command to verify the signature
@@ -630,11 +628,11 @@ Primary key fingerprint: A4A9 4068 76FC BD3C 4567  70C8 8C71 8D3B 5072
    Figure 2.6 The Decrypt/Verify Results: Bad
    The Decrypt/Verify Results: Bad
 
-   The Section 2.1.4.2, "Signature Checking Using GnuPG" section
+   The Section 2.1.3.2, "Signature Checking Using GnuPG" section
    explains why you probably don't see a green Good signature
    result.
 
-2.1.4.4 Signature Checking Using RPM
+2.1.3.4 Signature Checking Using RPM
 
    For RPM packages, there is no separate signature. RPM
    packages have a built-in GPG signature and MD5 checksum. You
@@ -642,8 +640,8 @@ Primary key fingerprint: A4A9 4068 76FC BD3C 4567  70C8 8C71 8D3B 5072
 shell> rpm --checksig package_name.rpm
 
    Example:
-shell> rpm --checksig MySQL-server-5.5.42-0.glibc23.i386.rpm
-MySQL-server-5.5.42-0.glibc23.i386.rpm: md5 gpg OK
+shell> rpm --checksig MySQL-server-5.5.44-0.glibc23.i386.rpm
+MySQL-server-5.5.44-0.glibc23.i386.rpm: md5 gpg OK
 
    Note
 
@@ -665,9 +663,9 @@ shell> rpm --import 5072e1f5.asc
 shell> rpm --import doc/refman/5.5/en/checking-gpg-signature.html
 
    If you need to obtain the MySQL public key, see Section
-   2.1.4.2, "Signature Checking Using GnuPG."
+   2.1.3.2, "Signature Checking Using GnuPG."
 
-2.1.5 Installation Layouts
+2.1.4 Installation Layouts
 
    The installation layout differs for different installation
    types (for example, native packages, binary tarballs, and
@@ -689,9 +687,9 @@ shell> rpm --import doc/refman/5.5/en/checking-gpg-signature.html
      * Section 2.5.1, "MySQL Installation Layout for Linux RPM
        Packages"
 
-     * Section 2.4.2, "MySQL Installation Layout on Mac OS X"
+     * Section 2.4.2, "MySQL Installation Layout on OS X"
 
-2.1.6 Compiler-Specific Build Characteristics
+2.1.5 Compiler-Specific Build Characteristics
 
    In some cases, the compiler used to build MySQL affects the
    features available for use. The notes in this section apply
@@ -719,11 +717,11 @@ shell> rpm --import doc/refman/5.5/en/checking-gpg-signature.html
    distributions, see Section 2.3, "Installing MySQL on
    Microsoft Windows."
 
-   To obtain MySQL, see Section 2.1.3, "How to Get MySQL."
+   To obtain MySQL, see Section 2.1.2, "How to Get MySQL."
 
    MySQL compressed tar file binary distributions have names of
    the form mysql-VERSION-OS.tar.gz, where VERSION is a number
-   (for example, 5.5.42), and OS indicates the type of operating
+   (for example, 5.5.44), and OS indicates the type of operating
    system for which the distribution is intended (for example,
    pc-linux-i686 or winx64).
 
@@ -746,12 +744,25 @@ shell> rpm --import doc/refman/5.5/en/checking-gpg-signature.html
    If you have previously installed MySQL using your operating
    system native package management system, such as yum or
    apt-get, you may experience problems installing using a
-   native binary. Make sure your previous MySQL previous
-   installation has been removed entirely (using your package
-   management system), and that any additional files, such as
-   old versions of your data files, have also been removed. You
-   should also check the existence of configuration files such
-   as /etc/my.cnf or the /etc/mysql directory have been deleted.
+   native binary. Make sure your previous MySQL installation has
+   been removed entirely (using your package management system),
+   and that any additional files, such as old versions of your
+   data files, have also been removed. You should also check the
+   existence of configuration files such as /etc/my.cnf or the
+   /etc/mysql directory have been deleted.
+   Warning
+
+   MySQL has a dependency on the libaio library. The
+   mysql_install_db and subsequent mysqld_safe steps will fail
+   if this library is not installed locally. If necessary,
+   install it using the appropriate package manager. For
+   example, on Yum-based systems:
+shell> yum search libaio  # search for info
+shell> yum install libaio # install library
+
+   Or, on APT-based systems:
+shell> apt-cache search libaio # search for info
+shell> apt-get install libaio1 # install library
 
    If you run into problems and need to file a bug report,
    please use the instructions in Section 1.7, "How to Report
@@ -791,11 +802,10 @@ shell> cd /usr/local
 shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
 shell> ln -s full-path-to-mysql-VERSION-OS mysql
 shell> cd mysql
-shell> chown -R mysql .
-shell> chgrp -R mysql .
-shell> scripts/mysql_install_db --user=mysql
 shell> chown -R root .
 shell> chown -R mysql data
+shell> chgrp -R mysql .
+shell> scripts/mysql_install_db --user=mysql
 # Next command is optional
 shell> cp support-files/my-medium.cnf /etc/my.cnf
 shell> bin/mysqld_safe --user=mysql &
@@ -847,7 +857,7 @@ Obtain and Unpack the Distribution
 shell> cd /usr/local
 
    Obtain a distribution file using the instructions in Section
-   2.1.3, "How to Get MySQL." For a given release, binary
+   2.1.2, "How to Get MySQL." For a given release, binary
    distributions for all platforms are built from the same MySQL
    source distribution.
 
@@ -980,13 +990,13 @@ Additional Installation Information
        for you.
 
    MySQL distributions for Windows can be downloaded from
-   http://dev.mysql.com/downloads/. See Section 2.1.3, "How to
+   http://dev.mysql.com/downloads/. See Section 2.1.2, "How to
    Get MySQL."
 
    MySQL for Windows is available in several distribution
    formats, detailed below. Generally speaking, you should use
    MySQL Installer. It contains more features and MySQL products
-   than the older MSI, is simpler to use than the ZIP file, and
+   than the older MSI, is simpler to use than the Zip file, and
    you need no additional tools to get MySQL up and running.
    MySQL Installer automatically installs MySQL Server and
    additional MySQL products, creates an options file, starts
@@ -1112,8 +1122,8 @@ Additional Installation Information
    Package."
 
      * MySQL Installer: This package has a file name similar to
-       mysql-installer-community-5.5.42.0.msi or
-       mysql-installer-commercial-5.5.42.0.msi, and utilizes
+       mysql-installer-community-5.5.44.0.msi or
+       mysql-installer-commercial-5.5.44.0.msi, and utilizes
        MSIs to automatically install MySQL server and other
        products. It will download and apply updates to itself,
        and for each of the installed products. It also
@@ -1137,16 +1147,16 @@ Additional Installation Information
        Microsoft Windows Using MySQL Installer."
 
      * The Complete Package: This package has a file name
-       similar to mysql-5.5.42-win32.msi or
-       mysql-5.5.42-winx64.zip, and contains all files needed
+       similar to mysql-5.5.44-win32.msi or
+       mysql-5.5.44-winx64.zip, and contains all files needed
        for a complete Windows installation, including the
        Configuration Wizard. This package includes optional
        components such as the embedded server and benchmark
        suite.
 
      * The Noinstall Archive: This package has a file name
-       similar to mysql-5.5.42-win32.zip or
-       mysql-5.5.42-winx64.zip, and contains all the files found
+       similar to mysql-5.5.44-win32.zip or
+       mysql-5.5.44-winx64.zip, and contains all the files found
        in the Complete install package, with the exception of
        the GUI. This package does not include an automated
        installer, and must be manually installed and configured.
@@ -2561,7 +2571,7 @@ Common Errors
    installation directory. In a default installation it contains
    C:\Program Files\MySQL\MySQL Server 5.5\. The Version string
    contains the release number. For example, for an installation
-   of MySQL Server 5.5.42, the key contains a value of 5.5.42.
+   of MySQL Server 5.5.44, the key contains a value of 5.5.44.
 
    These registry keys are used to help external tools identify
    the installed location of the MySQL server, preventing a
@@ -2653,7 +2663,7 @@ the MSI Package
    from the command line (or within a script), you need to use
    the msiexec.exe tool. For example, to perform a quiet
    installation (which shows no dialog boxes or progress):
-shell> msiexec /i mysql-5.5.42.msi /quiet
+shell> msiexec /i mysql-5.5.44.msi /quiet
 
    The /i indicates that you want to perform an installation.
    The /quiet option indicates that you want no interactive
@@ -2663,7 +2673,7 @@ shell> msiexec /i mysql-5.5.42.msi /quiet
    installation, and the dialog boxes providing information on
    the installation and registration of MySQL, use /passive mode
    instead of /quiet:
-shell> msiexec /i mysql-5.5.42.msi /passive
+shell> msiexec /i mysql-5.5.44.msi /passive
 
    Regardless of the mode of the installation, installing the
    package in this manner performs a 'Typical' installation, and
@@ -2671,7 +2681,7 @@ shell> msiexec /i mysql-5.5.42.msi /passive
 
    You can also use this method to uninstall MySQL by using the
    /uninstall or /x options:
-shell> msiexec /x mysql-5.5.42.msi /uninstall
+shell> msiexec /x mysql-5.5.44.msi /uninstall
 
    To install MySQL and configure a MySQL instance from the
    command line, see Section 2.3.6.13, "MySQL Server Instance
@@ -3285,7 +3295,7 @@ from the Command Line
    to 1234.
 shell> MySQLInstanceConfig.exe -i -q "-lC:\mysql_install_log.txt" »
    "-nMySQL Server 5.5" "-pC:\Program Files\MySQL\MySQL Server 5.5" -v
-5.5.42 »
+5.5.44 »
    "-tmy-template.ini" "-cC:\mytest.ini" ServerType=DEVELOPMENT Databa
 seType=MIXED »
    ConnectionUsage=DSS Port=3311 ServiceName=MySQL55 RootPassword=1234
@@ -3300,7 +3310,7 @@ Date: 2009-10-27 17:07:21
 Installing service ...
 
 Product Name:         MySQL Server 5.5
-Version:              5.5.42
+Version:              5.5.44
 Installation Path:    C:\Program Files\MySQL\MySQL Server 5.5\
 
 Creating configuration file C:\mytest.ini using template my-template.i
@@ -3578,7 +3588,7 @@ InnoDB: foreign key constraint system tables created
    something like this, which indicates that the server is ready
    to service client connections:
 mysqld: ready for connections
-Version: '5.5.42'  socket: ''  port: 3306
+Version: '5.5.44'  socket: ''  port: 3306
 
    The server continues to write to the console any further
    diagnostic output it produces. You can open a new console
@@ -4153,7 +4163,7 @@ C:\> C:\mysql\bin\mysqld --remove
        products.
 
      * MySQL Workbench: Manages the MySQL server and edits SQL
-       queries.
+       statements.
 
      * MySQL Notifier: Starts, stops, or restarts the MySQL
        server, and monitors its status.
@@ -4177,9 +4187,14 @@ C:\> C:\mysql\bin\mysqld --remove
    some client programs to make sure that you can connect to the
    server and that it is operating properly. Make sure that the
    server is running (see Section 2.3.7.4, "Starting the Server
-   for the First Time"), and then issue the following commands
-   to verify that you can retrieve information from the server.
-   You may need to specify directory different from C:\mysql\bin
+   for the First Time"). If you are running a version of Windows
+   that supports services, you can set up the MySQL server to
+   run automatically when Windows starts (see Section 2.3.7.7,
+   "Starting MySQL as a Windows Service").
+
+   With the server running, issue the following commands to
+   verify that you can retrieve information from the server. You
+   may need to specify a directory different from C:\mysql\bin
    on the command line. If you installed MySQL using MySQL
    Installer, the default directory is C:\Program
    Files\MySQL\MySQL Server 5.5, and the mysql and mysqlshow
@@ -4206,13 +4221,12 @@ C:\> C:\mysql\bin\mysqlshow
    such as mysql) may not work if the correct MySQL account does
    not exist. For example, the program may fail with an error,
    or you may not be able to view all databases. If you
-   installed MySQL using MySQL Installer, then the root user
-   will have been created automatically with the password you
+   installed MySQL using MySQL Installer, the root user will
+   have been created automatically with the password you
    supplied. In this case, you should use the -u root and -p
-   options. (You will also need to use the -u root and -p
-   options if you have already secured the initial MySQL
-   accounts.) With -p, you will be prompted for the root
-   password. For example:
+   options. (You must use those options if you have already
+   secured the initial MySQL accounts.) With -p, the client
+   program prompts for the root password. For example:
 C:\> C:\mysql\bin\mysqlshow -u root -p
 Enter password: (enter root password here)
 +--------------------+
@@ -4267,28 +4281,20 @@ C:\> C:\mysql\bin\mysql -e "SELECT Host,Db,User FROM mysql.db"
    Information," and Section 4.5.1, "mysql --- The MySQL
    Command-Line Tool."
 
-   If you are running a version of Windows that supports
-   services, you can set up the MySQL server to run
-   automatically when Windows starts. See Section 2.3.7.7,
-   "Starting MySQL as a Windows Service."
+2.4 Installing MySQL on OS X
 
-2.4 Installing MySQL on Mac OS X
-
-   For a list of supported Mac OS X versions that the MySQL
-   server supports, see
+   For a list of supported OS X versions that the MySQL server
+   supports, see
    http://www.mysql.com/support/supportedplatforms/database.html
    .
 
-   MySQL for Mac OS X is available in a number of different
-   forms:
+   MySQL for OS X is available in a number of different forms:
 
-     * Native Package Installer format, which uses the native
-       Mac OS X installer (DMG) to walk you through the
-       installation of MySQL. For more information, see Section
-       2.4.2, "Installing MySQL on Mac OS X Using Native
-       Packages." You can use the package installer with Mac OS
-       X 10.6 and later, and the package is available for both
-       32-bit and 64-bit architectures. The user you use to
+     * Native Package Installer format, which uses the native OS
+       X installer (DMG) to walk you through the installation of
+       MySQL. For more information, see Section 2.4.2,
+       "Installing MySQL on OS X Using Native Packages." You can
+       use the package installer with OS X. The user you use to
        perform the installation must have administrator
        privileges.
 
@@ -4299,28 +4305,17 @@ C:\> C:\mysql\bin\mysql -e "SELECT Host,Db,User FROM mysql.db"
        install the MySQL server anywhere using this method. For
        more information on using this method, you can use the
        generic instructions for using a tarball, Section 2.2,
-       "Installing MySQL on Unix/Linux Using Generic
-       Binaries."You can use the package installer with Mac OS X
-       10.6 and later, and available for both 32-bit and 64-bit
-       architectures.
+       "Installing MySQL on Unix/Linux Using Generic Binaries."
        In addition to the core installation, the Package
        Installer also includes Section 2.4.4, "Installing the
        MySQL Startup Item" and Section 2.4.5, "Installing and
        Using the MySQL Preference Pane," both of which simplify
        the management of your installation.
 
-     * Mac OS X server includes a version of MySQL as standard.
-       If you want to use a more recent version than that
-       supplied with the Mac OS X server release, you can make
-       use of the package or tar formats. For more information
-       on using the MySQL bundled with Mac OS X, see Section
-       2.4.6, "Using the Bundled MySQL on Mac OS X Server."
+   For additional information on using MySQL on OS X, see
+   Section 2.4.1, "General Notes on Installing MySQL on OS X."
 
-   For additional information on using MySQL on Mac OS X, see
-   Section 2.4.1, "General Notes on Installing MySQL on Mac OS
-   X."
-
-2.4.1 General Notes on Installing MySQL on Mac OS X
+2.4.1 General Notes on Installing MySQL on OS X
 
    You should keep the following issues and notes in mind:
 
@@ -4328,24 +4323,6 @@ C:\> C:\mysql\bin\mysql -e "SELECT Host,Db,User FROM mysql.db"
        daemons, and as of OS X 10.10 (Yosemite), startup items
        do not function. For these reasons, using launchd daemons
        is preferred over startup items.
-
-     * The default location for the MySQL Unix socket is
-       different on Mac OS X and Mac OS X Server depending on
-       the installation type you chose. The following table
-       shows the default locations by installation type.
-       Table 2.8 MySQL Unix Socket Locations on Mac OS X by
-       Installation Type
-
-               Installation Type             Socket Location
-       Package Installer from MySQL       /tmp/mysql.sock
-       Tarball from MySQL                 /tmp/mysql.sock
-       MySQL Bundled with Mac OS X Server /var/mysql/mysql.sock
-       To prevent issues, you should either change the
-       configuration of the socket used within your application
-       (for example, changing php.ini), or you should configure
-       the socket location using a MySQL configuration file and
-       the socket option. For more information, see Section
-       5.1.3, "Server Command Options."
 
      * You may need (or want) to create a specific mysql user to
        own the MySQL directory and data. You can do this through
@@ -4384,7 +4361,8 @@ shell> sudo chgrp wheel MySQLCOM StartupParameters.plist
        between versions. You will need to either copy the data
        directory from the old version to the new version, or
        alternatively specify an alternative datadir value to set
-       location of the data directory.
+       location of the data directory. By default, the MySQL
+       directories are installed under /usr/local/.
 
      * You might want to add aliases to your shell's resource
        file to make it easier to access commonly used programs
@@ -4411,7 +4389,10 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
        directories located in
        /Library/Receipts/mysql-VERSION.pkg.
 
-2.4.2 Installing MySQL on Mac OS X Using Native Packages
+     * Prior to OS X 10.7, MySQL server was bundled with OS X
+       Server.
+
+2.4.2 Installing MySQL on OS X Using Native Packages
 
    The package is located inside a disk image (.dmg) file that
    you first need to mount by double-clicking its icon in the
@@ -4421,10 +4402,10 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
 
    Before proceeding with the installation, be sure to stop all
    running MySQL server instances by using either the MySQL
-   Manager Application (on Mac OS X Server) or mysqladmin
-   shutdown on the command line.
+   Manager Application (on OS X Server) or mysqladmin shutdown
+   on the command line.
 
-   When installing from the package version, you should also
+   When installing from the package version, you can also
    install the MySQL Preference Pane, which will enable you to
    control the startup and execution of your MySQL server from
    System Preferences. For more information, see Section 2.4.5,
@@ -4433,12 +4414,12 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
    When installing using the package installer, the files are
    installed into a directory within /usr/local matching the
    name of the installation version and platform. For example,
-   the installer file mysql-5.5-osx10.7-x86_64.dmg installs
-   MySQL into /usr/local/mysql-5.5-osx10.7-x86_64/ . The
+   the installer file mysql-5.5-osx10.8-x86_64.dmg installs
+   MySQL into /usr/local/mysql-5.5-osx10.8-x86_64/ . The
    following table shows the layout of the installation
    directory.
 
-   Table 2.9 MySQL Installation Layout on Mac OS X
+   Table 2.8 MySQL Installation Layout on OS X
    Directory Contents of Directory
    bin Client programs and the mysqld server
    data Log files, databases
@@ -4461,52 +4442,57 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
 
     1. Download and open the MySQL package installer, which is
        provided on a disk image (.dmg) that includes the main
-       MySQL installation package, the MySQLStartupItem.pkg
-       installation package, and the MySQL.prefPane.
-       Double-click the disk image to open it.
+       MySQL installation package file. Double-click the disk
+       image to open it.
        Figure 2.41 MySQL Package Installer: DMG Contents
        MySQL Package Installer: DMG Contents
 
     2. Double-click the MySQL installer package. It will be
        named according to the version of MySQL you have
        downloaded. For example, if you have downloaded MySQL
-       server 5.5.42, double-click
-       mysql-5.5.42-osx-10.7-x86_64.pkg.
+       server 5.5.44, double-click
+       mysql-5.5.44-osx-10.8-x86_64.pkg.
 
     3. You will be presented with the opening installer dialog.
        Click Continue to begin installation.
        Figure 2.42 MySQL Package Installer: Introduction
        MySQL Package Installer: Introduction
 
-    4. A copy of the installation instructions and other
-       important information relevant to this installation are
-       displayed. Click Continue .
-
-    5. If you have downloaded the community version of MySQL,
+    4. If you have downloaded the community version of MySQL,
        you will be shown a copy of the relevant GNU General
-       Public License. Click Continue .
+       Public License. Click Continue and then Agree to
+       continue.
 
-    6. Select the drive you want to use to install the MySQL
-       Startup Item. The drive must have a valid, bootable, Mac
-       OS X operating system installed. Click Continue.
-       Figure 2.43 MySQL Package Installer: Choose your Hard
-       drive
-       MySQL Package Installer: Choose your Hard drive
+    5. From the Installation Type page you can either click
+       Install to execute the installation wizard using all
+       defaults, click Customize to alter which components to
+       install (MySQL server, Startup Item, Preference Pane --
+       all enabled by default), or click Change Installation
+       Location to change the type of installation for either
+       all users, only the user executing the Installer, or
+       define a custom location.
+       Figure 2.43 MySQL Package Installer: Installation Type
+       MySQL Package Installer: Installation Type
+       Figure 2.44 MySQL Package Installer: Destination Select
+       (Change Installation Location)
+       MySQL Package Installer: Destination Select (Change
+       Installation Location)
+       Figure 2.45 MySQL Package Installer: Customize
+       MySQL Package Installer: Customize
 
-    7. You will be asked to confirm the details of the
-       installation, including the space required for the
-       installation. To change the drive on which the MySQL
-       server is installed, click either Go Back or Change
-       Install Location.... To install the MySQL server, click
-       Install.
+    6. Click Install to begin the installation process.
 
-    8. Once the installation has been completed successfully,
-       you will be shown an Install Succeeded message.
+    7. Once the installation has been completed successfully,
+       you will be shown an Install Succeeded message with a
+       short summary. Now, Close the wizard and begin using the
+       MySQL server.
+       Figure 2.46 MySQL Package Installer: Summary
+       MySQL Package Installer: Summary
 
-   For convenience, you may also want to install the startup
-   item and preference pane. See Section 2.4.4, "Installing the
-   MySQL Startup Item," and Section 2.4.5, "Installing and Using
-   the MySQL Preference Pane."
+   For convenience, you may also want to install a launch daemon
+   and preference pane. See Section 2.4.3, "Installing a MySQL
+   Launch Daemon," and Section 2.4.5, "Installing and Using the
+   MySQL Preference Pane."
 
 2.4.3 Installing a MySQL Launch Daemon
 
@@ -4576,41 +4562,25 @@ list
 
     1. Download and open the MySQL package installer, which is
        provided on a disk image (.dmg) that includes the main
-       MySQL installation package, the MySQLStartupItem.pkg
-       installation package, and the MySQL.prefPane.
-       Double-click the disk image to open it.
-       Figure 2.44 MySQL Package Installer: DMG Contents
+       MySQL installation package.
+       Note
+       Previously, the OS X packages included separate
+       MySQLStartupItem.pkg and MySQL.prefPane files. They have
+       since been merged into the main package file.
+       Figure 2.47 MySQL Package Installer: DMG Contents
        MySQL Package Installer: DMG Contents
 
-    2. Double-click the MySQLStartItem.pkg file to start the
-       installation process.
+    2. Go through the process of installing the MySQL server as
+       described in the documentation at Section 2.4.2,
+       "Installing MySQL on OS X Using Native Packages."
 
-    3. You will be presented with the Install MySQL Startup Item
-       dialog.
-       Figure 2.45 MySQL Startup Item Installer: Introduction
-       MySQL Startup Item Installer: Introduction
-       Click Continue to continue the installation process.
+    3. Click Customize at the Installation Type step. The
+       "Startup Item" option is listed there and enabled by
+       default.
+       Figure 2.48 MySQL Installer on OS X: Customize
+       MySQL Installer on OS X: Customize
 
-    4. A copy of the installation instructions and other
-       important information relevant to this installation are
-       displayed. Click Continue .
-
-    5. Select the drive you want to use to install the MySQL
-       Startup Item. The drive must have a valid, bootable, Mac
-       OS X operating system installed. Click Continue.
-       Figure 2.46 MySQL Startup Item Installer: Choose Your
-       Hard drive
-       MySQL Startup Item Installer: Choose Your Hard drive
-
-    6. You will be asked to confirm the details of the
-       installation. To change the drive on which the startup
-       item is installed, click either Go Back or Change Install
-       Location.... To install the startup item, click Install.
-
-    7. Once the installation has been completed successfully,
-       you will be shown an Install Succeeded message.
-       Figure 2.47 MySQL Startup Item Installer: Summary
-       MySQL Startup Item Installer: Summary
+    4. Complete the MySQL server installation process.
 
    The Startup Item for MySQL is installed into
    /Library/StartupItems/MySQLCOM. The Startup Item installation
@@ -4638,36 +4608,33 @@ shell> sudo /Library/StartupItems/MySQLCOM/MySQLCOM stop
 
 2.4.5 Installing and Using the MySQL Preference Pane
 
-   The MySQL Package installer disk image also includes a custom
-   MySQL Preference Pane that enables you to start, stop, and
-   control automated startup during boot of your MySQL
-   installation.
+   The MySQL Installation Package includes a MySQL preference
+   Pane that enables you to start, stop, and control automated
+   startup during boot of your MySQL installation.
 
    To install the MySQL Preference Pane:
 
-    1. Download and open the MySQL package installer package,
-       which is provided on a disk image (.dmg) that includes
-       the main MySQL installation package, the
-       MySQLStartupItem.pkg installation package, and the
-       MySQL.prefPane. Double-click the disk image to open it.
-       Figure 2.48 MySQL Package Installer: DMG Contents
+    1. Download and open the MySQL package installer, which is
+       provided on a disk image (.dmg) that includes the main
+       MySQL installation package.
+       Note
+       Previously, the OS X packages included separate
+       MySQLStartupItem.pkg and MySQL.prefPane files. They have
+       since been merged into the main package file.
+       Figure 2.49 MySQL Package Installer: DMG Contents
        MySQL Package Installer: DMG Contents
 
-    2. Double-click the MySQL.prefPane. The MySQL System
-       Preferences will open.
+    2. Go through the process of installing the MySQL server, as
+       described in the documentation at Section 2.4.2,
+       "Installing MySQL on OS X Using Native Packages."
 
-    3. If this is the first time you have installed the
-       preference pane, you will be asked to confirm
-       installation and whether you want to install the
-       preference pane for all users, or only the current user.
-       To install the preference pane for all users you will
-       need administrator privileges. If necessary, you will be
-       prompted for the username and password for a user with
-       administrator privileges.
+    3. Click Customize at the Installation Type step. The
+       "Preference Pane" option is listed there and enabled by
+       default.
+       Figure 2.50 MySQL Installer on OS X: Customize
+       MySQL Installer on OS X: Customize
 
-    4. If you already have the MySQL Preference Pane installed,
-       you will be asked to confirm whether you want to
-       overwrite the existing MySQL Preference Pane.
+    4. Complete the MySQL server installation process.
 
    Note
 
@@ -4679,10 +4646,10 @@ shell> sudo /Library/StartupItems/MySQLCOM/MySQLCOM stop
    control your MySQL server instance using the preference pane.
    To use the preference pane, open the System Preferences...
    from the Apple menu. Select the MySQL preference pane by
-   clicking the MySQL logo within the Other section of the
+   clicking the MySQL logo within the bottom section of the
    preference panes list.
 
-   Figure 2.49 MySQL Preference Pane: Location
+   Figure 2.51 MySQL Preference Pane: Location
    MySQL Preference Pane: Location
 
    The MySQL Preference Pane shows the current status of the
@@ -4714,63 +4681,6 @@ shell> sudo /Library/StartupItems/MySQLCOM/MySQLCOM stop
 
    You can close the System Preferences... window once you have
    completed your settings.
-
-2.4.6 Using the Bundled MySQL on Mac OS X Server
-
-   If you are running Mac OS X Server, a version of MySQL should
-   already be installed. The following table shows the versions
-   of MySQL that ship with Mac OS X Server versions.
-
-   Table 2.10 MySQL Versions Preinstalled with Mac OS X Server
-   Mac OS X Server Version MySQL Version
-   10.2-10.2.2             3.23.51
-   10.2.3-10.2.6           3.23.53
-   10.3                    4.0.14
-   10.3.2                  4.0.16
-   10.4.0                  4.1.10a
-   10.5.0                  5.0.45
-   10.6.0                  5.0.82
-
-   The following table shows the installation layout of MySQL on
-   Mac OS X Server.
-
-   Table 2.11 MySQL Directory Layout for Preinstalled MySQL
-   Installations on Mac OS X Server
-   Directory Contents of Directory
-   /usr/bin Client programs
-   /var/mysql Log files, databases
-   /usr/libexec The mysqld server
-   /usr/share/man Unix manual pages
-   /usr/share/mysql/mysql-test MySQL test suite
-   /usr/share/mysql Miscellaneous support files, including error
-   messages, character set files, sample configuration files,
-   SQL for database installation
-   /var/mysql/mysql.sock Location of the MySQL Unix socket
-
-Additional Resources
-
-
-     * For more information on managing the bundled MySQL
-       instance in Mac OS X Server 10.5, see Mac OS X Server:
-       Web Technologies Administration For Version 10.5 Leopard
-       (http://images.apple.com/server/macosx/docs/Web_Technolog
-       ies_Admin_v10.5.pdf).
-
-     * For more information on managing the bundled MySQL
-       instance in Mac OS X Server 10.6, see Mac OS X Server:
-       Web Technologies Administration Version 10.6 Snow Leopard
-       (http://manuals.info.apple.com/en_US/WebTech_v10.6.pdf).
-
-     * The MySQL server bundled with Mac OS X Server does not
-       include the MySQL client libraries and header files
-       required to access and use MySQL from a third-party
-       driver, such as Perl DBI or PHP. For more information on
-       obtaining and installing MySQL libraries, see Mac OS X
-       Server version 10.5: MySQL libraries available for
-       download (http://support.apple.com/kb/TA25017).
-       Alternatively, you can ignore the bundled MySQL server
-       and install MySQL from the package or tarball
-       installation.
 
 2.5 Installing MySQL on Linux
 
@@ -4819,7 +4729,7 @@ Additional Resources
    can be found in the support-files directory under the MySQL
    installation directory or in a MySQL source tree. You can
    install it as /etc/init.d/mysql for automatic MySQL startup
-   and shutdown. See Section 2.10.1.2, "Starting and Stopping
+   and shutdown. See Section 2.10.3, "Starting and Stopping
    MySQL Automatically."
 
 2.5.1 Installing MySQL on Linux Using RPM Packages
@@ -4833,7 +4743,7 @@ Additional Resources
    distributions is by using the RPM packages. The RPMs that we
    provide to the community should work on all versions of Linux
    that support RPM packages and use glibc 2.3. To obtain RPM
-   packages, see Section 2.1.3, "How to Get MySQL."
+   packages, see Section 2.1.2, "How to Get MySQL."
 
    For non-RPM Linux distributions, you can install MySQL using
    a .tar.gz package. See Section 2.2, "Installing MySQL on
@@ -4843,7 +4753,7 @@ Additional Resources
    in files under the system directories shown in the following
    table.
 
-   Table 2.12 MySQL Installation Layout for Linux RPM Packages
+   Table 2.9 MySQL Installation Layout for Linux RPM Packages
    Directory Contents of Directory
    /usr/bin Client programs and scripts
    /usr/sbin The mysqld server
@@ -5013,7 +4923,7 @@ Additional Resources
    independent or intended for a specific platform, as shown in
    the following table.
 
-   Table 2.13 MySQL Linux Installation Packages
+   Table 2.10 MySQL Linux Installation Packages
    PLATFORM Value Intended Use
    glibc23 Platform independent, should run on any Linux
    distribution that supports glibc 2.3
@@ -5026,7 +4936,7 @@ Additional Resources
    The CPU value indicates the processor type or family for
    which the package is built.
 
-   Table 2.14 MySQL Installation Packages for Linux CPU
+   Table 2.11 MySQL Installation Packages for Linux CPU
    Identifiers
       CPU Value      Intended Processor Type or Family
    i386, i586, i686 Pentium processor or better, 32 bit
@@ -5048,7 +4958,7 @@ shell> rpm -i MySQL-client-VERSION.glibc23.i386.rpm
 
    RPM provides a feature to verify the integrity and
    authenticity of packages before installing them. To learn
-   more about this feature, see Section 2.1.4, "Verifying
+   more about this feature, see Section 2.1.3, "Verifying
    Package Integrity Using MD5 Checksums or GnuPG."
 
    The server RPM places data under the /var/lib/mysql
@@ -5059,7 +4969,7 @@ shell> rpm -i MySQL-client-VERSION.glibc23.i386.rpm
    (This means that if you have performed a previous
    installation and have made changes to its startup script, you
    may want to make a copy of the script so that you do not lose
-   it when you install a newer RPM.) See Section 2.10.1.2,
+   it when you install a newer RPM.) See Section 2.10.3,
    "Starting and Stopping MySQL Automatically," for more
    information on how MySQL can be started automatically on
    system startup.
@@ -5155,7 +5065,7 @@ shell> yum install MySQL-server-NEWVERSION.glibc23.i386.rpm
 
    Oracle provides Debian packages for installation on Debian or
    Debian-like Linux systems. To obtain a package, see Section
-   2.1.3, "How to Get MySQL."
+   2.1.2, "How to Get MySQL."
    Note
 
    Debian distributions of MySQL are also provided by other
@@ -5171,7 +5081,7 @@ shell> yum install MySQL-server-NEWVERSION.glibc23.i386.rpm
    for which the package is built, as shown in the following
    table.
 
-   Table 2.15 MySQL Installation Packages for Linux CPU
+   Table 2.12 MySQL Installation Packages for Linux CPU
    Identifiers
    CPU Value  Intended Processor Type or Family
    i686      Pentium processor or better, 32 bit
@@ -5186,7 +5096,7 @@ shell> dpkg -i mysql-MVER-DVER-CPU.deb
 
    You may also need to install the libaio library if it is not
    already present on your system:
-shell> apt-get install libaio1
+shell> sudo apt-get install libaio1
 
 2.5.3 Installing MySQL on Linux Using Native Package Managers
 
@@ -5472,7 +5382,7 @@ root-shell> rc-update add mysql default
    Linux supports a number of different solutions for installing
    MySQL, covered in Section 2.5, "Installing MySQL on Linux."
    One of the methods, covered in this section, is installing
-   from Oracles's Unbreakable Linux Network (ULN). You can find
+   from Oracle's Unbreakable Linux Network (ULN). You can find
    information about Oracle Linux and ULN under
    http://linux.oracle.com/.
 
@@ -5585,16 +5495,16 @@ Error in accept: Protocol error
    To use this package, download the corresponding
    mysql-VERSION-solaris10-PLATFORM.pkg.gz file, then uncompress
    it. For example:
-shell> gunzip mysql-5.5.42-solaris10-x86_64.pkg.gz
+shell> gunzip mysql-5.5.44-solaris10-x86_64.pkg.gz
 
    To install a new package, use pkgadd and follow the onscreen
    prompts. You must have root privileges to perform this
    operation:
-shell> pkgadd -d mysql-5.5.42-solaris10-x86_64.pkg
+shell> pkgadd -d mysql-5.5.44-solaris10-x86_64.pkg
 
 The following packages are available:
   1  mysql     MySQL Community Server (GPL)
-               (i86pc) 5.5.42
+               (i86pc) 5.5.44
 
 Select package(s) you wish to process (or 'all' to process
 all packages). (default: all) [?,??,q]:
@@ -5633,7 +5543,7 @@ shell> ln /etc/init.d/mysql /etc/rc0.d/K02mysql
    support files. The typical upgrade sequence is therefore:
 shell> mysqladmin shutdown
 shell> pkgrm mysql
-shell> pkgadd -d mysql-5.5.42-solaris10-x86_64.pkg
+shell> pkgadd -d mysql-5.5.44-solaris10-x86_64.pkg
 shell> mysqld_safe &
 shell> mysql_upgrade
 
@@ -5808,7 +5718,7 @@ Source Installation Methods
    There are two methods for installing MySQL from source:
 
      * Use a standard MySQL source distribution. To obtain a
-       standard distribution, see Section 2.1.3, "How to Get
+       standard distribution, see Section 2.1.2, "How to Get
        MySQL." For instructions on building from a standard
        distribution, see Section 2.9.2, "Installing MySQL Using
        a Standard Source Distribution."
@@ -5816,7 +5726,7 @@ Source Installation Methods
        files, Zip archives, or RPM packages. Distribution files
        have names of the form mysql-VERSION.tar.gz,
        mysql-VERSION.zip, or mysql-VERSION.rpm, where VERSION is
-       a number like 5.5.42. File names for source distributions
+       a number like 5.5.44. File names for source distributions
        can be distinguished from those for precompiled binary
        distributions in that source distribution names are
        generic and include no platform name, whereas binary
@@ -5900,7 +5810,7 @@ Source Installation System Requirements
             downloading and installing Bazaar on different
             platforms. Bazaar is supported on any platform that
             supports Python, and is therefore compatible with
-            any Linux, Unix, Windows, or Mac OS X host.
+            any Linux, Unix, Windows, or OS X host.
 
      * bison 2.1 or newer, available from
        http://www.gnu.org/software/bison/. (Version 1 is no
@@ -5956,7 +5866,7 @@ Source Installation System Requirements
        listed at Section 2.9, "Installing MySQL from Source."
 
     2. Obtain a distribution file using the instructions in
-       Section 2.1.3, "How to Get MySQL."
+       Section 2.1.2, "How to Get MySQL."
 
     3. Configure, build, and install the distribution using the
        instructions in this section.
@@ -6037,7 +5947,7 @@ Obtain and Unpack the Distribution
    distribution and change location into it.
 
    Obtain a distribution file using the instructions in Section
-   2.1.3, "How to Get MySQL."
+   2.1.2, "How to Get MySQL."
 
    Unpack the distribution into the current directory:
 
@@ -6077,7 +5987,7 @@ shell> cmake .
 shell> cmake . -G "Visual Studio 9 2008"
 shell> cmake . -G "Visual Studio 9 2008 Win64"
 
-   On Mac OS X, to use the Xcode IDE:
+   On OS X, to use the Xcode IDE:
 shell> cmake . -G Xcode
 
    When you run cmake, you might want to add options to the
@@ -6490,7 +6400,7 @@ shell> ccmake .
    base directory. This value is used as the parent location for
    several of the installation subdirectories.
 
-   Table 2.16 MySQL Source-Configuration Option Reference
+   Table 2.13 MySQL Source-Configuration Option Reference
    (CMake)
    Formats Description Default Introduced Removed
    BUILD_CONFIG Use same build options as official releases
@@ -6548,8 +6458,7 @@ shell> ccmake .
    MYSQL_DATADIR Data directory 5.5.7
    MYSQL_MAINTAINER_MODE Whether to enable MySQL
    maintainer-specific development environment OFF 5.5.7
-   MYSQL_PROJECT_NAME Windows/Mac OS X project name 3306 5.5.21
-
+   MYSQL_PROJECT_NAME Windows/OS X project name 3306 5.5.21
    MYSQL_TCP_PORT TCP/IP port number 3306 5.5.7
    MYSQL_UNIX_ADDR Unix socket file /tmp/mysql.sock 5.5.7
    ODBC_INCLUDES ODBC includes directory
@@ -6898,9 +6807,9 @@ Feature Options
        warnings to become errors.
 
      * -DMYSQL_PROJECT_NAME=name
-       For Windows or Mac OS X, the project name to incorporate
-       into the project file name. This option was added in
-       MySQL 5.5.21.
+       For Windows or OS X, the project name to incorporate into
+       the project file name. This option was added in MySQL
+       5.5.21.
 
      * -DMYSQL_TCP_PORT=port_num
        The port number on which the server listens for TCP/IP
@@ -7249,79 +7158,78 @@ TCH
 
 2.10 Postinstallation Setup and Testing
 
-   This section discusses post-installation items for Unix-like
-   systems. If you are using Windows, see Section 2.3.10,
-   "Windows Postinstallation Procedures."
+   This section discusses postinstallation tasks for Unix-like
+   systems.
 
-   After installing MySQL, there are some items that you should
-   address. For example:
+   After installing MySQL, there are some tasks that you should
+   perform:
 
      * You should initialize the data directory and create the
-       MySQL grant tables, as describe in Section 2.10.1,
-       "Postinstallation Procedures for Unix-like Systems."
+       MySQL grant tables. If you are using Windows, see Section
+       2.3.10, "Windows Postinstallation Procedures." For Unix
+       systems, see Section 2.10.1, "Postinstallation Procedures
+       for Unix-like Systems."
 
-     * An important security concern is that the initial
-       accounts in the grant tables have no passwords. You
-       should assign passwords to prevent unauthorized access to
-       the MySQL server. For instructions, see Section 2.10.2,
-       "Securing the Initial MySQL Accounts."
+     * After you complete the procedure and have the server
+       running, any initial accounts in the grant tables should
+       be assigned passwords, if that was not already done
+       during data directory initialization. Passwords prevent
+       unauthorized access to the MySQL server. You may also
+       wish to restrict access to test databases. For
+       instructions, see Section 2.10.2, "Securing the Initial
+       MySQL Accounts."
+
+     * You may wish to arrange for the server to start and stop
+       automatically when your system starts and stops. For
+       instructions, see Section 2.10.3, "Starting and Stopping
+       MySQL Automatically."
 
      * Optionally, you can create time zone tables to enable
        recognition of named time zones. For instructions, see
        Section 4.4.6, "mysql_tzinfo_to_sql --- Load the Time
        Zone Tables."
 
-     * If you have trouble getting the server to start, see
-       Section 2.10.1.3, "Starting and Troubleshooting the MySQL
-       Server."
+   If you have trouble starting the server, see Section 2.10.4,
+   "Troubleshooting Problems Starting the MySQL Server."
 
-     * When you are ready to create additional user accounts,
-       you can find information on the MySQL access control
-       system and account management in Section 6.2, "The MySQL
-       Access Privilege System," and Section 6.3, "MySQL User
-       Account Management."
+   When you are ready to create additional user accounts, you
+   can find information on the MySQL access control system and
+   account management in Section 6.2, "The MySQL Access
+   Privilege System," and Section 6.3, "MySQL User Account
+   Management."
 
 2.10.1 Postinstallation Procedures for Unix-like Systems
 
    After installing MySQL on a Unix-like system, you must
-   initialize the grant tables, start the server, and make sure
-   that the server works satisfactorily. You may also wish to
-   arrange for the server to be started and stopped
-   automatically when your system starts and stops. You should
-   also assign passwords to the accounts in the grant tables.
+   initialize the data directory (including the tables in the
+   mysql system database), start the server, and make sure that
+   the server works satisfactorily. You should also assign
+   passwords to any accounts listed in the mysql.user grant
+   table
 
-   On a Unix-like system, the grant tables are set up by the
-   mysql_install_db program. For some installation methods, this
-   program is run for you automatically if an existing database
-   cannot be found.
+   On a Unix-like system, the grant tables in the mysql database
+   are set up by the mysql_install_db program. For some
+   installation methods, this program is run for you
+   automatically if an existing mysql database cannot be found:
 
-     * If you install MySQL on Linux using RPM distributions,
-       the server RPM runs mysql_install_db.
+     * If you install MySQL on Linux using server RPM
+       distributions.
 
      * Using the native packaging system on many platforms,
-       including Debian Linux, Ubuntu Linux, Gentoo Linux and
-       others, the mysql_install_db command is run for you.
+       including Debian Linux, Ubuntu Linux, Gentoo Linux, and
+       others.
 
-     * If you install MySQL on Mac OS X using a DMG
-       distribution, the installer runs mysql_install_db.
+     * If you install MySQL on OS X using a DMG distribution.
 
-   For other platforms and installation types, including generic
-   binary and source installs, you will need to run
-   mysql_install_db yourself.
+   For other platforms and installation types, including
+   installation from generic binary and source distributions,
+   you must initialize the data directory yourself.
 
-   The following procedure describes how to initialize the grant
-   tables (if that has not previously been done) and start the
-   server. It also suggests some commands that you can use to
-   test whether the server is accessible and working properly.
-   For information about starting and stopping the server
-   automatically, see Section 2.10.1.2, "Starting and Stopping
-   MySQL Automatically."
-
-   After you complete the procedure and have the server running,
-   you should assign passwords to the accounts created by
-   mysql_install_db and perhaps restrict access to test
-   databases. For instructions, see Section 2.10.2, "Securing
-   the Initial MySQL Accounts."
+   The following procedure describes how to initialize the data
+   directory (if that has not previously been done) and start
+   the server. It also suggests some commands that you can use
+   to test whether the server is accessible and working
+   properly.
 
    In the examples shown here, the server runs under the user ID
    of the mysql login account. This assumes that such an account
@@ -7345,10 +7253,14 @@ shell> cd BASEDIR
        purposes are the bin and scripts subdirectories:
 
           + The bin directory contains client programs and the
-            server. You should add the full path name of this
-            directory to your PATH environment variable so that
-            your shell finds the MySQL programs properly. See
-            Section 2.12, "Environment Variables."
+            server. To make it more convenient to invoke
+            programs installed in the bin directory under the
+            installation directory, you can add that directory
+            to your PATH environment variable setting. That
+            enables your shell to find MySQL programs properly,
+            so that you can run a program by typing only its
+            name, not its entire path name. See Section 4.2.10,
+            "Setting Environment Variables."
 
           + The scripts directory contains the mysql_install_db
             program used to initialize the mysql database
@@ -7359,21 +7271,23 @@ shell> cd BASEDIR
        accessible to mysql. If you installed the distribution as
        mysql, no further action is required. If you installed
        the distribution as root, its contents will be owned by
-       root. Change its ownership to mysql by executing the
-       following commands as root in the installation directory.
-       The first command changes the owner attribute of the
-       files to the mysql user. The second changes the group
-       attribute to the mysql group.
-shell> chown -R mysql .
+       root. This is suitable for most of the installation, with
+       the exception that the data directory must be owned by
+       mysql. To accomplish this, run the following commands as
+       root in the installation directory. For some distribution
+       types, the data directory might be named var rather than
+       data; adjust the second command accordingly.
+shell> chown -R root .
+shell> chown -R mysql data
 shell> chgrp -R mysql .
 
 
     3. If necessary, run the mysql_install_db program to set up
        the initial MySQL grant tables containing the privileges
        that determine how users are permitted to connect to the
-       server. You will need to do this if you used a
-       distribution type for which the installation procedure
-       does not run the program for you.
+       server. You must do this if you used a distribution type
+       for which the installation procedure does not run the
+       program for you.
 shell> scripts/mysql_install_db --user=mysql
 
        Typically, mysql_install_db needs to be run only the
@@ -7420,15 +7334,7 @@ shell> scripts/mysql_install_db --user=mysql \
        see Section 2.10.1.1, "Problems Running
        mysql_install_db."
 
-    4. Most of the MySQL installation can be owned by root if
-       you like. The exception is that the data directory must
-       be owned by mysql. To accomplish this, run the following
-       commands as root in the installation directory:
-shell> chown -R root .
-shell> chown -R mysql data
-
-
-    5. If the plugin directory (the directory named by the
+    4. If the plugin directory (the directory named by the
        plugin_dir system variable) is writable by the server, it
        may be possible for a user to write executable code to a
        file in the directory using SELECT ... INTO DUMPFILE.
@@ -7436,7 +7342,7 @@ shell> chown -R mysql data
        the server or by setting --secure-file-priv to a
        directory where SELECT writes can be made safely.
 
-    6. If you installed MySQL using a source distribution, you
+    5. If you installed MySQL using a source distribution, you
        may want to optionally copy one of the provided
        configuration files from the support-files directory into
        your /etc directory. There are different sample
@@ -7453,10 +7359,10 @@ shell> chown -R mysql data
        your machine, you can copy support-files/mysql.server to
        the location where your system has its startup files.
        More information can be found in the mysql.server script
-       itself, and in Section 2.10.1.2, "Starting and Stopping
+       itself, and in Section 2.10.3, "Starting and Stopping
        MySQL Automatically."
 
-    7. Start the MySQL server:
+    6. Start the MySQL server:
 shell> bin/mysqld_safe --user=mysql &
 
        It is important that the MySQL server be run using an
@@ -7471,23 +7377,22 @@ shell> bin/mysqld_safe --user=mysql &
        If the command fails immediately and prints mysqld ended,
        look for information in the error log (which by default
        is the host_name.err file in the data directory).
-       If you neglected to create the grant tables by running
-       mysql_install_db before proceeding to this step, the
-       following message appears in the error log file when you
-       start the server:
-mysqld: Can't find file: 'host.frm'
-
-       This error also occurs if you run mysql_install_db as
-       root without the --user option. Remove the data directory
-       and run mysql_install_db with the --user option as
+       If the server is unable to access the data directory it
+       starts or read the grant tables in the mysql database, it
+       writes a message to its error log. Such problems can
+       occur if you neglected to create the grant tables by
+       initializing the data directory before proceeding to this
+       step, or if you ran the command that initializes the data
+       directory without the --user option. Remove the data
+       directory and run the command with the --user option as
        described previously.
        If you have other problems starting the server, see
-       Section 2.10.1.3, "Starting and Troubleshooting the MySQL
-       Server." For more information about mysqld_safe, see
-       Section 4.3.2, "mysqld_safe --- MySQL Server Startup
+       Section 2.10.4, "Troubleshooting Problems Starting the
+       MySQL Server." For more information about mysqld_safe,
+       see Section 4.3.2, "mysqld_safe --- MySQL Server Startup
        Script."
 
-    8. Use mysqladmin to verify that the server is running. The
+    7. Use mysqladmin to verify that the server is running. The
        following commands provide simple tests to check whether
        the server is up and responding to connections:
 shell> bin/mysqladmin version
@@ -7497,10 +7402,10 @@ shell> bin/mysqladmin variables
        depending on your platform and version of MySQL, but
        should be similar to that shown here:
 shell> bin/mysqladmin version
-mysqladmin  Ver 14.12 Distrib 5.5.42, for pc-linux-gnu on i686
+mysqladmin  Ver 14.12 Distrib 5.5.44, for pc-linux-gnu on i686
 ...
 
-Server version          5.5.42
+Server version          5.5.44
 Protocol version        10
 Connection              Localhost via UNIX socket
 UNIX socket             /var/lib/mysql/mysql.sock
@@ -7513,17 +7418,18 @@ Queries per second avg: 0.000
        To see what else you can do with mysqladmin, invoke it
        with the --help option.
 
-    9. Verify that you can shut down the server:
+    8. Verify that you can shut down the server:
 shell> bin/mysqladmin -u root shutdown
 
-   10. Verify that you can start the server again. Do this by
+
+    9. Verify that you can start the server again. Do this by
        using mysqld_safe or by invoking mysqld directly. For
        example:
 shell> bin/mysqld_safe --user=mysql &
 
-       If mysqld_safe fails, see Section 2.10.1.3, "Starting and
-       Troubleshooting the MySQL Server."
-   11. Run some simple tests to verify that you can retrieve
+       If mysqld_safe fails, see Section 2.10.4,
+       "Troubleshooting Problems Starting the MySQL Server."
+   10. Run some simple tests to verify that you can retrieve
        information from the server. The output should be similar
        to what is shown here:
 shell> bin/mysqlshow
@@ -7570,43 +7476,7 @@ shell> bin/mysql -e "SELECT Host,Db,User FROM db" mysql
 | %    | test_% |      |
 +------+--------+------+
 
-   12. There is a benchmark suite in the sql-bench directory
-       (under the MySQL installation directory) that you can use
-       to compare how MySQL performs on different platforms. The
-       benchmark suite is written in Perl. It requires the Perl
-       DBI module that provides a database-independent interface
-       to the various databases, and some other additional Perl
-       modules:
-DBI
-DBD::mysql
-Data::Dumper
-Data::ShowTable
-
-       These modules can be obtained from CPAN
-       (http://www.cpan.org/). See also Section 2.13.1,
-       "Installing Perl on Unix."
-       The sql-bench/Results directory contains the results from
-       many runs against different databases and platforms. To
-       run all tests, execute these commands:
-shell> cd sql-bench
-shell> perl run-all-tests
-
-       If you do not have the sql-bench directory, you probably
-       installed MySQL using RPM files other than the source
-       RPM. (The source RPM includes the sql-bench benchmark
-       directory.) In this case, you must first install the
-       benchmark suite before you can use it. There are separate
-       benchmark RPM files named mysql-bench-VERSION.i386.rpm
-       that contain benchmark code and data.
-       If you have a source distribution, there are also tests
-       in its tests subdirectory that you can run. For example,
-       to run auto_increment.tst, execute this command from the
-       top-level directory of your source distribution:
-shell> mysql -vvf test < ./tests/auto_increment.tst
-
-       The expected result of the test can be found in the
-       ./tests/auto_increment.res file.
-   13. At this point, you should have the server running.
+   11. At this point, you should have the server running.
        However, none of the initial MySQL accounts have a
        password, and the server permits permissive access to
        test databases. To tighten security, follow the
@@ -7617,13 +7487,6 @@ shell> mysql -vvf test < ./tests/auto_increment.tst
    in the mysql database but does not populate them. To do so,
    use the instructions in Section 10.6, "MySQL Server Time Zone
    Support."
-
-   To make it more convenient to invoke programs installed in
-   the bin directory under the installation directory, you can
-   add that directory to your PATH environment variable setting.
-   That enables you to run a program by typing only its name,
-   not its entire path name. See Section 4.2.10, "Setting
-   Environment Variables."
 
    You can set up new accounts using the bin/mysql_setpermission
    script if you install the DBI and DBD::mysql Perl modules.
@@ -7645,14 +7508,14 @@ $MYSQL     = '/usr/local/bin/mysql';    # path to mysql executable
 
 2.10.1.1 Problems Running mysql_install_db
 
-   The purpose of the mysql_install_db program is to generate
-   new MySQL privilege tables. It does not overwrite existing
-   MySQL privilege tables, and it does not affect any other
-   data.
+   The purpose of the mysql_install_db program is to initialize
+   the data directory, including the tables in the mysql system
+   database. It does not overwrite existing MySQL privilege
+   tables, and it does not affect any other data.
 
-   If you want to re-create your privilege tables, first stop
-   the mysqld server if it is running. Then rename the mysql
-   directory under the data directory to save it, and then run
+   To re-create your privilege tables, first stop the mysqld
+   server if it is running. Then rename the mysql directory
+   under the data directory to save it, and run
    mysql_install_db. Suppose that your current directory is the
    MySQL installation directory and that mysql_install_db is
    located in the bin directory and the data directory is named
@@ -7682,8 +7545,8 @@ mysqld ended
        This indicates that the server is running, in which case
        the grant tables have probably been created already. If
        so, there is no need to run mysql_install_db at all
-       because it needs to be run only once (when you install
-       MySQL the first time).
+       because it needs to be run only once, when you first
+       install MySQL.
 
      * Installing a second mysqld server does not work when one
        server is running
@@ -7707,7 +7570,7 @@ Can't start server: Bind on unix socket...
      * You do not have write access to the /tmp directory
        If you do not have write access to create temporary files
        or a Unix socket file in the default location (the /tmp
-       directory) or the TMP_DIR environment variable, if it has
+       directory) or the TMPDIR environment variable, if it has
        been set, an error occurs when you run mysql_install_db
        or the mysqld server.
        You can specify different locations for the temporary
@@ -7734,22 +7597,22 @@ shell> bin/mysqld_safe --user=mysql &
    program provided in the MySQL distribution:
 
      * If you want the initial privileges to be different from
-       the standard defaults, you can modify mysql_install_db
-       before you run it. However, it is preferable to use GRANT
-       and REVOKE to change the privileges after the grant
-       tables have been set up. In other words, you can run
-       mysql_install_db, and then use mysql -u root mysql to
-       connect to the server as the MySQL root user so that you
-       can issue the necessary GRANT and REVOKE statements.
-       If you want to install MySQL on several machines with the
-       same privileges, you can put the GRANT and REVOKE
-       statements in a file and execute the file as a script
-       using mysql after running mysql_install_db. For example:
+       the standard defaults, use account-management statements
+       such as CREATE USER, GRANT, and REVOKE to change the
+       privileges after the grant tables have been set up. In
+       other words, run mysql_install_db, and then use mysql -u
+       root mysql to connect to the server as the MySQL root
+       user so that you can issue the necessary statements. (See
+       xref linkend="account-management-sql"/>.)
+       To install MySQL on several machines with the same
+       privileges, put the GRANT and REVOKE statements in a file
+       and execute the file as a script using mysql after
+       running mysql_install_db. For example:
 shell> scripts/mysql_install_db --user=mysql
 shell> bin/mysql -u root < your_script_file
 
-       By doing this, you can avoid having to issue the
-       statements manually on each machine.
+       This enables you to avoid issuing the statements manually
+       on each machine.
 
      * It is possible to re-create the grant tables completely
        after they have previously been created. You might want
@@ -7757,25 +7620,282 @@ shell> bin/mysql -u root < your_script_file
        REVOKE and have made so many modifications after running
        mysql_install_db that you want to wipe out the tables and
        start over.
-       To re-create the grant tables, remove all the .frm, .MYI,
-       and .MYD files in the mysql database directory. Then run
-       the mysql_install_db program again.
+       To re-create the grant tables, stop the server if it is
+       running and remove the mysql database directory. Then run
+       mysql_install_db again.
 
-     * You can start mysqld manually using the
-       --skip-grant-tables option and add the privilege
-       information yourself using mysql:
-shell> bin/mysqld_safe --user=mysql --skip-grant-tables &
-shell> bin/mysql mysql
+2.10.2 Securing the Initial MySQL Accounts
 
-       From mysql, manually execute the SQL commands contained
-       in mysql_install_db. Make sure that you run mysqladmin
-       flush-privileges or mysqladmin reload afterward to tell
-       the server to reload the grant tables.
-       Note that by not using mysql_install_db, you not only
-       have to populate the grant tables manually, you also have
-       to create them first.
+   Part of the MySQL installation process is to set up, in the
+   data directory, the mysql database that contains the grant
+   tables:
 
-2.10.1.2 Starting and Stopping MySQL Automatically
+     * Windows distributions contain preinitialized grant
+       tables.
+
+     * On Unix, the mysql_install_db program populates the grant
+       tables. Some installation methods run this program for
+       you. Others require that you execute it manually. For
+       details, see Section 2.10.1, "Postinstallation Procedures
+       for Unix-like Systems."
+
+   The mysql.user grant table defines the initial MySQL user
+   accounts and their access privileges:
+
+     * Some accounts have the user name root. These are
+       superuser accounts that have all privileges and can do
+       anything. The initial root account passwords are empty,
+       so anyone can connect to the MySQL server as root without
+       a password and be granted all privileges.
+
+          + On Windows, root accounts are created that permit
+            connections from the local host only. Connections
+            can be made by specifying the host name localhost,
+            the IP address 127.0.0.1, or the IPv6 address ::1.
+            If the user selects the Enable root access from
+            remote machines option during installation, the
+            Windows installer creates another root account that
+            permits connections from any host.
+
+          + On Unix, each root account permits connections from
+            the local host. Connections can be made by
+            specifying the host name localhost, the IP address
+            127.0.0.1, the IPv6 address ::1, or the actual host
+            name or IP address.
+       An attempt to connect to the host 127.0.0.1 normally
+       resolves to the localhost account. However, this fails if
+       the server is run with the --skip-name-resolve option, so
+       the 127.0.0.1 account is useful in that case. The ::1
+       account is used for IPv6 connections.
+
+     * If accounts for anonymous users were created, these have
+       an empty user name. The anonymous accounts have no
+       password, so anyone can use them to connect to the MySQL
+       server.
+
+          + On Windows, there is one anonymous account that
+            permits connections from the local host. Connections
+            can be made by specifying a host name of localhost.
+
+          + On Unix, each anonymous account permits connections
+            from the local host. Connections can be made by
+            specifying a host name of localhost for one of the
+            accounts, or the actual host name or IP address for
+            the other.
+
+   To display which accounts exist in the mysql.user table and
+   check whether their passwords are empty, use the following
+   statement:
+mysql> SELECT User, Host, Password FROM mysql.user;
++------+--------------------+----------+
+| User | Host               | Password |
++------+--------------------+----------+
+| root | localhost          |          |
+| root | myhost.example.com |          |
+| root | 127.0.0.1          |          |
+| root | ::1                |          |
+|      | localhost          |          |
+|      | myhost.example.com |          |
++------+--------------------+----------+
+
+   This output indicates that there are several root and
+   anonymous-user accounts, none of which have passwords. The
+   output might differ on your system, but the presence of
+   accounts with empty passwords means that your MySQL
+   installation is unprotected until you do something about it:
+
+     * You should assign a password to each MySQL root account
+       that does not have one.
+
+     * If you want to prevent clients from connecting as
+       anonymous users without a password, you should either
+       assign a password to each anonymous account or else
+       remove the accounts.
+
+   In addition, the mysql.db table contains rows that permit all
+   accounts to access the test database and other databases with
+   names that start with test_. This is true even for accounts
+   that otherwise have no special privileges such as the default
+   anonymous accounts. This is convenient for testing but
+   inadvisable on production servers. Administrators who want
+   database access restricted only to accounts that have
+   permissions granted explicitly for that purpose should remove
+   these mysql.db table rows.
+
+   The following instructions describe how to set up passwords
+   for the initial MySQL accounts, first for the root accounts,
+   then for the anonymous accounts. The instructions also cover
+   how to remove the anonymous accounts, should you prefer not
+   to permit anonymous access at all, and describe how to remove
+   permissive access to test databases. Replace newpwd in the
+   examples with the password that you want to use. Replace
+   host_name with the name of the server host. You can determine
+   this name from the output of the preceding SELECT statement.
+   For the output shown, host_name is myhost.example.com.
+   Note
+
+   For additional information about setting passwords, see
+   Section 6.3.5, "Assigning Account Passwords." If you forget
+   your root password after setting it, see Section B.5.4.1,
+   "How to Reset the Root Password."
+
+   You might want to defer setting the passwords until later, to
+   avoid the need to specify them while you perform additional
+   setup or testing. However, be sure to set them before using
+   your installation for production purposes.
+
+   To set up additional accounts, see Section 6.3.2, "Adding
+   User Accounts."
+   Note
+
+   On Windows, you can also perform the process described in
+   this section using the Configuration Wizard (see Section
+   2.3.6.11, "The Security Options Dialog"). On all platforms,
+   the MySQL distribution includes mysql_secure_installation, a
+   command-line utility that automates much of the process of
+   securing a MySQL installation.
+
+Assigning root Account Passwords
+
+   A root account password can be set several ways. The
+   following discussion demonstrates three methods:
+
+     * Use the SET PASSWORD statement
+
+     * Use the UPDATE statement
+
+     * Use the mysqladmin command-line client program
+
+   To assign passwords using SET PASSWORD, connect to the server
+   as root and issue a SET PASSWORD statement for each root
+   account listed in the mysql.user table. Be sure to encrypt
+   the password using the PASSWORD() function.
+
+   For Windows, do this:
+shell> mysql -u root
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'::1' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'%' = PASSWORD('newpwd');
+
+   The last statement is unnecessary if the mysql.user table has
+   no root account with a host value of %.
+
+   For Unix, do this:
+shell> mysql -u root
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'::1' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR 'root'@'host_name' = PASSWORD('newpwd');
+
+   You can also use a single statement that assigns a password
+   to all root accounts by using UPDATE to modify the mysql.user
+   table directly. This method works on any platform:
+shell> mysql -u root
+mysql> UPDATE mysql.user SET Password = PASSWORD('newpwd')
+    ->     WHERE User = 'root';
+mysql> FLUSH PRIVILEGES;
+
+   The FLUSH statement causes the server to reread the grant
+   tables. Without it, the password change remains unnoticed by
+   the server until you restart it.
+
+   To assign passwords to the root accounts using mysqladmin,
+   execute the following commands:
+shell> mysqladmin -u root password "newpwd"
+shell> mysqladmin -u root -h host_name password "newpwd"
+
+   Those commands apply both to Windows and to Unix. The double
+   quotation marks around the password are not always necessary,
+   but you should use them if the password contains spaces or
+   other characters that are special to your command
+   interpreter.
+
+   The mysqladmin method of setting the root account passwords
+   does not work for the 'root'@'127.0.0.1' or 'root'@'::1'
+   account. Use the SET PASSWORD method shown earlier.
+
+   After the root passwords have been set, you must supply the
+   appropriate password whenever you connect as root to the
+   server. For example, to shut down the server with mysqladmin,
+   use this command:
+shell> mysqladmin -u root -p shutdown
+Enter password: (enter root password here)
+
+Assigning Anonymous Account Passwords
+
+   The mysql commands in the following instructions include a -p
+   option based on the assumption that you have set the root
+   account passwords using the preceding instructions and must
+   specify that password when connecting to the server.
+
+   To assign passwords to the anonymous accounts, connect to the
+   server as root, then use either SET PASSWORD or UPDATE. Be
+   sure to encrypt the password using the PASSWORD() function.
+
+   To use SET PASSWORD on Windows, do this:
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> SET PASSWORD FOR ''@'localhost' = PASSWORD('newpwd');
+
+   To use SET PASSWORD on Unix, do this:
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> SET PASSWORD FOR ''@'localhost' = PASSWORD('newpwd');
+mysql> SET PASSWORD FOR ''@'host_name' = PASSWORD('newpwd');
+
+   To set the anonymous-user account passwords with a single
+   UPDATE statement, do this (on any platform):
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> UPDATE mysql.user SET Password = PASSWORD('newpwd')
+    ->     WHERE User = '';
+mysql> FLUSH PRIVILEGES;
+
+   The FLUSH statement causes the server to reread the grant
+   tables. Without it, the password change remains unnoticed by
+   the server until you restart it.
+
+Removing Anonymous Accounts
+
+   If you prefer to remove any anonymous accounts rather than
+   assigning them passwords, do so as follows on Windows:
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> DROP USER ''@'localhost';
+
+   On Unix, remove the anonymous accounts like this:
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> DROP USER ''@'localhost';
+mysql> DROP USER ''@'host_name';
+
+Securing Test Databases
+
+   By default, the mysql.db table contains rows that permit
+   access by any user to the test database and other databases
+   with names that start with test_. (These rows have an empty
+   User column value, which for access-checking purposes matches
+   any user name.) This means that such databases can be used
+   even by accounts that otherwise possess no privileges. If you
+   want to remove any-user access to test databases, do so as
+   follows:
+shell> mysql -u root -p
+Enter password: (enter root password here)
+mysql> DELETE FROM mysql.db WHERE Db LIKE 'test%';
+mysql> FLUSH PRIVILEGES;
+
+   The FLUSH statement causes the server to reread the grant
+   tables. Without it, the privilege change remains unnoticed by
+   the server until you restart it.
+
+   With the preceding change, only users who have global
+   database privileges or privileges granted explicitly for the
+   test database can use it. However, if you do not want the
+   database to exist at all, drop it:
+mysql> DROP DATABASE test;
+
+2.10.3 Starting and Stopping MySQL Automatically
 
    Generally, you start the mysqld server in one of these ways:
 
@@ -7795,14 +7915,14 @@ shell> bin/mysql mysql
        starts the server by invoking mysqld_safe. See Section
        4.3.3, "mysql.server --- MySQL Server Startup Script."
 
-     * On Mac OS X, install a separate MySQL Startup Item
-       package to enable the automatic startup of MySQL on
-       system startup. The Startup Item starts the server by
-       invoking mysql.server. See Section 2.4.4, "Installing the
-       MySQL Startup Item," for details. A MySQL Preference Pane
-       also provides control for starting and stopping MySQL
-       through the System Preferences, see Section 2.4.5,
-       "Installing and Using the MySQL Preference Pane."
+     * On OS X, install a separate MySQL Startup Item package to
+       enable the automatic startup of MySQL on system startup.
+       The Startup Item starts the server by invoking
+       mysql.server. See Section 2.4.4, "Installing the MySQL
+       Startup Item," for details. A MySQL Preference Pane also
+       provides control for starting and stopping MySQL through
+       the System Preferences, see Section 2.4.5, "Installing
+       and Using the MySQL Preference Pane."
 
      * Use the Solaris/OpenSolaris service management framework
        (SMF) system to initiate and control MySQL startup. For
@@ -7810,8 +7930,8 @@ shell> bin/mysql mysql
        OpenSolaris Using IPS."
 
    The mysqld_safe and mysql.server scripts, Solaris/OpenSolaris
-   SMF, and the Mac OS X Startup Item (or MySQL Preference Pane)
-   can be used to start the server manually, or automatically at
+   SMF, and the OS X Startup Item (or MySQL Preference Pane) can
+   be used to start the server manually, or automatically at
    system startup time. mysql.server and the Startup Item also
    can be used to stop the server.
 
@@ -7825,12 +7945,12 @@ shell> mysql.server stop
    mysqld_safe. If you want the server to run as some specific
    user, add an appropriate user option to the [mysqld] group of
    the /etc/my.cnf option file, as shown later in this section.
-   (It is possible that you will need to edit mysql.server if
-   you've installed a binary distribution of MySQL in a
-   nonstandard location. Modify it to change location into the
-   proper directory before it runs mysqld_safe. If you do this,
-   your modified version of mysql.server may be overwritten if
-   you upgrade MySQL in the future, so you should make a copy of
+   (It is possible that you must edit mysql.server if you've
+   installed a binary distribution of MySQL in a nonstandard
+   location. Modify it to change location into the proper
+   directory before it runs mysqld_safe. If you do this, your
+   modified version of mysql.server may be overwritten if you
+   upgrade MySQL in the future, so you should make a copy of
    your edited version that you can reinstall.)
 
    mysql.server stop stops the server by sending a signal to it.
@@ -7838,8 +7958,8 @@ shell> mysql.server stop
    shutdown.
 
    To start and stop MySQL automatically on your server, you
-   need to add start and stop commands to the appropriate places
-   in your /etc/rc* files.
+   must add start and stop commands to the appropriate places in
+   your /etc/rc* files.
 
    If you use the Linux server RPM package
    (MySQL-server-VERSION.rpm), or a native Linux package
@@ -7858,9 +7978,7 @@ shell> mysql.server stop
    installation directory or in a MySQL source tree.
 
    To install mysql.server manually, copy it to the /etc/init.d
-   directory with the name mysql, and then make it executable.
-   Do this by changing location into the appropriate directory
-   where mysql.server is located and executing these commands:
+   directory with the name mysql, and then make it executable:
 shell> cp mysql.server /etc/init.d/mysql
 shell> chmod +x /etc/init.d/mysql
 
@@ -7894,8 +8012,8 @@ shell> chkconfig --level 345 mysql on
    As an alternative to the preceding setup, some operating
    systems also use /etc/rc.local or /etc/init.d/boot.local to
    start additional services on startup. To start up MySQL using
-   this method, you could append a command like the one
-   following to the appropriate startup file:
+   this method, append a command like the one following to the
+   appropriate startup file:
 /bin/sh -c 'cd /usr/local/mysql; ./bin/mysqld_safe --user=mysql &'
 
    For other systems, consult your operating system
@@ -7921,7 +8039,7 @@ basedir=/usr/local/mysql
    The following table shows which option groups the server and
    each startup script read from option files.
 
-   Table 2.17 MySQL Startup scripts and supported server option
+   Table 2.14 MySQL Startup scripts and supported server option
    groups
       Script                  Option Groups
    mysqld       [mysqld], [server], [mysqld-major_version]
@@ -7938,17 +8056,17 @@ basedir=/usr/local/mysql
    [mysql_server] group and mysqld_safe also reads the
    [safe_mysqld] group. However, you should update your option
    files to use the [mysql.server] and [mysqld_safe] groups
-   instead when using MySQL 5.5.
+   instead.
 
    For more information on MySQL configuration files and their
    structure and contents, see Section 4.2.6, "Using Option
    Files."
 
-2.10.1.3 Starting and Troubleshooting the MySQL Server
+2.10.4 Troubleshooting Problems Starting the MySQL Server
 
    This section provides troubleshooting suggestions for
-   problems starting the server on a Unix-like system. If you
-   are using Windows, see Section 2.3.8, "Troubleshooting a
+   problems starting the server. For additional suggestions for
+   Windows systems, see Section 2.3.8, "Troubleshooting a
    Microsoft Windows MySQL Server Installation."
 
    If you have problems starting the server, here are some
@@ -8111,275 +8229,6 @@ Can't start server: Bind on unix socket...
    If you cannot get mysqld to start, you can try to make a
    trace file to find the problem by using the --debug option.
    See Section 24.4.3, "The DBUG Package."
-
-2.10.2 Securing the Initial MySQL Accounts
-
-   Part of the MySQL installation process is to set up the mysql
-   database that contains the grant tables:
-
-     * Windows distributions contain preinitialized grant
-       tables.
-
-     * On Unix, the mysql_install_db program populates the grant
-       tables. Some installation methods run this program for
-       you. Others require that you execute it manually. For
-       details, see Section 2.10.1, "Postinstallation Procedures
-       for Unix-like Systems."
-
-   The mysql.user grant table defines the initial MySQL user
-   accounts and their access privileges:
-
-     * Some accounts have the user name root. These are
-       superuser accounts that have all privileges and can do
-       anything. The initial root account passwords are empty,
-       so anyone can connect to the MySQL server as root without
-       a password and be granted all privileges.
-
-          + On Windows, root accounts are created that permit
-            connections from the local host only. Connections
-            can be made by specifying the host name localhost,
-            the IP address 127.0.0.1, or the IPv6 address ::1.
-            If the user selects the Enable root access from
-            remote machines option during installation, the
-            Windows installer creates another root account that
-            permits connections from any host.
-
-          + On Unix, each root account permits connections from
-            the local host. Connections can be made by
-            specifying the host name localhost, the IP address
-            127.0.0.1, the IPv6 address ::1, or the actual host
-            name or IP address.
-       An attempt to connect to the host 127.0.0.1 normally
-       resolves to the localhost account. However, this fails if
-       the server is run with the --skip-name-resolve option, so
-       the 127.0.0.1 account is useful in that case. The ::1
-       account is used for IPv6 connections.
-
-     * Some accounts are for anonymous users. These have an
-       empty user name. The anonymous accounts have no password,
-       so anyone can use them to connect to the MySQL server.
-
-          + On Windows, there is one anonymous account that
-            permits connections from the local host. Connections
-            can be made by specifying a host name of localhost.
-
-          + On Unix, each anonymous account permits connections
-            from the local host. Connections can be made by
-            specifying a host name of localhost for one of the
-            accounts, or the actual host name or IP address for
-            the other.
-
-   To display which accounts exist in the mysql.user table and
-   check whether their passwords are empty, use the following
-   statement:
-mysql> SELECT User, Host, Password FROM mysql.user;
-+------+--------------------+----------+
-| User | Host               | Password |
-+------+--------------------+----------+
-| root | localhost          |          |
-| root | myhost.example.com |          |
-| root | 127.0.0.1          |          |
-| root | ::1                |          |
-|      | localhost          |          |
-|      | myhost.example.com |          |
-+------+--------------------+----------+
-
-   This output indicates that there are several root and
-   anonymous-user accounts, none of which have passwords. The
-   output might differ on your system, but the presence of
-   accounts with empty passwords means that your MySQL
-   installation is unprotected until you do something about it:
-
-     * You should assign a password to each MySQL root account.
-
-     * If you want to prevent clients from connecting as
-       anonymous users without a password, you should either
-       assign a password to each anonymous account or else
-       remove the accounts.
-
-   In addition, the mysql.db table contains rows that permit all
-   accounts to access the test database and other databases with
-   names that start with test_. This is true even for accounts
-   that otherwise have no special privileges such as the default
-   anonymous accounts. This is convenient for testing but
-   inadvisable on production servers. Administrators who want
-   database access restricted only to accounts that have
-   permissions granted explicitly for that purpose should remove
-   these mysql.db table rows.
-
-   The following instructions describe how to set up passwords
-   for the initial MySQL accounts, first for the root accounts,
-   then for the anonymous accounts. The instructions also cover
-   how to remove the anonymous accounts, should you prefer not
-   to permit anonymous access at all, and describe how to remove
-   permissive access to test databases. Replace newpwd in the
-   examples with the password that you want to use. Replace
-   host_name with the name of the server host. You can determine
-   this name from the output of the preceding SELECT statement.
-   For the output shown, host_name is myhost.example.com.
-   Note
-
-   For additional information about setting passwords, see
-   Section 6.3.5, "Assigning Account Passwords." If you forget
-   your root password after setting it, see Section B.5.4.1,
-   "How to Reset the Root Password."
-
-   You might want to defer setting the passwords until later, to
-   avoid the need to specify them while you perform additional
-   setup or testing. However, be sure to set them before using
-   your installation for production purposes.
-
-   To set up additional accounts, see Section 6.3.2, "Adding
-   User Accounts."
-
-Assigning root Account Passwords
-
-   The root account passwords can be set several ways. The
-   following discussion demonstrates three methods:
-
-     * Use the SET PASSWORD statement
-
-     * Use the UPDATE statement
-
-     * Use the mysqladmin command-line client program
-
-   To assign passwords using SET PASSWORD, connect to the server
-   as root and issue a SET PASSWORD statement for each root
-   account listed in the mysql.user table. Be sure to encrypt
-   the password using the PASSWORD() function.
-
-   For Windows, do this:
-shell> mysql -u root
-mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'::1' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'%' = PASSWORD('newpwd');
-
-   The last statement is unnecessary if the mysql.user table has
-   no root account with a host value of %.
-
-   For Unix, do this:
-shell> mysql -u root
-mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'127.0.0.1' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'::1' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR 'root'@'host_name' = PASSWORD('newpwd');
-
-   You can also use a single statement that assigns a password
-   to all root accounts by using UPDATE to modify the mysql.user
-   table directly. This method works on any platform:
-shell> mysql -u root
-mysql> UPDATE mysql.user SET Password = PASSWORD('newpwd')
-    ->     WHERE User = 'root';
-mysql> FLUSH PRIVILEGES;
-
-   The FLUSH statement causes the server to reread the grant
-   tables. Without it, the password change remains unnoticed by
-   the server until you restart it.
-
-   To assign passwords to the root accounts using mysqladmin,
-   execute the following commands:
-shell> mysqladmin -u root password "newpwd"
-shell> mysqladmin -u root -h host_name password "newpwd"
-
-   Those commands apply both to Windows and to Unix. The double
-   quotation marks around the password are not always necessary,
-   but you should use them if the password contains spaces or
-   other characters that are special to your command
-   interpreter.
-
-   The mysqladmin method of setting the root account passwords
-   does not work for the 'root'@'127.0.0.1' or 'root'@'::1'
-   account. Use the SET PASSWORD method shown earlier.
-
-   After the root passwords have been set, you must supply the
-   appropriate password whenever you connect as root to the
-   server. For example, to shut down the server with mysqladmin,
-   use this command:
-shell> mysqladmin -u root -p shutdown
-Enter password: (enter root password here)
-
-Assigning Anonymous Account Passwords
-
-   The mysql commands in the following instructions include a -p
-   option based on the assumption that you have set the root
-   account passwords using the preceding instructions and must
-   specify that password when connecting to the server.
-
-   To assign passwords to the anonymous accounts, connect to the
-   server as root, then use either SET PASSWORD or UPDATE. Be
-   sure to encrypt the password using the PASSWORD() function.
-
-   To use SET PASSWORD on Windows, do this:
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> SET PASSWORD FOR ''@'localhost' = PASSWORD('newpwd');
-
-   To use SET PASSWORD on Unix, do this:
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> SET PASSWORD FOR ''@'localhost' = PASSWORD('newpwd');
-mysql> SET PASSWORD FOR ''@'host_name' = PASSWORD('newpwd');
-
-   To set the anonymous-user account passwords with a single
-   UPDATE statement, do this (on any platform):
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> UPDATE mysql.user SET Password = PASSWORD('newpwd')
-    ->     WHERE User = '';
-mysql> FLUSH PRIVILEGES;
-
-   The FLUSH statement causes the server to reread the grant
-   tables. Without it, the password change remains unnoticed by
-   the server until you restart it.
-
-Removing Anonymous Accounts
-
-   If you prefer to remove any anonymous accounts rather than
-   assigning them passwords, do so as follows on Windows:
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> DROP USER ''@'localhost';
-
-   On Unix, remove the anonymous accounts like this:
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> DROP USER ''@'localhost';
-mysql> DROP USER ''@'host_name';
-
-Securing Test Databases
-
-   By default, the mysql.db table contains rows that permit
-   access by any user to the test database and other databases
-   with names that start with test_. (These rows have an empty
-   User column value, which for access-checking purposes matches
-   any user name.) This means that such databases can be used
-   even by accounts that otherwise possess no privileges. If you
-   want to remove any-user access to test databases, do so as
-   follows:
-shell> mysql -u root -p
-Enter password: (enter root password here)
-mysql> DELETE FROM mysql.db WHERE Db LIKE 'test%';
-mysql> FLUSH PRIVILEGES;
-
-   The FLUSH statement causes the server to reread the grant
-   tables. Without it, the privilege change remains unnoticed by
-   the server until you restart it.
-
-   With the preceding change, only users who have global
-   database privileges or privileges granted explicitly for the
-   test database can use it. However, if you do not want the
-   database to exist at all, drop it:
-mysql> DROP DATABASE test;
-
-   Note
-
-   On Windows, you can also perform the process described in
-   this section using the Configuration Wizard (see Section
-   2.3.6.11, "The Security Options Dialog"). On all platforms,
-   the MySQL distribution includes mysql_secure_installation, a
-   command-line utility that automates much of the process of
-   securing a MySQL installation.
 
 2.11 Upgrading or Downgrading MySQL
 
@@ -8564,18 +8413,18 @@ mysql> DROP DATABASE test;
             or that differ from those found in earlier MySQL
             releases. Some of these changes may result in
             incompatibilities.
-       Note particularly any changes that are marked Known issue
-       or Incompatible change. These incompatibilities with
-       earlier versions of MySQL may require your attention
-       before you upgrade. Our aim is to avoid these changes,
-       but occasionally they are necessary to correct problems
-       that would be worse than an incompatibility between
-       releases. If any upgrade issue applicable to your
-       installation involves an incompatibility that requires
-       special handling, follow the instructions given in the
-       incompatibility description. Sometimes this involves
-       dumping and reloading tables, or use of a statement such
-       as CHECK TABLE or REPAIR TABLE.
+       Changes marked as either Known issue or Incompatible
+       change are incompatibilities with earlier versions of
+       MySQL, and may require your attention before you upgrade.
+       Our aim is to avoid these changes, but occasionally they
+       are necessary to correct problems that would be worse
+       than an incompatibility between releases. If any upgrade
+       issue applicable to your installation involves an
+       incompatibility that requires special handling, follow
+       the instructions given in the incompatibility
+       description. Sometimes this involves dumping and
+       reloading tables, or use of a statement such as CHECK
+       TABLE or REPAIR TABLE.
        For dump and reload instructions, see Section 2.11.4,
        "Rebuilding or Repairing Tables or Indexes." Any
        procedure that involves REPAIR TABLE with the USE_FRM
@@ -9869,10 +9718,10 @@ shell> mysqlimport db_name DUMPDIR/*.txt   # load data into tables
    used directly or indirectly by MySQL. Most of these can also
    be found in other places in this manual.
 
-   Note that any options on the command line take precedence
-   over values specified in option files and environment
-   variables, and values in option files take precedence over
-   values in environment variables.
+   Options on the command line take precedence over values
+   specified in option files and environment variables, and
+   values in option files take precedence over values in
+   environment variables.
 
    In many cases, it is preferable to use an option file instead
    of environment variables to modify the behavior of MySQL. See
