@@ -138,7 +138,7 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
 
    Table 2.8 MySQL Installation Layout on OS X
    Directory Contents of Directory
-   bin Client programs and the mysqld server
+   bin, scripts mysqld server, client and utility programs
    data Log files, databases
    docs Helper documents, like the Release Notes and build
    information
@@ -146,7 +146,6 @@ alias mysqladmin /usr/local/mysql/bin/mysqladmin
    lib Libraries
    man Unix manual pages
    mysql-test MySQL test suite
-   scripts mysql_install_db
    share Miscellaneous support files, including error messages,
    sample configuration files, SQL for database installation
    sql-bench Benchmarks

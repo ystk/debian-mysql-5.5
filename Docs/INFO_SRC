@@ -1,7 +1,7 @@
-commit: 367802ceef18088c24fcda705440e0d87930188b
-date: 2015-02-27 09:14:35 +0100
-build-date: 2015-02-27 09:18:18 +0100
-short: 367802c
-branch: mysql-5.5.43-release
+commit: ae298e24fe51a8d95c4036bd95055fb2bfe42f31
+date: 2015-04-29 13:51:29 +0530
+build-date: 2015-05-04 14:07:50 +0200
+short: ae298e2
+branch: mysql-5.5.44-release
 
-MySQL source 5.5.43
+MySQL source 5.5.44
