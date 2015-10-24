@@ -1,3 +1,18 @@
+mysql-5.5 (5.5.46-0+deb8u1) jessie-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Imported Upstream version 5.5.46 to fix security issues:
+    - http://www.oracle.com/technetwork/topics/security/cpuoct2015-2367953.html
+    - CVE-2015-4792 CVE-2015-4802 CVE-2015-4815 CVE-2015-4816 CVE-2015-4819
+      CVE-2015-4826 CVE-2015-4830 CVE-2015-4836 CVE-2015-4858 CVE-2015-4861
+      CVE-2015-4870 CVE-2015-4879 CVE-2015-4913
+    (Closes: #802564)
+  * Add fix-test-suite-failure-caused-by-arbitrary-date-in-the-future.patch.
+    Fix test suite failure caused by arbitrary date in the future.
+    Thanks to Marc Deslauriers <marc.deslauriers@canonical.com>
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Fri, 23 Oct 2015 13:35:23 +0200
+
 mysql-5.5 (5.5.44-0+deb8u1) jessie-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
