@@ -1,1 +1,730 @@
-This is a first release, this file is supposed to be empty
+commit 449e0e3f831ff488ea842e2a2eb96df272c4b268
+Author: Robert Golebiowski <robert.golebiowski@oracle.com>
+Date:   Fri Sep 18 11:18:25 2015 +0200
+
+    Updated yassl to yassl-2.3.8
+    
+    (cherry picked from commit 7f9941eab55ed672bfcccd382dafbdbcfdc75aaa)
+
+commit 3956353c2680a3196ebd9bbd7dc6e3504f852d29
+Author: Robert Golebiowski <robert.golebiowski@oracle.com>
+Date:   Fri Sep 18 10:35:09 2015 +0200
+
+    Bug #21025377 CAN'T CONNECT TO SSL ENABLED SERVER FIRST 30 SEC AFTER
+    INITIAL STARTUP
+    
+    Updated yassl to yassl-2.3.7e
+    
+    (cherry picked from commit 6e21c8c04b922bdb60b6a7c174709d2e1bdd3618)
+
+commit d7a8779d314734ec3d8561444cab51278198c824
+Author: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+Date:   Wed Aug 26 19:29:00 2015 +0200
+
+    Bug#21527467 - RPM SCRIPTS FAIL WITH MULTIPLE DATADIR
+
+commit d25487ea422cca759845123282dff3e5f027c656
+Author: Nisha Gopalakrishnan <nisha.gopalakrishnan@oracle.com>
+Date:   Tue Aug 25 14:25:46 2015 +0530
+
+    BUG#20449914: HANDLE_FATAL_SIGNAL (SIG=11) IN
+                  FIELD_ITERATOR_TABLE::END_OF_FIELDS
+    
+    Note: This a backport of the patch for bug#19894987
+          to MySQL-5.5
+
+commit ec58c25e8d29220a05236208d13dc9e2b0b4fc9d
+Author: Arun Kuruvila <arun.kuruvila@oracle.com>
+Date:   Fri Aug 21 08:35:42 2015 +0530
+
+    Bug#20198490 : LOWER_CASE_TABLE_NAMES=0 ON WINDOWS LEADS TO
+                   PROBLEMS
+    
+    Description:- Server variable "--lower_case_tables_names"
+    when set to "0" on windows platform which does not support
+    case sensitive file operations leads to problems. A warning
+    message is printed in the error log while starting the
+    server with "--lower_case_tables_names=0". Also according to
+    the documentation, seting "lower_case_tables_names" to "0"
+    on a case-insensitive filesystem might lead to index
+    corruption.
+    
+    Analysis:- The problem reported in the bug is:-
+    Creating an INNODB table 'a' and executing a query, "INSERT
+    INTO a SELECT a FROM A;" on a server started with
+    "--lower_case_tables_names=0" and running on a
+    case-insensitive filesystem leads innodb to flat spin.
+    Optimizer thinks that "a" and "A" are two different tables
+    as the variable "lower_case_table_names" is set to "0". As a
+    result, optimizer comes up with a plan which does not need a
+    temporary table. If the same table is used in select and
+    insert, a temporary table is needed. This incorrect
+    optimizer plan leads to infinite insertions.
+    
+    Fix:- If the server is started with
+    "--lower_case_tables_names" set to 0 on a case-insensitive
+    filesystem, an error, "The server option
+    'lower_case_table_names'is configured to use case sensitive
+    table names but the data directory is on a case-insensitive
+    file system which is an unsupported combination. Please
+    consider either using a case sensitive file system for your
+    data directory or switching to a case-insensitive table name
+    mode.", is printed in the server error log and the server
+    exits.
+
+commit 60a95351c75e2df5c5957f3a11bda968283a6aa6
+Author: Lars Tangvald <lars.tangvald@oracle.com>
+Date:   Wed Aug 19 14:17:50 2015 +0200
+
+    Small change to default config for Docker-specific rpm package
+    Syncs "official" and our own Docker images
+
+commit 8e5de3276063c3b8edfa242ee6df49e73bd4cfc4
+Author: Shishir Jaiswal <shishir.j.jaiswal@oracle.com>
+Date:   Tue Aug 18 12:24:27 2015 +0530
+
+    Bug #16171518 - LOAD XML DOES NOT HANDLE EMPTY ELEMENTS
+    
+    DESCRIPTION
+    ===========
+    Inability of mysql LOAD XML command to handle empty XML
+    tags i.e. <row><tag/></row>. Also the behaviour is wrong
+    and (different than above) when there is a space in empty
+    tag i.e. <row><tag /></row>
+    
+    ANALYSIS
+    ========
+    In read_xml() the case where we encounter a close tag ('/')
+    we're decreasing the 'level' blindly which is wrong.
+    Actually when its an without-space-empty-tag (succeeding
+    char is '>'), we need to skip the decrement. In other words
+    whenever we hit a close tag ('/'), decrease the 'level'
+    only when (i) It's not an (without space) empty tag i.e.
+    <tag/> or, (ii) It is of format <row col="val" .../>
+    
+    FIX
+    ===
+    The switch case for '/' is modified. We've removed the
+    blind decrement of 'level'. We do it only when its not an
+    without-space-empty-tag. Also we are setting 'in_tag' to
+    false to let program know that we're done reading current
+    tag (required in the case of format <row col="val" .../>)
+
+commit 447ee4b352ab0601f38e9befda3338e1e63ec608
+Author: Karthik Kamath <karthik.kamath@oracle.com>
+Date:   Tue Aug 18 10:38:06 2015 +0530
+
+    BUG#11754258: INCORRECT ERROR MESSAGE WHEN CREATING UNSAFE
+                  VIEW
+    
+    
+    It appears that the code refactoring done as part of the
+    patch for the MySQL BUG#11749859 fixed this issue. This
+    issue is not reproducible on MySQL 5.5+ versions now.
+    As part of this patch, the test file "mysqldump.test" has
+    been updated to remove the comment which was referring to
+    the bug and also the line which suppresses the warning.
+
+commit 43301e42ef18b9898f1e8d94e9c9a6ac31f3efd5
+Merge: e242946 9d9a929
+Author: Mithun C Y <mithun.c.y@oracle.com>
+Date:   Mon Aug 17 15:26:01 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit 9d9a929f0b016ebab7254f6e47da509e71d509f4
+Author: Mithun C Y <mithun.c.y@oracle.com>
+Date:   Mon Aug 17 15:23:47 2015 +0530
+
+    Bug #21350175: SUBQUERIES IN PROCEDURE CLAUSE OF SELECT STATEMENT CAUSES SERVER FAILURES.
+    
+    Analysis :
+    ==========
+    During JOIN::prepare of sub-query which creates the
+    derived tables we call setup_procedure. Here we call
+    fix_fields for parameters of procedure clause. Calling
+    setup_procedure at this point may cause issue. If
+    sub-query is one of parameter being fixed it might
+    lead to complicated dependencies on derived tables
+    being prepared.
+    
+    SOLUTION :
+    ==========
+    In 5.6 with WL#6242, we have made procedure clause
+    parameters can only be NUM, so sub-queries are not
+    allowed as parameters. So in 5.5 we can block
+    sub-queries in procedure clause parameters.
+    This eliminates above conflicting dependencies.
+
+commit e2429464cde3555962787fae236a296cf3971d07
+Author: Aditya A <aditya.a@oracle.com>
+Date:   Wed Aug 12 19:17:26 2015 +0530
+
+    Bug #21025880	DUPLICATE UK VALUES IN READ-COMMITTED (AGAIN)
+    
+    PROBLEM
+    
+    Whenever we insert in unique secondary index we take shared
+    locks on all possible duplicate record present in the table.
+    But while during a replace on the unique secondary index ,
+    we take exclusive and locks on the all duplicate record.
+    When the records are deleted, they are first delete marked
+    and later purged by the purge thread. While purging the
+    record we call the lock_update_delete() which in turn calls
+    lock_rec_inherit_to_gap() to inherit locks of the deleted
+    records. In repeatable read mode we inherit all the locks
+    from the record to the next record  but in the read commited
+    mode we skip inherting them as gap type locks. We make a
+    exception here if the lock on the records is  in shared mode
+    ,we assume that it is set during insert for unique secondary
+    index and needs to be inherited to stop constraint violation.
+    We didnt handle the case when exclusive locks are set during
+    replace, we skip inheriting locks of these records and hence
+    causing constraint violation.
+    
+    FIX
+    
+    While inheriting the locks,check whether the transaction is
+    allowed to do TRX_DUP_REPLACE/TRX_DUP_IGNORE, if true
+    inherit the locks.
+    
+    [ Revewied by Jimmy #rb9709]
+
+commit 7efc9f757ec52741cfc4fba9711d16d52642a2c2
+Author: Shaohua Wang <shaohua.wang@oracle.com>
+Date:   Mon Aug 10 16:31:05 2015 +0800
+
+    BUG#21102971 data corruption on arm64
+    
+    The root cause is that x86 has a stronger memory model than the ARM
+    processors. And the GCC builtins didn't issue the correct fences when
+    setting/unsetting the lock word. In particular during the mutex release.
+    
+    The solution is rewriting atomic TAS operations: replace '__sync_' by
+    '__atomic_' if possible.
+    
+    Reviewed-by: Sunny Bains      <sunny.bains@oracle.com>
+    Reviewed-by: Bin Su           <bin.x.su@oracle.com>
+    Reviewed-by: Debarun Banerjee <debarun.banerjee@oracle.com>
+    Reviewed-by: Krunal Bauskar   <krunal.bauskar@oracle.com>
+    RB: 9782
+    RB: 9665
+    RB: 9783
+
+commit 1eaec2788e234d8a5d4825ea3c8ffbe8dd2e392b
+Merge: 1908406 4052aa6
+Author: Ajo Robert <ajo.robert@oracle.com>
+Date:   Fri Aug 7 16:27:48 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit 4052aa6a3e5d9783dc91fe593172fbc4ea8c7110
+Author: Ajo Robert <ajo.robert@oracle.com>
+Date:   Fri Aug 7 16:26:10 2015 +0530
+
+    Bug #20760261 mysqld crashed in materialized_cursor::
+    send_result_set_metadata
+    
+    Analysis
+    --------
+    Cursor inside trigger accessing NEW/OLD row leads server exit.
+    
+    The reason for the bug was that implementation of function
+    create_tmp_table() was not considering Item::TRIGGER_FIELD_ITEM
+    as possible alternative for type of class being instantiated.
+    This was resulting in a mismatch between a number of columns
+    in result list and temp table definition. This mismatch leads
+    to the failure of assertion
+    DBUG_ASSERT(send_result_set_metadata.elements == item_list.elements)
+    in the method Materialized_cursor::send_result_set_metadata
+    in debug mode.
+    
+    Fix:
+    ---
+    Added code to consider Item::TRIGGER_FIELD_ITEM as valid
+    type while creating fields.
+
+commit 19084061d0c4bb991d3bb85ca371b53de622d5ac
+Author: sayantan dutta <sayantan.dutta@oracle.com>
+Date:   Mon Feb 24 18:44:37 2014 +0530
+
+    Follow-up fix : Bug #18145121 - DEPRECATED PERL SYNTAX IN MTR
+    (cherry picked from commit 1bfe5f724bc4c24da635f632247e7d263aa53970)
+    
+    Conflicts:
+    	mysql-test/lib/mtr_cases.pm
+
+commit 82c1baac79ef72cf7f2604cf58fdce9339dc8fa4
+Author: sayantan dutta <sayantan.dutta@oracle.com>
+Date:   Tue Feb 18 17:57:54 2014 +0530
+
+    Follow up Fix: Bug #18145121 - DEPRECATED PERL SYNTAX IN MTR
+    (cherry picked from commit 3eb933e0eb55f962404a04741767177e12a9885f)
+    
+    Conflicts:
+    	mysql-test/mysql-test-run.pl
+
+commit cafc94e644cc41486860a35afa60a58151faa07d
+Merge: 49a80c2 83cfb8e
+Author: Mithun C Y <mithun.c.y@oracle.com>
+Date:   Tue Aug 4 12:28:56 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit 83cfb8e31274cb4d8e05ebb0ab114a46b8944ef0
+Author: Mithun C Y <mithun.c.y@oracle.com>
+Date:   Tue Aug 4 11:45:02 2015 +0530
+
+    Bug #21096444: MYSQL IS TRYING TO PERFORM A CONSISTENT READ BUT THE READ VIEW IS NOT ASSIGNED!
+    
+    Issue: A select for update subquery in having clause
+    resulted deadlock and its transaction was rolled back
+    by innodb. val_XXX interfaces do not handle errors and
+    it do not propogate errors to its caller. sub_select
+    did not see this error when it called
+    evaluate_join_record and later made a call to innodb.
+    As transaction is rolled back innodb asserted.
+    
+    Fix: Now evaluate_join_record checks if there is any
+    error reported and then return the same to its caller.
+
+commit 49a80c2e223496ad0d6d753337444d122826c6be
+Merge: 190d75e 9ab548f
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Mon Aug 3 10:10:41 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit 9ab548fcc4fe8e0fbf4ad63c76aaf365a7940b11
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Mon Aug 3 10:08:46 2015 +0530
+
+    Bug #20909518: HANDLE_FATAL_SIGNAL (SIG=11) IN
+                   FIND_USED_PARTITIONS | SQL/OPT_RANGE.CC:3884
+    
+    Post-push fix.
+
+commit 190d75e5de8ec78ad2f7e1b31b408451f5e39984
+Merge: 1ed0575 b7043a9
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Mon Aug 3 08:17:27 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit b7043a91aad5ee3753a10a46abb295a8bf159e83
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Mon Aug 3 08:15:59 2015 +0530
+
+    Bug #20909518: HANDLE_FATAL_SIGNAL (SIG=11) IN
+                   FIND_USED_PARTITIONS | SQL/OPT_RANGE.CC:3884
+    
+    Issue:
+    -----
+    During partition pruning, first we identify the partition
+    in which row can reside and then identify the subpartition.
+    If we find a partition but not the subpartion then we hit
+    a debug assert. While finding the subpartition we check
+    the current thread's error status in part_val_int()
+    function after some operation. In this case the thread's
+    error status is already set to an error (multiple rows
+    returned) so the function returns no partition found and
+    results in incorrect behavior.
+    
+    SOLUTION:
+    ---------
+    Currently any error encountered in part_val_int is
+    considered a "partition not found" type error. Instead of
+    an assert, a check needs to be done and a valid error
+    returned.
+
+commit 1ed0575ef7d03dcbfea778ed5f21de8730ccce31
+Merge: 2836d92 aa2bf3a
+Author: Thirunarayanan Balathandayuthapani <thirunarayanan.balathandayuth@oracle.com>
+Date:   Wed Jul 29 18:27:39 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit aa2bf3a1f5114a39e2ee58e4454c12f651e6eb2f
+Author: Thirunarayanan Balathandayuthapani <thirunarayanan.balathandayuth@oracle.com>
+Date:   Wed Jul 29 18:24:20 2015 +0530
+
+    Bug #20796566   ERROR: INSERT BUFFER INSERT FAIL CANNOT
+    			INSERT INDEX RECORD
+    
+    Problem:
+    =======
+    
+    IBUF_BITMAP_FREE bit in ibuf bitmap array is used to indicate the free
+    space available in leaf page. IBUF_BITMAP_FREE bit indicates free
+    space more than actual existing free space for the leaf page.
+    
+    Solution:
+    =========
+    
+    Ibuf_bitmap_array is not updated for the secondary index leaf page when
+    insert operation is done by updating a delete marked existing
+    record in the index.
+    
+    Reviewed-by: Jimmy Yang <jimmy.yang@oracle.com>
+    RB: 9544
+
+commit 2836d925709de97c3f14481c0aae715fc2a3e3a7
+Merge: 16868a0 4c915b6
+Author: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+Date:   Fri Jul 24 16:57:17 2015 +0200
+
+    Merge branch 'mysql-5.5.45-release' into mysql-5.5
+
+commit 16868a07b723edd2f83c40e8d8414169b5589a93
+Author: Nisha Gopalakrishnan <nisha.gopalakrishnan@oracle.com>
+Date:   Thu Jul 23 10:47:58 2015 +0530
+
+    BUG#19886430: VIEW CREATION WITH NAMED COLUMNS, OVER UNION,
+                  IS REJECTED.
+    
+    Analysis
+    ========
+    
+    View creation with named columns over UNION is rejected.
+    Consider the following view definition:
+    
+    CREATE VIEW v1 (fld1, fld2) AS SELECT 1 AS a, 2 AS b
+    UNION ALL SELECT 1 AS a, 1 AS a;
+    
+    A 'duplicate column' error was reported due to the duplicate
+    alias name in the secondary SELECT. The VIEW column names
+    are either explicitly specified or determined from the
+    first SELECT (which can be auto generated if not specified).
+    Since a duplicate column name check was performed even
+    for the secondary SELECTs, an error was reported.
+    
+    Fix
+    ====
+    
+    Check for duplicate column names only for the named
+    columns if specified or only for the first SELECT.
+
+commit 2aec6ebda682541b8ad29ea637223f881921bc6a
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Thu Jul 16 07:56:39 2015 +0530
+
+    Bug #21143080: UPDATE ON VARCHAR AND TEXT COLUMNS PRODUCE
+                   INCORRECT RESULTS
+    
+    Issue:
+    -----
+    Updating varchar and text fields in the same update
+    statement can produce incorrect results. When a varchar
+    field is assigned to the text field and the varchar field
+    is then set to a different value, the text field's result
+    contains the varchar field's new value.
+    
+    SOLUTION:
+    ---------
+    Currently the blob type does not allocate space for the
+    string to be stored. Instead it contains a pointer to the
+    varchar string. So when the varchar field is changed as
+    part of the update statement, the value contained in the
+    blob also changes.
+    
+    The fix would be to actually store the value by allocating
+    space for the blob's string. We can avoid allocating this
+    space when the varchar field is not being written into.
+
+commit 30cc4c54c65cdc4b096a1a55e591b3796a6de3b9
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Tue Jul 14 07:37:37 2015 +0530
+
+    Bug #20777016: DELETE CHECKS PRIVILEGES ON THE WRONG
+                   DATABASE WHEN USING TABLE ALIASES
+    
+    Post-push fix.
+
+commit 5b69f8d338daeba50eb623ede7b4b9ea68dbf725
+Author: Tor Didriksen <tor.didriksen@oracle.com>
+Date:   Mon Jul 13 10:10:12 2015 +0200
+
+    Bug #20168526 YASSL: CORRUPT SSL-KEY CRASHES CLIENT
+    
+    Post-push fix: broken build on windows.
+    The problem is min/max macros from windows.h
+    which interfere with a template function callex max.
+    
+    Solution: ADD_DEFINITIONS(-DNOMINMAX)
+
+commit 28c60fafd1e7aec7181c549f2196c976bc6b8a9c
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Mon Jul 13 07:51:23 2015 +0530
+
+    Bug #20777016: DELETE CHECKS PRIVILEGES ON THE WRONG
+                   DATABASE WHEN USING TABLE ALIASES
+    
+    Issue:
+    -----
+    When using table aliases for deleting, MySQL checks
+    privileges against the current database and not the
+    privileges on the actual table or database the table
+    resides.
+    
+    
+    SOLUTION:
+    ---------
+    While checking privileges for multi-deletes,
+    correspondent_table should be used since it points to the
+    correct table and database.
+
+commit e8911d26774f2c4e0c5388713f2d3f8125116e2a
+Author: Christopher Powers <chris.powers@oracle.com>
+Date:   Fri Jul 10 20:42:33 2015 +0200
+
+    Bug#21374104 SETUP_TIMERS INITIALIZATION ASSUMES CYCLE TIMER IS ALWAYS AVAILABLE
+    
+    For WAIT events, fall back to other timers if CYCLE is not available.
+
+commit 62ae704a2279e6f2f18675d32eb9fd61fec164aa
+Merge: 5a955a5 314b436
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Fri Jul 10 07:54:55 2015 +0530
+
+    Merge branch 'mysql-5.1' into mysql-5.5
+
+commit 314b436982fd1adc5d306874dcc3ac772bf467a0
+Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
+Date:   Fri Jul 10 07:52:00 2015 +0530
+
+    Bug #20238729: ILLEGALLY CRAFTED UTF8 SELECT PROVIDES NO
+                   WARNINGS
+    
+    Backporting to 5.1 and 5.5
+
+commit 5a955a5499520cf3904d74dae46a02ccb3327cad
+Author: Robert Golebiowski <robert.golebiowski@oracle.com>
+Date:   Wed Jul 8 13:51:06 2015 +0200
+
+    Bug #20774956: THREAD_POOL.THREAD_POOL_CONNECT HANGS WHEN RUN ON A
+    YASSL-COMPILED SERVER/CLIENT
+    
+    Description: thread_pool.thread_pool_connect hangs when the server and
+    client are compiled with yaSSL.
+    
+    Bug-fix: Test thread_pool.thread_pool_connect was temporary disabled for
+    yaSSL. However, now that yaSSL is fixed it runs OK. The bug was
+    introduced by one of the yaSSL updates. set_current was not working for
+    i == 0. Now this is fixed. YASSL is updated to 2.3.7d
+
+commit d8ca0661c34098b798d2ce7ea242f76073cacc03
+Author: Robert Golebiowski <robert.golebiowski@oracle.com>
+Date:   Wed Jul 8 12:21:51 2015 +0200
+
+    Bug #21025377 CAN'T CONNECT TO SSL ENABLED SERVER FIRST 30 SEC AFTER
+    INITIAL STARTUP
+    
+    Description: By using mysql_ssl_rsa_setup to get SSL enabled server
+    (after running mysqld --initialize) server don't answer properly
+    to "mysqladmin ping" first 30 secs after startup.
+    
+    Bug-fix: YASSL validated certificate date to the minute but should have
+    to the second. This is why the ssl on the server side was not up right
+    away after new certs were created with mysql_ssl_rsa_setup. The fix for
+    that was submitted by Todd. YASSL was updated to 2.3.7c.
+
+commit 853ae3fd763cca58c7c3ebee48e7a927ee8a2222
+Author: Robert Golebiowski <robert.golebiowski@oracle.com>
+Date:   Fri Mar 20 15:05:59 2015 +0100
+
+    Bug #20168526 YASSL: CORRUPT SSL-KEY CRASHES CLIENT
+    
+    Affects at least 5.6 and 5.7. In customer case, the "client" happened to
+    be a replication slave, therefore his server crashed.
+    
+    Bug-fix:
+    The bug was in yassl. Todd Ouska has provided us with the patch.
+    
+    (cherry picked from commit 42ffa91aad898b02f0793b669ffd04f5c178ce39)
+
+commit 7fd0325f8f5876a1b2ad8824d98ab79ccb4fccca
+Author: Shishir Jaiswal <shishir.j.jaiswal@oracle.com>
+Date:   Wed Jul 8 11:53:54 2015 +0530
+
+    Bug #20802751 - SEGMENTATION FAILURE WHEN RUNNING
+                    MYSQLADMIN -U ROOT -P
+    
+    DESCRIPTION
+    ===========
+    Crash occurs when no command is given while executing
+    mysqladmin utility.
+    
+    ANALYSIS
+    ========
+    In mask_password() the final write to array 'temp_argv'
+    is done without checking if corresponding index 'argc'
+    is valid (non-negative) or not. In case its negative
+    (would happen when this function is called with 'argc'=0),
+    it may cause a SEGFAULT. Logically in such a case,
+    mask_password() should not have been called as it would do
+    no valid thing.
+    
+    FIX
+    ===
+    mask_password() is now called after checking 'argc'. This
+    function is now called only when 'argc' is positive
+    otherwise the process terminates
+
+commit 118774fd6f73cda46971f1831ea73de6807b2fb5
+Author: Debarun Banerjee <debarun.banerjee@oracle.com>
+Date:   Wed Jul 8 10:00:53 2015 +0530
+
+    BUG#16613004 PARTITIONING DDL, CRASH IN FIELD_VARSTRING::CMP_MAX
+    
+    Problem :
+    ---------
+    The specific issue reported in this bug is with range/list column
+    value that is allocated and initialized by evaluating partition
+    expression(item tree) during execution. After evaluation the range
+    list value is marked fixed [part_column_list_val]. During next
+    execution, we don't re-evaluate the expression and use the old value
+    since it is marked fixed.
+    
+    Solution :
+    ----------
+    One way to solve the issue is to mark all column values as not fixed
+    during clone so that the expression is always re-evaluated once we
+    attempt partition_info::fix_column_value_functions() after cloning
+    the part_info object during execution of DDL on partitioned table.
+    
+    Reviewed-by: Jimmy Yang <Jimmy.Yang@oracle.com>
+    Reviewed-by: Mattias Jonsson <mattias.jonsson@oracle.com>
+    
+    RB: 9424
+
+commit 993f4ec0f8f6e915508ecbf87841fa5229257f53
+Author: Praveenkumar Hulakund <praveenkumar.hulakund@oracle.com>
+Date:   Fri Jul 3 16:56:13 2015 +0530
+
+    Bug#18487951 - QUERY_CACHE_MIN_RES_UNIT SET TO ZERO, CRASHES IN QUERY_CACHE::FIND_BIN
+    
+    Follow up patch to fix sys_vars.query_cache_min_res_unit_basic_32 test failure.
+
+commit bc4d2f9efb5fb7d42ec31eefaea985015bb06cca
+Author: Praveenkumar Hulakund <praveenkumar.hulakund@oracle.com>
+Date:   Thu Jul 2 15:31:55 2015 +0530
+
+    Bug#18487951 - QUERY_CACHE_MIN_RES_UNIT SET TO ZERO, CRASHES IN QUERY_CACHE::FIND_BIN
+    
+    Valid min value for query_cache_min_res_unit is 512. But attempt
+    to set value greater than or equal to the ULONG_MAX(max value) is
+    resulting query_cache_min_res_unit value to 0. This result in
+    crash while searching for memory block lesser than the valid
+    min value to store query results.
+    
+    Free memory blocks in query cache are stored in bins according
+    to their size. The bins are stored in size descending order.
+    For the memory block request the appropriate bin is searched using
+    binary search algorithm. The minimum free memory block request
+    expected is 512 bytes. And the appropriate bin is searched for block
+    greater than or equals to 512 bytes.
+    
+    Because of the bug the query_cache_min_res_unit is set to 0. Due
+    to which there is a chance of request for memory blocks lesser
+    than the minimum size in free memory block bins. Search for bin
+    for this invalid input size fails and returns garbage index.
+    Accessing bins array element with this index is causing the issue
+    reported.
+    
+    The valid value range for the query_cache_min_res_unit is
+    512 to ULONG_MAX(when value is greater than the max allowed value,
+    max allowed value is used i.e ULONG_MAX). While setting result unit
+    block size (query_cache_min_res_unit), size is memory aligned by
+    using a macro ALIGN_SIZE. The ALIGN_SIZE logic is as below,
+    
+      (input_size + sizeof(double) - 1) & ~(sizeof(double) - 1)
+    
+    For unsigned long type variable when input_size is greater than
+    equal to ULONG_MAX-(sizeof(double)-1), above expression is
+    resulting in value 0.
+    
+    Fix:
+    -----
+    Comparing value set for query_cache_min_res_unit with max
+    aligned value which can be stored in ulong type variable.
+    If it is greater then setting it to the max aligned value for
+    ulong type variable.
+
+commit fd5578749645eb99c7a1565246a22fd432ef9536
+Author: Arun Kuruvila <arun.kuruvila@oracle.com>
+Date:   Tue Jun 30 10:27:12 2015 +0530
+
+    Bug #20772273 : MYSQLIMPORT --USE-THREADS DOESN'T USE
+                    MULTIPLE THREADS
+    
+    Description:- The utility "mysqlimport" does not use
+    multiple threads for the execution with option
+    "--use-threads". "mysqlimport" while importing multiple
+    files and multiple tables, uses a single thread even if the
+    number of threads are specified with "--use-threads" option.
+    
+    Analysis:- This utility uses ifdef HAVE_LIBPTHREAD to check
+    for libpthread library and if defined uses libpthread
+    library for mutlithreaing. Since HAVE_LIBPTHREAD is not
+    defined anywhere in the source, "--use-threads" option is
+    silently ignored.
+    
+    Fix:- "-DTHREADS" is set to the COMPILE_FLAGS  which will
+    enable pthreads. HAVE_LIBPTHREAD macro is removed.
+
+commit 21cbfb12ef661cc274d19ce542a8507fc779f06d
+Author: Yashwant Sahu <yashwant.sahu@oracle.com>
+Date:   Wed Jun 24 17:48:46 2015 +0530
+
+    Bug# 20376760:  STACK-BUFFER-OVERFLOW WITH LONG PATHS TO CERTAIN VARIABLES
+
+commit 8f5dca528e376ca1e01cbb6d615096998884969d
+Author: Debarun Banerjee <debarun.banerjee@oracle.com>
+Date:   Wed Jun 24 10:27:12 2015 +0530
+
+    BUG#20310212 PARTITION DDL- CRASH AFTER THD::NOCHECK_REGISTER_ITEM_
+    
+    Problem :
+    ---------
+    Issue-1: The root cause for the issues is that (col1 > 1) is not a
+    valid partition function and we should have thrown error at much early
+    stage [partition_info::check_partition_info]. We are not checking
+    sub-partition expression when partition expression is NULL.
+    
+    Issue-2: Potential issue for future if any partition function needs to
+    change item tree during open/fix_fields. We should release changed
+    items, if any, before doing closefrm when we open the partitioned table
+    during creation in create_table_impl.
+    
+    Solution :
+    ----------
+    1.check_partition_info() - Check for sub-partition expression even if no
+    partition expression.
+    [partition by ... columns(...) subpartition by hash(<expr>)]
+    
+    2.create_table_impl() - Assert that the change list is empty before doing
+    closefrm for partitioned table. Currently no supported partition function
+    seems to be changing item tree during open.
+    
+    Reviewed-by: Mattias Jonsson <mattias.jonsson@oracle.com>
+    
+    RB: 9345
+
+commit 9e3fee076ce8dfafc790d5b1d01b7075b591bd1a
+Merge: 9ee79c5 031b2e2
+Author: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+Date:   Tue Jun 23 13:59:40 2015 +0200
+
+    Empty version change upmerge
+
+commit 031b2e277315c702debc63ecc728aa770b29fdf0
+Author: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
+Date:   Tue Jun 23 13:56:39 2015 +0200
+
+    Raise version number after tagging 5.1.76
+
+commit 9ee79c5d180dbc7ac1393d5e8d6b7977522e5c42
+Author: Murthy Narkedimilli <murthy.narkedimilli@oracle.com>
+Date:   Tue Jun 23 06:06:07 2015 +0200
+
+    Raise version number after cloning 5.5.45
