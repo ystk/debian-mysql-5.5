@@ -25,7 +25,7 @@ Chapter 2 Installing and Upgrading MySQL
        Please note that not all platforms are equally suitable
        for running MySQL, and that not all platforms on which
        MySQL is known to run are officially supported by Oracle
-       Corporation:
+       Corporation.
 
     2. Choose which distribution to install.
        Several versions of MySQL are available, and most are
@@ -961,7 +961,7 @@ Additional Installation Information
    executed using a user with Administrator privileges.
 
    For a list of limitations on the use of MySQL on the Windows
-   platform, see Section D.10.6, "Windows Platform Limitations."
+   platform, see Section C.10.6, "Windows Platform Limitations."
 
    In addition to the MySQL Server package, you may need or want
    additional components to use MySQL with your application or
@@ -7984,13 +7984,13 @@ mysql> SELECT User, Host, Password FROM mysql.user;
    your root password after setting it, see Section B.5.4.1,
    "How to Reset the Root Password."
 
+   To set up additional accounts, see Section 6.3.2, "Adding
+   User Accounts."
+
    You might want to defer setting the passwords until later, to
    avoid the need to specify them while you perform additional
    setup or testing. However, be sure to set them before using
    your installation for production purposes.
-
-   To set up additional accounts, see Section 6.3.2, "Adding
-   User Accounts."
    Note
 
    On Windows, you can also perform the process described in
@@ -8215,81 +8215,314 @@ mysql> DROP DATABASE test;
 
 2.11 Upgrading or Downgrading MySQL
 
+   This section describes the steps to upgrade or downgrade a
+   MySQL installation.
+
+   Upgrading is a common procedure, as you pick up bug fixes
+   within the same MySQL release series or significant features
+   between major MySQL releases. You perform this procedure
+   first on some test systems to make sure everything works
+   smoothly, and then on the production systems.
+
+   Downgrading is less common. Typically, you undo an upgrade
+   because of some compatibility or performance issue that
+   occurs on a production system, and was not uncovered during
+   initial upgrade verification on the test systems. As with the
+   upgrade procedure, perform and verify the downgrade procedure
+   on some test systems first, before using it on a production
+   system.
+
 2.11.1 Upgrading MySQL
 
-   As a general rule, to upgrade from one release series to
-   another, go to the next series rather than skipping a series.
-   To upgrade from a release series previous to MySQL 5.1,
-   upgrade to each successive release series in turn until you
-   have reached MySQL 5.1, and then proceed with the upgrade to
-   MySQL 5.5. For example, if you currently are running MySQL
-   5.0 and wish to upgrade to a newer series, upgrade to MySQL
-   5.1 first before upgrading to 5.5, and so forth. For
-   information on upgrading to MySQL 5.1, see the MySQL 5.1
-   Reference Manual.
+   This section describes how to upgrade to a new MySQL version.
 
-   There is a special case for upgrading to MySQL 5.5, which is
-   that there was a short-lived MySQL 5.4 development series.
-   This series is no longer being worked on, but to accommodate
-   users of both series, this section includes one subsection
-   for users upgrading from MySQL 5.1 to 5.5 and another for
-   users upgrading from MySQL 5.4 to 5.5.
+     * Supported Upgrade Methods
 
-   To upgrade to MySQL 5.5, use the items in the following
-   checklist as a guide:
+     * Supported Upgrade Paths
 
-     * Before any upgrade, back up your databases, including the
-       mysql database that contains the grant tables. See
-       Section 7.2, "Database Backup Methods."
+     * Before You Begin
 
-     * Read all the notes in Section 2.11.1.1, "Upgrading from
-       MySQL 5.1 to 5.5," or Section 2.11.1.2, "Upgrading from
-       MySQL 5.4 to 5.5," depending on whether you currently use
-       MySQL 5.1 or 5.4. These notes enable you to identify
-       upgrade issues that apply to your current MySQL
-       installation. Some incompatibilities discussed in that
-       section require your attention before upgrading. Others
-       should be dealt with after upgrading.
+     * Performing an In-place Upgrade
 
-     * Read the Release Notes
-       (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/) as
-       well, which provide information about features that are
-       new in MySQL 5.5 or differ from those found in earlier
-       MySQL releases.
+     * Performing a Logical Upgrade
 
-     * After upgrading to a new version of MySQL, run
-       mysql_upgrade (see Section 4.4.7, "mysql_upgrade ---
-       Check and Upgrade MySQL Tables"). This program checks
-       your tables, and attempts to repair them if necessary. It
-       also updates your grant tables to ensure that they have
-       the current structure so that you can take advantage of
-       any new capabilities. (Some releases of MySQL introduce
-       changes to the structure of the grant tables to add new
-       privileges or features.)
-       mysql_upgrade does not upgrade the contents of the help
-       tables. For upgrade instructions, see Section 5.1.10,
-       "Server-Side Help."
+     * Upgrade Troubleshooting
 
-     * If you run MySQL Server on Windows, see Section 2.3.10,
-       "Upgrading MySQL on Windows."
+Supported Upgrade Methods
+
+
+     * In-place Upgrade: Involves shutting down the old MySQL
+       version, replacing the old MySQL binaries or packages
+       with the new ones, restarting MySQL on the existing data
+       directory, and running mysql_upgrade.
+
+     * Logical Upgrade: Involves exporting existing data from
+       the old MySQL version using mysqldump, installing the new
+       MySQL version, loading the dump file into the new MySQL
+       version, and running mysql_upgrade.
+       Note
+       MySQL recommends a mysqldump upgrade when upgrading from
+       a previous release. For example, use this method when
+       upgrading from 5.1 to 5.5.
+
+   For in-place and logical upgrade procedures, see Section
+   2.11.1, "," and Section 2.11.1, "."
+
+   If you run MySQL Server on Windows, see Section 2.3.10,
+   "Upgrading MySQL on Windows."
+
+Supported Upgrade Paths
+
+   Unless otherwise documented, the following upgrade paths are
+   supported:
+
+     * Upgrading from a release series version to a newer
+       release series version is supported. For example,
+       upgrading from 5.5.45 to 5.5.46 is supported. Skipping
+       release series versions is also supported. For example,
+       upgrading from 5.5.44 to 5.5.46 is supported.
+
+     * Upgrading one release level is supported. For example,
+       upgrading from 5.1 to 5.5 is supported. Upgrading to the
+       latest release series version is recommended before
+       upgrading to the next release level. For example, upgrade
+       to the latest 5.1 release before upgrading to 5.5.
+
+     * Upgrading more than one release level is supported, but
+       only if you upgrade one release level at a time. For
+       example, if you currently are running MySQL 5.0 and wish
+       to upgrade to a newer series, upgrade to MySQL 5.1 first
+       before upgrading to MySQL 5.5, and so forth. For
+       information on upgrading to MySQL 5.1 see the MySQL 5.1
+       Reference Manual.
+
+     * Direct upgrades that skip a release level (for example,
+       upgrading directly from MySQL 5.0 to 5.5) are not
+       recommended or supported.
+
+   The following conditions apply to all upgrade paths:
+
+     * Upgrades between General Availability (GA) status
+       releases are supported.
+
+     * Upgrades between milestone releases (or from a milestone
+       release to a GA release) are not supported. For example,
+       upgrading from 5.5.7 to 5.5.8 is not supported, as 5.5.7
+       is not a GA status release.
+
+     * For upgrades between versions of a MySQL release series
+       that has reached GA status, you can move the MySQL format
+       files and data files between different versions on
+       systems with the same architecture. This is not
+       necessarily true for upgrades between milestone releases.
+       Use of milestone releases is at your own risk.
+
+Before You Begin
+
+   Before upgrading, review the following information and
+   perform the recommended steps:
+
+     * Before upgrading, protect your data by creating a backup
+       of your current databases and log files. The backup
+       should include the mysql database, which contains the
+       MySQL system tables. See Section 7.2, "Database Backup
+       Methods."
+
+     * Review the Release Notes
+       (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/) which
+       provide information about features that are new in the
+       MySQL 5.5 or differ from those found in earlier MySQL
+       releases. Some of these changes may result in
+       incompatibilities.
+
+     * Review Section 2.11.1.1, "Changes Affecting Upgrades to
+       5.5." This section describes changes that may require
+       action before or after upgrading.
+
+     * Check Section 2.11.3, "Checking Whether Tables or Indexes
+       Must Be Rebuilt," to see whether changes to table formats
+       or to character sets or collations were made between your
+       current version of MySQL and the version to which you are
+       upgrading. If such changes have resulted in an
+       incompatibility between MySQL versions, you will need to
+       upgrade the affected tables using the instructions in
+       Section 2.11.4, "Rebuilding or Repairing Tables or
+       Indexes."
 
      * If you use replication, see Section 17.4.3, "Upgrading a
        Replication Setup," for information on upgrading your
        replication setup.
 
-     * If you use InnoDB, consider setting innodb_fast_shutdown
-       to 0 before shutting down and upgrading your server. When
-       you set innodb_fast_shutdown to 0, InnoDB does a slow
-       shutdown, a full purge and a change buffer merge before
-       shutting down, which ensures that all data files are
-       fully prepared in case the upgrade process modifies the
-       file format.
+     * If you use XA transactions with InnoDB, run XA RECOVER
+       before upgrading to check for uncommitted XA
+       transactions. If results are returned, either commit or
+       rollback the XA transactions by issuing an XA COMMIT or
+       XA ROLLBACK statement.
 
-     * If you upgrade an installation originally produced by
-       installing multiple RPM packages, it is best to upgrade
-       all the packages, not just some. For example, if you
-       previously installed the server and client RPMs, do not
-       upgrade just the server RPM.
+     * If your MySQL installation contains a large amount of
+       data that might take a long time to convert after an
+       in-place upgrade, you might find it useful to create a
+       "dummy" database instance for assessing what conversions
+       might be needed and the work involved to perform them.
+       Make a copy of your MySQL instance that contains a full
+       copy of the mysql database, plus all other databases
+       without data. Run your upgrade procedure on this dummy
+       instance to see what actions might be needed so that you
+       can better evaluate the work involved when performing
+       actual data conversion on your original database
+       instance.
+
+     * Rebuilding and reinstalling the Perl DBD::mysql module
+       whenever you install or upgrade to a new release of MySQL
+       is recommended. The same applies to other MySQL
+       interfaces as well, such as PHP mysql extensions and the
+       Python MySQLdb module.
+
+Performing an In-place Upgrade
+
+   This section describes how to perform an in-place upgrade.
+   Review Before you Begin before proceeding.
+   Note
+
+   If you upgrade an installation originally produced by
+   installing multiple RPM packages, upgrade all the packages,
+   not just some. For example, if you previously installed the
+   server and client RPMs, do not upgrade just the server RPM.
+
+   To perform an in-place upgrade:
+
+    1. Review the changes described in Section 2.11.1.1,
+       "Changes Affecting Upgrades to 5.5" for steps to be
+       performed before upgrading.
+
+    2. If you use InnoDB, configure MySQL to perform a slow
+       shutdown by setting innodb_fast_shutdown to 0. For
+       example:
+shell> bin/mysql -u root -p password --execute="set global innodb_fast
+_shutdown=0"
+       With a slow shutdown, InnoDB performs a full purge and
+       change buffer merge before shutting down, which ensures
+       that data files are fully prepared in case of file format
+       differences between releases.
+
+    3. Shut down the old MySQL server. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+
+    4. If you use InnoDB, remove the InnoDB redo log files (the
+       ib_logfile* files) from the data directory to avoid
+       upgrade issues related to redo log file format changes
+       that may have occurred between releases.
+shell> rm ib_logfile*
+
+    5. Upgrade the MySQL binaries or packages in place (replace
+       the old binaries with the new ones).
+
+    6. Start the MySQL 5.5 server, using the existing data
+       directory. For example:
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/existing-datadi
+r
+
+
+    7. Run mysql_upgrade. For example:
+shell> bin/mysql_upgrade -u root -p password
+       mysql_upgrade examines all tables in all databases for
+       incompatibilities with the current version of MySQL.
+       mysql_upgrade also upgrades the system tables so that you
+       can take advantage of new privileges or capabilities.
+       Note
+       mysql_upgrade does not upgrade the contents of the help
+       tables. For upgrade instructions, see Section 5.1.10,
+       "Server-Side Help."
+
+Performing a Logical Upgrade
+
+   This section describes how to perform a logical upgrade.
+   Review Before you Begin before proceeding.
+
+   To perform a logical upgrade:
+
+    1. Review the changes described in Section 2.11.1.1,
+       "Changes Affecting Upgrades to 5.5" for steps to be
+       performed before upgrading.
+
+    2. Export your existing data from the previous MySQL
+       version:
+shell> mysqldump --add-drop-table --routines --events --add-drop-table
+    -> --all-databases --force > data-for-upgrade.sql
+
+       Note
+       Use the --routines and --events options with mysqldump
+       (as shown above) if your databases include stored
+       programs. The --all-databases option includes all
+       databases in the dump, including the mysql database that
+       holds the system tables.
+
+    3. Shut down the old MySQL server. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+
+    4. Install MySQL 5.5. For installation instructions, see
+       Chapter 2, "Installing and Upgrading MySQL."
+
+    5. Initialize a new data directory:
+shell> scripts/mysql_install_db --user=mysql --datadir=/path/to/5.5-da
+tadir
+
+
+    6. Start the MySQL 5.5 server, using the new data directory.
+       For example:
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/5.5-datadir
+
+
+    7. Load the previously created dump file into the new MySQL
+       server. For example:
+shell> bin/mysql -u root -p password --execute="source data-for-upgrad
+e.sql" --force
+
+    8. Run mysql_upgrade. For example:
+shell> bin/mysql_upgrade -u root -p password
+       mysql_upgrade examines all tables in all databases for
+       incompatibilities with the current version of MySQL.
+       mysql_upgrade also upgrades the system tables so that you
+       can take advantage of new privileges or capabilities.
+       Note
+       mysql_upgrade does not upgrade the contents of the help
+       tables. For upgrade instructions, see Section 5.1.10,
+       "Server-Side Help."
+
+    9. If you use InnoDB, configure MySQL to perform a slow
+       shutdown by setting innodb_fast_shutdown to 0. For
+       example:
+shell> bin/mysql -u root -p password --execute="set global innodb_fast
+_shutdown=0"
+   10. Shut down and restart the MySQL server to ensure a clean
+       shutdown and startup. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/5.5-datadir
+
+Upgrade Troubleshooting
+
+
+     * If problems occur, such as that the new mysqld server
+       does not start or that you cannot connect without a
+       password, verify that you do not have an old my.cnf file
+       from your previous installation. You can check this with
+       the --print-defaults option (for example, mysqld
+       --print-defaults). If this command displays anything
+       other than the program name, you have an active my.cnf
+       file that affects server or client operation.
+
+     * If, after an upgrade, you experience problems with
+       compiled client programs, such as Commands out of sync or
+       unexpected core dumps, you probably have used old header
+       or library files when compiling your programs. In this
+       case, check the date for your mysql.h file and
+       libmysqlclient.a library to verify that they are from the
+       new MySQL distribution. If not, recompile your programs
+       with the new headers and libraries. Recompilation might
+       also be necessary for programs compiled against the
+       shared client library if the library major version number
+       has changed (for example from libmysqlclient.so.15 to
+       libmysqlclient.so.16.
 
      * If you have created a user-defined function (UDF) with a
        given name and upgrade MySQL to a version that implements
@@ -8304,165 +8537,43 @@ mysql> DROP DATABASE test;
        server interprets references to different kinds of
        functions.
 
-   For upgrades between versions of a MySQL release series that
-   has reached General Availability status, you can move the
-   MySQL format files and data files between different versions
-   on systems with the same architecture. For upgrades to a
-   version of a MySQL release series that is in development
-   status, that is not necessarily true. Use of development
-   releases is at your own risk.
+2.11.1.1 Changes Affecting Upgrades to 5.5
 
-   If you are cautious about using new versions, you can always
-   rename your old mysqld before installing a newer one. For
-   example, if you are using a version of MySQL 5.1 and want to
-   upgrade to 5.5, rename your current server from mysqld to
-   mysqld-5.1. If your new mysqld then does something
-   unexpected, you can simply shut it down and restart with your
-   old mysqld.
-
-   If problems occur, such as that the new mysqld server does
-   not start or that you cannot connect without a password,
-   verify that you do not have an old my.cnf file from your
-   previous installation. You can check this with the
-   --print-defaults option (for example, mysqld
-   --print-defaults). If this command displays anything other
-   than the program name, you have an active my.cnf file that
-   affects server or client operation.
-
-   If, after an upgrade, you experience problems with compiled
-   client programs, such as Commands out of sync or unexpected
-   core dumps, you probably have used old header or library
-   files when compiling your programs. In this case, you should
-   check the date for your mysql.h file and libmysqlclient.a
-   library to verify that they are from the new MySQL
-   distribution. If not, recompile your programs with the new
-   headers and libraries. Recompilation might also be necessary
-   for programs compiled against the shared client library if
-   the library major version number has changed (for example
-   from libmysqlclient.so.15 to libmysqlclient.so.16.
-
-   If your MySQL installation contains a large amount of data
-   that might take a long time to convert after an in-place
-   upgrade, you might find it useful to create a "dummy"
-   database instance for assessing what conversions might be
-   needed and the work involved to perform them. Make a copy of
-   your MySQL instance that contains a full copy of the mysql
-   database, plus all other databases without data. Run your
-   upgrade procedure on this dummy instance to see what actions
-   might be needed so that you can better evaluate the work
-   involved when performing actual data conversion on your
-   original database instance.
-
-   It is a good idea to rebuild and reinstall the Perl
-   DBD::mysql module whenever you install a new release of
-   MySQL. The same applies to other MySQL interfaces as well,
-   such as PHP mysql extensions and the Python MySQLdb module.
-
-2.11.1.1 Upgrading from MySQL 5.1 to 5.5
-
+   Before upgrading to MySQL 5.5, review the changes described
+   in this section to identify upgrade issues that apply to your
+   current MySQL installation and applications.
    Note
 
-   It is good practice to back up your data before installing
-   any new version of software. Although MySQL works very hard
-   to ensure a high level of quality, you should protect your
-   data by making a backup.
+   In addition to the changes outlined in this section, review
+   the Release Notes
+   (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/) and other
+   important information outlined in Section 2.11.1, "."
 
-   To upgrade to 5.5 from any previous version, MySQL recommends
-   that you dump your tables with mysqldump before upgrading and
-   reload the dump file after upgrading. Use the --all-databases
-   option to include all databases in the dump. If your
-   databases include stored programs, use the --routines and
-   --events options as well.
+   Changes marked as either Known issue or Incompatible change
+   are incompatibilities with earlier versions of MySQL, and may
+   require your attention before you upgrade. Our aim is to
+   avoid these changes, but occasionally they are necessary to
+   correct problems that would be worse than an incompatibility
+   between releases. If any upgrade issue applicable to your
+   installation involves an incompatibility that requires
+   special handling, follow the instructions given in the
+   incompatibility description. Sometimes this involves dumping
+   and reloading tables, or use of a statement such as CHECK
+   TABLE or REPAIR TABLE.
 
-   In general, you should do the following when upgrading from
-   MySQL 5.1 to 5.5:
+   For dump and reload instructions, see Section 2.11.4,
+   "Rebuilding or Repairing Tables or Indexes." Any procedure
+   that involves REPAIR TABLE with the USE_FRM option must be
+   done before upgrading. Use of this statement with a version
+   of MySQL different from the one used to create the table
+   (that is, using it after upgrading) may damage the table. See
+   Section 13.7.2.5, "REPAIR TABLE Syntax."
 
-     * Read all the items in these sections to see whether any
-       of them might affect your applications:
+     * Configuration Changes
 
-          + Section 2.11.1, "Upgrading MySQL," has general
-            update information.
+     * Server Changes
 
-          + The items in the change lists provided later in this
-            section enable you to identify upgrade issues that
-            apply to your current MySQL installation. Some
-            incompatibilities discussed there require your
-            attention before upgrading. Others should be dealt
-            with after upgrading.
-
-          + The MySQL 5.5 Release Notes
-            (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/)
-            describe significant new features you can use in 5.5
-            or that differ from those found in earlier MySQL
-            releases. Some of these changes may result in
-            incompatibilities.
-       Changes marked as either Known issue or Incompatible
-       change are incompatibilities with earlier versions of
-       MySQL, and may require your attention before you upgrade.
-       Our aim is to avoid these changes, but occasionally they
-       are necessary to correct problems that would be worse
-       than an incompatibility between releases. If any upgrade
-       issue applicable to your installation involves an
-       incompatibility that requires special handling, follow
-       the instructions given in the incompatibility
-       description. Sometimes this involves dumping and
-       reloading tables, or use of a statement such as CHECK
-       TABLE or REPAIR TABLE.
-       For dump and reload instructions, see Section 2.11.4,
-       "Rebuilding or Repairing Tables or Indexes." Any
-       procedure that involves REPAIR TABLE with the USE_FRM
-       option must be done before upgrading. Use of this
-       statement with a version of MySQL different from the one
-       used to create the table (that is, using it after
-       upgrading) may damage the table. See Section 13.7.2.5,
-       "REPAIR TABLE Syntax."
-
-     * Before upgrading to a new version of MySQL, Section
-       2.11.3, "Checking Whether Tables or Indexes Must Be
-       Rebuilt," to see whether changes to table formats or to
-       character sets or collations were made between your
-       current version of MySQL and the version to which you are
-       upgrading. If so and these changes result in an
-       incompatibility between MySQL versions, you will need to
-       upgrade the affected tables using the instructions in
-       Section 2.11.4, "Rebuilding or Repairing Tables or
-       Indexes."
-
-     * After upgrading to a new version of MySQL, run
-       mysql_upgrade (see Section 4.4.7, "mysql_upgrade ---
-       Check and Upgrade MySQL Tables"). This program checks
-       your tables, and attempts to repair them if necessary. It
-       also updates your grant tables to ensure that they have
-       the current structure so that you can take advantage of
-       any new capabilities. (Some releases of MySQL introduce
-       changes to the structure of the grant tables to add new
-       privileges or features.)
-       mysql_upgrade does not upgrade the contents of the help
-       tables. For upgrade instructions, see Section 5.1.10,
-       "Server-Side Help."
-
-     * If you run MySQL Server on Windows, see Section 2.3.10,
-       "Upgrading MySQL on Windows."
-
-     * If you use replication, see Section 17.4.3, "Upgrading a
-       Replication Setup," for information on upgrading your
-       replication setup.
-
-   If your MySQL installation contains a large amount of data
-   that might take a long time to convert after an in-place
-   upgrade, you might find it useful to create a "dummy"
-   database instance for assessing what conversions might be
-   needed and the work involved to perform them. Make a copy of
-   your MySQL instance that contains a full copy of the mysql
-   database, plus all other databases without data. Run your
-   upgrade procedure on this dummy instance to see what actions
-   might be needed so that you can better evaluate the work
-   involved when performing actual data conversion on your
-   original database instance.
-
-   The following lists describe changes that may affect
-   applications and that you should watch out for when upgrading
-   from MySQL 5.1 to 5.5.
+     * SQL Changes
 
 Configuration Changes
 
@@ -8895,332 +9006,222 @@ WHERE a1.id=a2.id;
        reserved in MySQL 5.1. See Section 9.3, "Keywords and
        Reserved Words."
 
-2.11.1.2 Upgrading from MySQL 5.4 to 5.5
-
-   This section is for the special case of upgrading to MySQL
-   5.5 from the short-lived MySQL 5.4 development series, which
-   is no longer being worked on.
-   Note
-
-   It is good practice to back up your data before installing
-   any new version of software. Although MySQL works very hard
-   to ensure a high level of quality, you should protect your
-   data by making a backup.
-
-   To upgrade to 5.5 from any previous version, MySQL recommends
-   that you dump your tables with mysqldump before upgrading and
-   reload the dump file after upgrading. Use the --all-databases
-   option to include all databases in the dump. If your
-   databases include stored programs, use the --routines and
-   --events options as well.
-
-   In general, you should do the following when upgrading from
-   MySQL 5.4 to 5.5:
-
-     * Read all the items in these sections to see whether any
-       of them might affect your applications:
-
-          + Section 2.11.1, "Upgrading MySQL," has general
-            update information.
-
-          + The items in the change lists provided later in this
-            section enable you to identify upgrade issues that
-            apply to your current MySQL installation. Some
-            incompatibilities discussed there require your
-            attention before upgrading. Others should be dealt
-            with after upgrading.
-
-          + The MySQL 5.5 Release Notes
-            (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/)
-            describe significant new features you can use in 5.5
-            or that differ from those found in earlier MySQL
-            releases. Some of these changes may result in
-            incompatibilities.
-       Note particularly any changes that are marked Known issue
-       or Incompatible change. These incompatibilities with
-       earlier versions of MySQL may require your attention
-       before you upgrade. Our aim is to avoid these changes,
-       but occasionally they are necessary to correct problems
-       that would be worse than an incompatibility between
-       releases. If any upgrade issue applicable to your
-       installation involves an incompatibility that requires
-       special handling, follow the instructions given in the
-       incompatibility description. Sometimes this involves
-       dumping and reloading tables, or use of a statement such
-       as CHECK TABLE or REPAIR TABLE.
-       For dump and reload instructions, see Section 2.11.4,
-       "Rebuilding or Repairing Tables or Indexes." Any
-       procedure that involves REPAIR TABLE with the USE_FRM
-       option must be done before upgrading. Use of this
-       statement with a version of MySQL different from the one
-       used to create the table (that is, using it after
-       upgrading) may damage the table. See Section 13.7.2.5,
-       "REPAIR TABLE Syntax."
-
-     * Before upgrading to a new version of MySQL, Section
-       2.11.3, "Checking Whether Tables or Indexes Must Be
-       Rebuilt," to see whether changes to table formats or to
-       character sets or collations were made between your
-       current version of MySQL and the version to which you are
-       upgrading. If so and these changes result in an
-       incompatibility between MySQL versions, you will need to
-       upgrade the affected tables using the instructions in
-       Section 2.11.4, "Rebuilding or Repairing Tables or
-       Indexes."
-
-     * After upgrading to a new version of MySQL, run
-       mysql_upgrade (see Section 4.4.7, "mysql_upgrade ---
-       Check and Upgrade MySQL Tables"). This program checks
-       your tables, and attempts to repair them if necessary. It
-       also updates your grant tables to ensure that they have
-       the current structure so that you can take advantage of
-       any new capabilities. (Some releases of MySQL introduce
-       changes to the structure of the grant tables to add new
-       privileges or features.)
-       mysql_upgrade does not upgrade the contents of the help
-       tables. For upgrade instructions, see Section 5.1.10,
-       "Server-Side Help."
-
-     * If you run MySQL Server on Windows, see Section 2.3.10,
-       "Upgrading MySQL on Windows."
-
-     * If you use replication, see Section 17.4.3, "Upgrading a
-       Replication Setup," for information on upgrading your
-       replication setup.
-
-   If your MySQL installation contains a large amount of data
-   that might take a long time to convert after an in-place
-   upgrade, you might find it useful to create a "dummy"
-   database instance for assessing what conversions might be
-   needed and the work involved to perform them. Make a copy of
-   your MySQL instance that contains a full copy of the mysql
-   database, plus all other databases without data. Run your
-   upgrade procedure on this dummy instance to see what actions
-   might be needed so that you can better evaluate the work
-   involved when performing actual data conversion on your
-   original database instance.
-
-   The following lists describe changes that may affect
-   applications and that you should watch out for when upgrading
-   from MySQL 5.4 to 5.5.
-
-Configuration Changes
-
-
-     * Incompatible change: In MySQL 5.5, the server includes a
-       plugin services interface that complements the plugin
-       API. The services interface enables server functionality
-       to be exposed as a "service" that plugins can access
-       through a function-call interface. The libmysqlservices
-       library provides access to the available services and
-       dynamic plugins now must be linked against this library
-       (use the -lmysqlservices flag). For an example showing
-       how to configure for CMake, see Section 24.3, "MySQL
-       Services for Plugins."
-
-Server Changes
-
-
-     * On Linux systems, the libaio library may be needed.
-       Install it first, if it is not already present on your
-       system.
-
-     * Incompatible change: As of MySQL 5.5.7, the server
-       requires that a new grant table, proxies_priv, be present
-       in the mysql database. If you are upgrading from a
-       previous MySQL release rather than performing a new
-       installation, the server will find that this table is
-       missing and exit during startup with the following
-       message:
-Table 'mysql.proxies_priv' doesn't exist
-
-       To create the proxies_priv table, start the server with
-       the --skip-grant-tables option to cause it to skip the
-       normal grant table checks, then run mysql_upgrade. For
-       example:
-shell> mysqld --skip-grant-tables &
-shell> mysql_upgrade
-
-       Then stop the server and restart it normally.
-       You can specify other options on the mysqld command line
-       if necessary. Alternatively, if your installation is
-       configured so that the server normally reads options from
-       an option file, use the --defaults-file option to specify
-       the file (enter each command on a single line):
-shell> mysqld --defaults-file=/usr/local/mysql/etc/my.cnf
-         --skip-grant-tables &
-shell> mysql_upgrade
-
-       With the --skip-grant-tables option, the server does no
-       password or privilege checking, so any client can connect
-       and effectively have all privileges. For additional
-       security, use the --skip-networking option as well to
-       prevent remote clients from connecting.
-
-     * Incompatible change: As of MySQL 5.5.3, the Unicode
-       implementation has been extended to provide support for
-       supplementary characters that lie outside the Basic
-       Multilingual Plane (BMP). Noteworthy features:
-
-          + utf16 and utf32 character sets have been added.
-            These correspond to the UTF-16 and UTF-32 encodings
-            of the Unicode character set, and they both support
-            supplementary characters.
-
-          + The utf8mb4 character set has been added. This is
-            similar to utf8, but its encoding allows up to four
-            bytes per character to enable support for
-            supplementary characters.
-
-          + The ucs2 character set is essentially unchanged
-            except for the inclusion of some newer BMP
-            characters.
-       In most respects, upgrading to MySQL 5.5 should present
-       few problems with regard to Unicode usage, although there
-       are some potential areas of incompatibility. These are
-       the primary areas of concern:
-
-          + For the variable-length character data types
-            (VARCHAR and the TEXT types), the maximum length in
-            characters is less for utf8mb4 columns than for utf8
-            columns.
-
-          + For all character data types (CHAR, VARCHAR, and the
-            TEXT types), the maximum number of characters that
-            can be indexed is less for utf8mb4 columns than for
-            utf8 columns.
-       Consequently, if you want to upgrade tables from utf8 to
-       utf8mb4 to take advantage of supplementary-character
-       support, it may be necessary to change some column or
-       index definitions.
-       For additional details about the new Unicode character
-       sets and potential incompatibilities, see Section
-       10.1.10, "Unicode Support," and Section 10.1.11,
-       "Upgrading from Previous to Current Unicode Support."
-
-     * Incompatible change: As of MySQL 5.5.3, the server
-       includes dtoa, a library for conversion between strings
-       and numbers by David M. Gay. In MySQL, this library
-       provides the basis for improved conversion between string
-       or DECIMAL values and approximate-value (FLOAT/DOUBLE)
-       numbers.
-       Because the conversions produced by this library differ
-       in some cases from previous results, the potential exists
-       for incompatibilities in applications that rely on
-       previous results. For example, applications that depend
-       on a specific exact result from previous conversions
-       might need adjustment to accommodate additional
-       precision.
-       For additional information about the properties of dtoa
-       conversions, see Section 12.2, "Type Conversion in
-       Expression Evaluation."
-
-     * Incompatible change: In MySQL 5.5, several changes were
-       made regarding the language and character set of error
-       messages:
-
-          + The --language option for specifying the directory
-            for the error message file is now deprecated. The
-            new lc_messages_dir and lc_messages system variables
-            should be used instead, and the server treats
-            --language as an alias for lc_messages_dir.
-
-          + The language system variable has been removed and
-            replaced with the new lc_messages_dir and
-            lc_messages system variables. lc_messages_dir has
-            only a global value and is read only. lc_messages
-            has global and session values and can be modified at
-            runtime, so the error message language can be
-            changed while the server is running, and individual
-            clients each can have a different error message
-            language by changing their session lc_messages value
-            to a different locale name.
-
-          + Error messages previously were constructed in a mix
-            of character sets. This issue is resolved by
-            constructing error messages internally within the
-            server using UTF-8 and returning them to the client
-            in the character set specified by the
-            character_set_results system variable. The content
-            of error messages therefore may in some cases differ
-            from the messages returned previously.
-       For more information, see Section 10.2, "Setting the
-       Error Message Language," and Section 10.1.6, "Character
-       Set for Error Messages."
-
-     * Before MySQL 5.1.36, plugin options were boolean options
-       (see Section 4.2.5, "Program Option Modifiers"). If you
-       upgrade to MySQL 5.5 from a version older than 5.1.36 and
-       previously used options of the form --plugin_name=0 or
-       --plugin_name=1, the equivalent options are now
-       --plugin_name=OFF and --plugin_name=ON, respectively. You
-       also have the choice of requiring plugins to start
-       successfully by using --plugin_name=FORCE or
-       --plugin_name=FORCE_PLUS_PERMANENT.
-
-SQL Changes
-
-
-     * Incompatible change: Previously, the parser accepted an
-       INTO clause in nested SELECT statements, which is invalid
-       because such statements must return their results to the
-       outer context. As of MySQL 5.5.3, this syntax is no
-       longer permitted and statements that use it must be
-       changed.
-
-     * Some keywords may be reserved in MySQL 5.5 that were not
-       reserved in MySQL 5.4. See Section 9.3, "Keywords and
-       Reserved Words."
-
 2.11.2 Downgrading MySQL
 
-   This section describes what you should do to downgrade to an
-   older MySQL version in the unlikely case that the previous
-   version worked better than the new one.
+   This section describes how to downgrade to an older MySQL
+   version.
 
-   It is always a good idea to make a backup beforehand, in case
-   a downgrade fails and leaves the instance in an unusable
-   state.
+     * Supported Downgrade Methods
 
-   To downgrade between General Availability (GA) status
-   versions within the same release series, typically you just
-   install the new binaries on top of the old ones and do not
-   make any changes to the databases.
+     * Supported Downgrade Paths
 
-   Downgrades between milestone releases (or from a GA release
-   to a milestone release) within the same release series are
-   not supported and you may encounter issues.
+     * Before You Begin
 
-   The following items form a checklist of things you should do
-   whenever you perform a downgrade:
+     * Performing an In-place Downgrade
 
-     * Read the upgrading section for the release series from
-       which you are downgrading to be sure that it does not
-       have any features you really need. See Section 2.11.1,
-       "Upgrading MySQL."
+     * Performing a Logical Downgrade
 
-     * If there is a downgrading section for that version, you
-       should read that as well.
+     * Downgrade Troubleshooting
 
-     * To see which new features were added between the version
-       to which you are downgrading and your current version,
-       see the Release Notes
-       (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/).
+Supported Downgrade Methods
+
+   Supported downgrade methods include:
+
+     * In-place Downgrade: Involves shutting down the new MySQL
+       version, replacing the new MySQL binaries or packages
+       with the old ones, and restarting the old MySQL version
+       on the new data files. In-place downgrades are supported
+       for downgrades between GA versions within the same
+       release series. For example, in-place downgrades are
+       supported for downgrades from 5.5.46 to 5.5.45.
+
+     * Logical Downgrade: Involves using mysqldump to dump all
+       tables from the new MySQL version, and then loading the
+       dump file into the old MySQL version. Logical downgrades
+       are supported for downgrades between GA versions within
+       the same release series and for downgrades between
+       release levels. For example, logical downgrades are
+       supported for downgrades from 5.5.46 to 5.5.45 and for
+       downgrades from 5.5 to 5.1.
+
+Supported Downgrade Paths
+
+   Unless otherwise documented, the following downgrade paths
+   are supported:
+
+     * Downgrading from a release series version to an older
+       release series version is supported using all downgrade
+       methods. For example, downgrading from 5.546 to 5.5.45 is
+       supported. Skipping release series versions is also
+       supported. For example, downgrading from 5.5.46 to 5.5.44
+       is supported.
+
+     * Downgrading one release level is supported using the
+       logical downgrade method. For example, downgrading from
+       5.5 to 5.1 is supported.
+
+     * Downgrading more than one release level is supported
+       using the logical downgrade method, but only if you
+       downgrade one release level at a time. For example, you
+       can downgrade from 5.5 to 5.1, and then to 5.0.
+
+   The following conditions apply to all downgrade paths:
+
+     * Downgrades between General Availability (GA) status
+       releases are supported.
+
+     * Downgrades between milestone releases (or from a GA
+       release to a milestone release) are not supported. For
+       example, downgrading from MySQL 5.5.8 to MySQL 5.5.7 is
+       not supported, as 5.5.7 is not a GA status release.
+
+Before You Begin
+
+   Before downgrading, the following steps are recommended:
+
+     * Review the Release Notes
+       (http://dev.mysql.com/doc/relnotes/mysql/5.5/en/) for the
+       MySQL version you are downgrading from to ensure that
+       there are no features or fixes that you really need.
+
+     * Review Section 2.11.2.1, "Changes Affecting Downgrades
+       from MySQL 5.5." This section describes changes that may
+       require action before or after downgrading.
+       Note
+       The downgrade procedures described in the following
+       sections assume you are downgrading with data files
+       created or modified by the newer MySQL version. However,
+       if you did not modify your data after upgrading,
+       downgrading using backups taken before upgrading to the
+       new MySQL version is recommended. Many of the changes
+       described in Section 2.11.2.1, "Changes Affecting
+       Downgrades from MySQL 5.5" that require action before or
+       after downgrading are not applicable when downgrading
+       using backups taken before upgrading to the new MySQL
+       version.
+
+     * Always back up your current databases and log files
+       before downgrading. The backup should include the mysql
+       database, which contains the MySQL system tables. See
+       Section 7.2, "Database Backup Methods."
+
+     * Use of new features, new configuration options, or new
+       configuration option values that are not supported by a
+       previous release may cause downgrade errors or failures.
+       Before downgrading, it is recommended that you reverse
+       changes resulting from the use of new features and remove
+       configuration settings that are not supported by the
+       release you are downgrading to.
 
      * Check Section 2.11.3, "Checking Whether Tables or Indexes
        Must Be Rebuilt," to see whether changes to table formats
        or to character sets or collations were made between your
        current version of MySQL and the version to which you are
-       downgrading. If so and these changes result in an
-       incompatibility between MySQL versions, you will need to
-       downgrade the affected tables using the instructions in
-       Section 2.11.4, "Rebuilding or Repairing Tables or
-       Indexes."
+       downgrading. If such changes have resulted in an
+       incompatibility between MySQL versions, downgrade the
+       affected tables using the instructions in Section 2.11.4,
+       "Rebuilding or Repairing Tables or Indexes."
 
-   In most cases, you can move the MySQL format files and data
-   files between different GA versions on the same architecture
-   as long as you stay within versions for the same release
-   series of MySQL.
+     * If you use XA transactions with InnoDB, run XA RECOVER
+       before downgrading to check for uncommitted XA
+       transactions. If results are returned, either commit or
+       rollback the XA transactions by issuing an XA COMMIT or
+       XA ROLLBACK statement.
+
+Performing an In-place Downgrade
+
+   In-place downgrades are supported for downgrades between GA
+   status releases within the same release series. Review Before
+   you Begin before proceeding.
+
+   To perform an in-place downgrade:
+
+    1. Review the changes described in Section 2.11.2.1,
+       "Changes Affecting Downgrades from MySQL 5.5" for steps
+       to be performed before downgrading.
+
+    2. If you use InnoDB, configure MySQL to perform a slow
+       shutdown by setting innodb_fast_shutdown to 0. For
+       example:
+shell> bin/mysql -u root -p password --execute="set global innodb_fast
+_shutdown=0"
+       With a slow shutdown, InnoDB performs a full purge and
+       change buffer merge before shutting down, which ensures
+       that data files are fully prepared in case of file format
+       differences between releases.
+
+    3. Shut down the newer MySQL server. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+
+    4. After the slow shutdown, remove the InnoDB redo log files
+       (the ib_logfile* files) from the data directory to avoid
+       downgrade issues related to redo log file format changes
+       that may have occurred between releases.
+shell> rm ib_logfile*
+
+    5. Downgrade the MySQL binaries or packages in-place by
+       replacing the newer binaries or packages with the older
+       ones.
+
+    6. Start the older (downgraded) MySQL server, using the
+       existing data directory. For example:
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/existing-datadi
+r
+
+
+    7. Run mysql_upgrade. For example:
+shell> bin/mysql_upgrade -u root -p password
+
+Performing a Logical Downgrade
+
+   Logical downgrades are supported for downgrades between
+   releases within the same release series and for downgrades to
+   the previous release level. Only downgrades between General
+   Availability (GA) status releases are supported. Review
+   Before you Begin before proceeding.
+
+   To perform a logical downgrade:
+
+    1. Review the changes described in Section 2.11.2.1,
+       "Changes Affecting Downgrades from MySQL 5.5" for steps
+       to be performed before downgrading.
+
+    2. Dump all databases. For example:
+shell> bin/mysqldump --add-drop-table --events -u root -p password --a
+ll-databases --force > all_5_5_databases_dump.sql
+
+    3. Shut down the newer MySQL server. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+
+    4. Initialize an older MySQL instance, with a new data
+       directory. For example:
+shell> scripts/mysql_install_db --user=mysql
+
+    5. Start the older MySQL server, using the new data
+       directory. For example:
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/new-datadir
+
+
+    6. Load the dump file into the older MySQL server. For
+       example:
+shell> bin/mysql -u root -p password --execute="source all_5_5_databas
+es_dump.sql" --force
+
+    7. Run mysql_upgrade. For example:
+shell> bin/mysql_upgrade -u root -p password
+
+    8. If you use InnoDB, configure MySQL to perform a slow
+       shutdown by setting innodb_fast_shutdown to 0. For
+       example:
+shell> bin/mysql -u root -p password --execute="set global innodb_fast
+_shutdown=0"
+
+    9. Shut down and restart the MySQL server to ensure a clean
+       shutdown and startup. For example:
+shell> bin/mysqladmin -u root -p password shutdown
+shell> bin/mysqld_safe --user=mysql --datadir=/path/to/new-datadir
+
+Downgrade Troubleshooting
 
    If you downgrade from one release series to another, there
    may be incompatibilities in table storage formats. In this
@@ -9245,32 +9246,19 @@ SQL Changes
     5. Reload the dump file into the older server. Your tables
        should be accessible.
 
-   It might also be the case that system tables in the mysql
-   database have changed and that downgrading introduces some
-   loss of functionality or requires some adjustments. Here are
-   some examples:
+2.11.2.1 Changes Affecting Downgrades from MySQL 5.5
 
-     * Trigger creation requires the TRIGGER privilege as of
-       MySQL 5.1. In MySQL 5.0, there is no TRIGGER privilege
-       and SUPER is required instead. If you downgrade from
-       MySQL 5.1 to 5.0, you will need to give the SUPER
-       privilege to those accounts that had the TRIGGER
-       privilege in 5.1.
+   Before downgrading from MySQL 5.5, review the changes
+   described in this section. Some changes may require action
+   before or after downgrading.
 
-     * Triggers were added in MySQL 5.0, so if you downgrade
-       from 5.0 to 4.1, you cannot use triggers at all.
-
-     * The mysql.proc.comment column definition changed between
-       MySQL 5.1 and 5.5. After a downgrade from 5.5 to 5.1,
-       this table is seen as corrupt and in need of repair. To
-       workaround this problem, execute mysql_upgrade from the
-       version of MySQL to which you downgraded.
-
-2.11.2.1 Downgrading to MySQL 5.1
-
-   When downgrading to MySQL 5.1 from MySQL 5.5, you should keep
-   in mind the following issues relating to features found in
-   MySQL 5.5, but not in MySQL 5.1:
+     * System Tables.  The mysql.proc.comment column definition
+       changed between MySQL 5.1 and 5.5. After downgrading from
+       5.5 to 5.1, this table is seen as corrupt and in need of
+       repair. Running mysql_upgrade from the version of MySQL
+       to which you downgraded (as documented in the downgrade
+       procedures) reverts the mysql.proc.comment column
+       definition.
 
      * InnoDB.  MySQL 5.5 uses InnoDB Plugin as the built-in
        version of InnoDB. MySQL 5.1 includes InnoDB Plugin as of
@@ -9331,9 +9319,9 @@ Community Server
        See Section 6.3, "MySQL User Account Management," for
        more information.
 
-     * MySQL Enterprise Scalability (Thread Pool): Following
-       uninstallation of this plugin, existing MySQL servers
-       revert to default thread and connection handling.
+     * MySQL Enterprise Thread Pool: Following uninstallation of
+       this plugin, existing MySQL servers revert to default
+       thread and connection handling.
 
      * MySQL Enterprise Audit: Following uninstallation of this
        plugin, no logging of user logins or query activity
