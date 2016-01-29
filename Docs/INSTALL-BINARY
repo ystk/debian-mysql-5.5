@@ -255,7 +255,7 @@ Additional Installation Information
    executed using a user with Administrator privileges.
 
    For a list of limitations on the use of MySQL on the Windows
-   platform, see Section D.10.6, "Windows Platform Limitations."
+   platform, see Section C.10.6, "Windows Platform Limitations."
 
    In addition to the MySQL Server package, you may need or want
    additional components to use MySQL with your application or
