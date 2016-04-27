@@ -1,7 +1,7 @@
 #ifndef ITEM_INCLUDED
 #define ITEM_INCLUDED
 
-/* Copyright (c) 2000, 2015, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -960,7 +960,13 @@ public:
   */
   virtual void no_rows_in_result() {}
   virtual Item *copy_or_same(THD *thd) { return this; }
-  virtual Item *copy_andor_structure(THD *thd) { return this; }
+  /**
+     @param real_items  True <=> in the copy, replace any Item_ref with its
+     real_item()
+     @todo this argument should be always false and removed in WL#7082.
+  */
+  virtual Item *copy_andor_structure(THD *thd, bool real_items= false)
+  { return real_items ? real_item() : this; }
   virtual Item *real_item() { return this; }
   virtual Item *get_tmp_table_item(THD *thd) { return copy_or_same(thd); }
 
@@ -1855,10 +1861,6 @@ public:
 class Item_param :public Item,
                   private Settable_routine_parameter
 {
-  char cnvbuf[MAX_FIELD_WIDTH];
-  String cnvstr;
-  Item *cnvitem;
-
 public:
   enum enum_item_param_state
   {
