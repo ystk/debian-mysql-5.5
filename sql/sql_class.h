@@ -1,4 +1,4 @@
-/* Copyright (c) 2000, 2015, Oracle and/or its affiliates. All rights reserved.
+/* Copyright (c) 2000, 2016, Oracle and/or its affiliates. All rights reserved.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -1662,6 +1662,18 @@ public:
                 current_stmt_binlog_format == BINLOG_FORMAT_ROW);
     return current_stmt_binlog_format == BINLOG_FORMAT_ROW;
   }
+  /**
+    Determine if binlogging is disabled for this session
+    @retval 0 if the current statement binlogging is disabled
+              (could be because of binlog closed/binlog option
+               is set to false).
+    @retval 1 if the current statement will be binlogged
+  */
+  inline bool is_current_stmt_binlog_disabled() const
+  {
+    return (!(variables.option_bits & OPTION_BIN_LOG) ||
+            !mysql_bin_log.is_open());
+  }
 
 private:
   /**
@@ -2515,6 +2527,22 @@ public:
       nocheck_register_item_tree_change(place, *place, mem_root);
     *place= new_value;
   }
+
+  /*
+    Find and update change record of an underlying item.
+
+    @param old_ref The old place of moved expression.  @param new_ref The
+    new place of moved expression.  @details During permanent
+    transformations, e.g. join flattening in simplify_joins, a condition
+    could be moved from one place to another, e.g. from on_expr to WHERE
+    condition. If the moved condition has replaced some other with
+    change_item_tree() function, the change record will restore old value to
+    the wrong place during rollback_item_tree_changes. This function goes
+    through the list of change records, and replaces
+    Item_change_record::place.
+  */
+  void change_item_tree_place(Item **old_ref, Item **new_ref);
+
   void nocheck_register_item_tree_change(Item **place, Item *old_value,
                                          MEM_ROOT *runtime_memroot);
   void rollback_item_tree_changes();

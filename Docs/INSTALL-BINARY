@@ -17,7 +17,7 @@
 
    MySQL compressed tar file binary distributions have names of
    the form mysql-VERSION-OS.tar.gz, where VERSION is a number
-   (for example, 5.5.47), and OS indicates the type of operating
+   (for example, 5.5.50), and OS indicates the type of operating
    system for which the distribution is intended (for example,
    pc-linux-i686 or winx64).
    Warning
@@ -76,7 +76,7 @@ shell> apt-get install libaio1 # install library
    To install and use a MySQL binary distribution, the command
    sequence looks like this:
 shell> groupadd mysql
-shell> useradd -r -g mysql mysql
+shell> useradd -r -g mysql -s /bin/false mysql
 shell> cd /usr/local
 shell> tar zxvf /path/to/mysql-VERSION-OS.tar.gz
 shell> ln -s full-path-to-mysql-VERSION-OS mysql
@@ -118,15 +118,15 @@ Create a mysql User and Group
    may differ slightly on different versions of Unix, or they
    may have different names such as adduser and addgroup.
 shell> groupadd mysql
-shell> useradd -r -g mysql mysql
+shell> useradd -r -g mysql -s /bin/false mysql
 
    Note
 
    Because the user is required only for ownership purposes, not
-   login purposes, the useradd command uses the -r option to
-   create a user that does not have login permissions to your
-   server host. Omit this option to permit logins for the user,
-   or if your useradd does not support the option.
+   login purposes, the useradd command uses the -r and -s
+   /bin/false options to create a user that does not have login
+   permissions to your server host. Omit these options if your
+   useradd does not support them.
 
 Obtain and Unpack the Distribution
 
@@ -418,8 +418,8 @@ Additional Installation Information
    Archive distributions (but not MSI distributions) of MySQL.
 
      * MySQL Installer: This package has a file name similar to
-       mysql-installer-community-5.5.47.0.msi or
-       mysql-installer-commercial-5.5.47.0.msi, and utilizes
+       mysql-installer-community-5.5.50.0.msi or
+       mysql-installer-commercial-5.5.50.0.msi, and utilizes
        MSIs to automatically install MySQL server and other
        products. It will download and apply updates to itself,
        and for each of the installed products. It also
@@ -443,16 +443,16 @@ Additional Installation Information
        Microsoft Windows Using MySQL Installer."
 
      * The Complete Package: This package has a file name
-       similar to mysql-5.5.47-win32.msi or
-       mysql-5.5.47-winx64.zip, and contains all files needed
+       similar to mysql-5.5.50-win32.msi or
+       mysql-5.5.50-winx64.zip, and contains all files needed
        for a complete Windows installation, including the
        Configuration Wizard. This package includes optional
        components such as the embedded server and benchmark
        suite.
 
      * The Noinstall Archive: This package has a file name
-       similar to mysql-5.5.47-win32.zip or
-       mysql-5.5.47-winx64.zip, and contains all the files found
+       similar to mysql-5.5.50-win32.zip or
+       mysql-5.5.50-winx64.zip, and contains all the files found
        in the Complete install package, with the exception of
        the GUI. It also contains PDB files. This package does
        not include an automated installer, and must be manually
@@ -480,7 +480,7 @@ Additional Installation Information
 
    The supported MySQL products include:
 
-     * MySQL server (http://dev.mysql.com/doc/) (one or multiple
+     * MySQL Server (http://dev.mysql.com/doc/) (one or multiple
        versions on the same system)
 
      * MySQL Workbench
@@ -506,7 +506,9 @@ Additional Installation Information
      * MySQL Documentation
 
      * MySQL Installer is also installed and remains on the
-       system as its own application
+       system as its own application, that is used to install
+       additional MySQL products, and also to update and
+       configure existing MySQL products
 
      * The Enterprise edition installs the Enterprise versions
        of the above products, and also includes MySQL Enterprise
@@ -519,14 +521,14 @@ Installer package types
        MySQL server). The file size is over 300MB, and its name
        has the form mysql-installer-community-VERSION.N.msi
        where VERSION is the MySQL Server version number such as
-       5.6 and N is the package number, which begins at 0.
+       5.7 and N is the package number, which begins at 0.
 
      * Web: Only contains the Installer and configuration files,
        and it downloads the MySQL products you choose to
        install. The size of this file is about 2MB; the name of
        the file has the form
        mysql-installer-community-web-VERSION.N.msi where VERSION
-       is the MySQL Server version number such as 5.6 and N is
+       is the MySQL Server version number such as 5.7 and N is
        the package number, which begins at 0.
 
      * Updates: MySQL Installer can upgrade itself, so an
@@ -861,16 +863,17 @@ Adding MySQL Products
 
    MySQL Installer stores a MySQL product catalog. The catalog
    can be updated either manually or automatically, and the
-   catalog change history is also available.
+   catalog change history is also available. The automatic
+   update is enabled by default.
+   Note
+
+   The product catalog update also checks for a newer version of
+   MySQL Installer, and prompts for an update if one is present.
 
    Manual updates
 
    You can update the MySQL product catalog at any time by
    clicking Catalog on the Installer dashboard.
-   Note
-
-   This also checks for a newer MySQL Installer version, and
-   prompts for an update if one is present.
 
    Figure 2.21 MySQL Installer - Open the MySQL Product Catalog
    MySQL Installer - Open the MySQL Product Catalog
@@ -879,10 +882,10 @@ Adding MySQL Products
 
    Automatic updates
 
-   You can configure MySQL Installer to automatically update the
-   MySQL product catalog once per day. To enable this feature
-   and set the update time, click the wrench icon on the
-   Installer dashboard.
+   MySQL Installer can automatically update the MySQL product
+   catalog. By default, this feature is enabled to execute each
+   day at 12:00 AM. To configure this feature, click the wrench
+   icon on the Installer dashboard.
 
    The next window configures the Automatic Catalog Update.
    Enable or disable this feature, and also set the hour.
@@ -990,11 +993,10 @@ Reconfigure
    Figure 2.30 MySQL Installer - Reconfigure a MySQL Product
    MySQL Installer - Reconfigure a MySQL Product
 
-   In the case of the MySQL server, this opens the familiar
-   configuration wizard.
-
-   Figure 2.31 MySQL Installer - Reconfiguration Wizard
-   MySQL Installer - Reconfiguration Wizard
+   In the case of the MySQL server, this opens a configuration
+   wizard that relates to the selected product. For example, for
+   MySQL Server this includes setting the type, ports, log
+   paths, and so on.
 
 Modify
 
@@ -1005,7 +1007,7 @@ Modify
    The modify the features of a product, click Modify on the
    main dashboard.
 
-   Figure 2.32 MySQL Installer - Modify Product Features
+   Figure 2.31 MySQL Installer - Modify Product Features
    MySQL Installer - Modify Product Features
 
    Click Execute to execute the modification request.
@@ -1215,7 +1217,6 @@ C:\> MySQLInstallerConsole update
 
    The MySQL Notifier is installed by MySQL Installer, and (by
    default) will start-up when Microsoft Windows is started.
-   Note
 
    To install, download and execute the MySQL Installer
    (http://dev.mysql.com/downloads/installer/), be sure the
@@ -1231,7 +1232,8 @@ C:\> MySQLInstallerConsole update
    (http://forums.mysql.com/list.php?173) for additional MySQL
    Notifier help and support.
 
-   Features include:
+Features include:
+
 
      * Start, Stop, and Restart instances of the MySQL Server.
 
@@ -1255,11 +1257,9 @@ C:\> MySQLInstallerConsole update
        Instance and SQL Editor options are available for local
        (but not remote) MySQL instances.
 
-     * Monitoring of both local and remote MySQL instances.
+     * Monitors both local and remote MySQL instances.
 
-   Note
-
-   Remote monitoring is available since MySQL Notifier 1.1.0.
+2.3.4.1 MySQL Notifier Usage
 
    The MySQL Notifier resides in the system tray and provides
    visual status information for your MySQL Server instances. A
@@ -1275,11 +1275,6 @@ C:\> MySQLInstallerConsole update
    services are either discovered or experience status changes,
    and are also enabled by default. And uninstalling a service
    will also remove the service from the MySQL Notifier.
-   Note
-
-   The Automatically add new services whose name contains option
-   default changed from ".*mysqld.*" to "mysql" in Notifier
-   1.1.0.
 
    Clicking the system tray icon will reveal several options, as
    seen in the screenshots below:
@@ -1287,7 +1282,7 @@ C:\> MySQLInstallerConsole update
    The Service Instance menu is the main MySQL Notifier window,
    and enables you to Stop, Start, and Restart the MySQL Server.
 
-   Figure 2.33 MySQL Notifier Service Instance menu
+   Figure 2.32 MySQL Notifier Service Instance menu
    MySQL Notifier Service Instance menu
 
    The Actions menu includes several links to external
@@ -1299,12 +1294,8 @@ C:\> MySQLInstallerConsole update
 
    The main menu will not show the Actions menu when there are
    no services being monitored by MySQL Notifier.
-   Note
 
-   The Refresh Status feature is available since MySQL Notifier
-   1.1.0.
-
-   Figure 2.34 MySQL Notifier Actions menu
+   Figure 2.33 MySQL Notifier Actions menu
    MySQL Notifier Actions menu
 
    The Actions, Options menu configures MySQL Notifier and
@@ -1327,8 +1318,6 @@ C:\> MySQLInstallerConsole update
        Windows services. monitored services, and also filters
        the list of the Microsoft Windows services for the Add
        New Service dialog.
-       Prior to version 1.1.0, this option was named
-       "Automatically add new services that match this pattern."
 
      * Notify me when a service is automatically added: Will
        display a balloon notification from the taskbar when a
@@ -1339,19 +1328,19 @@ C:\> MySQLInstallerConsole update
        balloon notification from the taskbar when a monitored
        service changes its status.
 
-   Figure 2.35 MySQL Notifier Options menu
+   Figure 2.34 MySQL Notifier Options menu
    MySQL Notifier Options menu
 
    The Actions, Manage Monitored Items menu enables you to
    configure the monitored services and MySQL instances. First,
    with the Services tab open:
 
-   Figure 2.36 MySQL Notifier Manage Services menu
+   Figure 2.35 MySQL Notifier Manage Services menu
    MySQL Notifier Manage Services menu
 
    The Instances tab is similar:
 
-   Figure 2.37 MySQL Notifier Manage Instances menu
+   Figure 2.36 MySQL Notifier Manage Instances menu
    MySQL Notifier Manage Instances menu
 
    Adding a service or instance (after clicking Add in the
@@ -1361,27 +1350,50 @@ C:\> MySQLInstallerConsole update
    instance by clicking service name from the list, then OK to
    accept. Multiple services and instances may be selected.
 
-   Figure 2.38 MySQL Notifier Adding new services
+   Figure 2.37 MySQL Notifier Adding new services
    MySQL Notifier Adding new services
 
-   And instances:
+   Add instances:
 
-   Figure 2.39 MySQL Notifier Adding new instances
+   Figure 2.38 MySQL Notifier Adding new instances
    MySQL Notifier Adding new instances
-   Note
 
-   The Instances tab available since MySQL Notifier 1.1.0.
+Troubleshooting
 
-2.3.4.1 Remote monitoring set up and installation instructions
+   For issues that are not documented here, visit the MySQL
+   Notifier Support Forum (http://forums.mysql.com/list.php?173)
+   for MySQL Notifier help and support.
+
+     * Problem: attempting to start/stop/restart a MySQL service
+       might generate an error similar to "The Service
+       MySQLVERSION failed the most recent status change request
+       with the message "The service mysqlVERSION was not found
+       in the Windows Services".
+       Explanation: this is a case-sensitivity issue, in that
+       the service name is MySQLVERSION compared to having
+       mysqlVERSION in the configuration file.
+       Solution: either update your MySQL Notifier configuration
+       file with the correct information, or stop Notifier and
+       delete this configuration file. The Notifier
+       configuration file is located at %APPDATA%\Oracle\MySQL
+       Notifier\settings.config where %APPDATA% is a variable
+       and depends on your system. A typical location is
+       "C:\Users\YourUsername\AppData\Running\Oracle\MySQL
+       Notifier\system.config" where YourUsername is your
+       system's username. In this file, and within the
+       ServerList section, change the ServerName values from
+       lowercase to the actual service names. For example,
+       change mysqlVERSION to MySQLVERSION, save, and then
+       restart Notifier. Alternatively, stop MySQL Notifier,
+       delete this file, then restart MySQL Notifier.
+
+2.3.4.2 Remote monitoring set up and installation instructions
 
    The MySQL Notifier uses Windows Management Instrumentation
    (WMI) to manage and monitor services in remote computers
    running Windows XP or later. This guide explains how it
    works, and how to set up your system to monitor remote MySQL
    instances.
-   Note
-
-   Remote monitoring is available since MySQL Notifier 1.1.0.
 
    In order to configure WMI, it is important to understand that
    the underlying Distributed Component Object Model (DCOM)
@@ -1400,7 +1412,7 @@ C:\> MySQLInstallerConsole update
    settings must be properly configured for the communication to
    function properly.
 
-   Figure 2.40 MySQL Notifier Distributed Component Object Model
+   Figure 2.39 MySQL Notifier Distributed Component Object Model
    (DCOM)
    MySQL Notifier Distributed Component Object Model (DCOM)
 
@@ -1408,7 +1420,7 @@ C:\> MySQLInstallerConsole update
    notifications are related to Windows Firewall blocking the
    communication, or to DCOM / WMI settings not being set up
    properly. For a list of common errors with solutions, see
-   Section 2.3.4.1, "."
+   Section 2.3.4.2, "."
 
    The following steps are required to make WMI function. These
    steps are divided between two machines. A single host
@@ -1690,7 +1702,7 @@ Common Errors
    The workflow sequence for using the installer is shown in the
    figure below:
 
-   Figure 2.41 Installation Workflow for Windows Using MSI
+   Figure 2.40 Installation Workflow for Windows Using MSI
    Installer
    Installation Workflow for Windows using MSI Installer
    Note
@@ -1919,7 +1931,7 @@ Common Errors
    installation directory. In a default installation it contains
    C:\Program Files\MySQL\MySQL Server 5.5\. The Version string
    contains the release number. For example, for an installation
-   of MySQL Server 5.5.47, the key contains a value of 5.5.47.
+   of MySQL Server 5.5.50, the key contains a value of 5.5.50.
 
    These registry keys are used to help external tools identify
    the installed location of the MySQL server, preventing a
@@ -2011,7 +2023,7 @@ the MSI Package
    from the command line (or within a script), you need to use
    the msiexec.exe tool. For example, to perform a quiet
    installation (which shows no dialog boxes or progress):
-shell> msiexec /i mysql-5.5.47.msi /quiet
+shell> msiexec /i mysql-5.5.50.msi /quiet
 
    The /i indicates that you want to perform an installation.
    The /quiet option indicates that you want no interactive
@@ -2021,7 +2033,7 @@ shell> msiexec /i mysql-5.5.47.msi /quiet
    installation, and the dialog boxes providing information on
    the installation and registration of MySQL, use /passive mode
    instead of /quiet:
-shell> msiexec /i mysql-5.5.47.msi /passive
+shell> msiexec /i mysql-5.5.50.msi /passive
 
    Regardless of the mode of the installation, installing the
    package in this manner performs a 'Typical' installation, and
@@ -2029,7 +2041,7 @@ shell> msiexec /i mysql-5.5.47.msi /passive
 
    You can also use this method to uninstall MySQL by using the
    /uninstall or /x options:
-shell> msiexec /x mysql-5.5.47.msi /uninstall
+shell> msiexec /x mysql-5.5.50.msi /uninstall
 
    To install MySQL and configure a MySQL instance from the
    command line, see Section 2.3.6.13, "MySQL Server Instance
@@ -2643,7 +2655,7 @@ from the Command Line
    to 1234.
 shell> MySQLInstanceConfig.exe -i -q "-lC:\mysql_install_log.txt" »
    "-nMySQL Server 5.5" "-pC:\Program Files\MySQL\MySQL Server 5.5" -v
-5.5.47 »
+5.5.50 »
    "-tmy-template.ini" "-cC:\mytest.ini" ServerType=DEVELOPMENT Databa
 seType=MIXED »
    ConnectionUsage=DSS Port=3311 ServiceName=MySQL55 RootPassword=1234
@@ -2658,7 +2670,7 @@ Date: 2009-10-27 17:07:21
 Installing service ...
 
 Product Name:         MySQL Server 5.5
-Version:              5.5.47
+Version:              5.5.50
 Installation Path:    C:\Program Files\MySQL\MySQL Server 5.5\
 
 Creating configuration file C:\mytest.ini using template my-template.i
@@ -2936,7 +2948,7 @@ InnoDB: foreign key constraint system tables created
    something like this, which indicates that the server is ready
    to service client connections:
 mysqld: ready for connections
-Version: '5.5.47'  socket: ''  port: 3306
+Version: '5.5.50'  socket: ''  port: 3306
 
    The server continues to write to the console any further
    diagnostic output it produces. You can open a new console
