@@ -1,379 +1,426 @@
-commit 6065dbb1f05edef59a52cdad0a7be6b61a1d73b0
-Author: Yashwant Sahu <yashwant.sahu@oracle.com>
-Date:   Fri Feb 26 11:53:56 2016 +0530
+commit eb7f6826eab487807b2ab54fa0998646bd8a8c51
+Author: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+Date:   Fri May 13 16:42:45 2016 +0530
 
-    Bug #22738607:  YASSL FUNCTION X509_NAME_GET_INDEX_BY_NID IS NOT WORKING AS EXPECTED.
+    Bug#23251517: SEMISYNC REPLICATION HANGING
+    
+    Revert following bug fix:
+    
+    Bug#20685029: SLAVE IO THREAD SHOULD STOP WHEN DISK IS
+    FULL
+    Bug#21753696: MAKE SHOW SLAVE STATUS NON BLOCKING IF IO
+    THREAD WAITS FOR DISK SPACE
+    
+    This fix results in a deadlock between slave IO thread
+    and SQL thread.
+    
+    (cherry picked from commit e3fea6c6dbb36c6ab21c4ab777224560e9608b53)
 
-commit 3229dd74a55ec75883677d8c70f36a62c9248ec1
-Author: Venkatesh Duggirala <venkatesh.duggirala@oracle.com>
-Date:   Fri Feb 26 09:01:49 2016 +0530
+commit c2d29d7b06f2ccf56c5d7cbb6a984dd0de0aea3b
+Author: Shishir Jaiswal <shishir.j.jaiswal@oracle.com>
+Date:   Mon May 16 13:46:49 2016 +0530
 
-    BUG#20574550 MAIN.MERGE TEST CASE FAILS IF BINLOG_FORMAT=ROW
+    Bug#21977380 - POSSIBLE BUFFER OVERFLOW ISSUES
     
-    The main.merge test case was failing when tested using row based
-    binlog format.
+    DESCRIPTION
+    ===========
+    Buffer overflow is reported in a lot of code sections
+    spanning across server, client programs, Regex libraries
+    etc. If not handled appropriately, they can cause abnormal
+    behaviour.
     
-    While analyzing the issue it was found the following issues:
+    ANALYSIS
+    ========
+    The reported casea are the ones which are likely to result
+    in SEGFAULT, MEMORY LEAK etc.
     
-    a) The server is calling binlog related code even when a statement will
-       not be binlogged;
-    b) The child table list was not present into table structure by the time
-       to generate the create table statement;
-    c) The tables in the child table list will not be opened yet when
-       generating table create info using row based replication;
-    d) CREATE TABLE LIKE TEMP_TABLE does not preserve original table storage
-       engine when using row based replication;
+    FIX
+    ===
+    - sprintf() has been replaced by my_snprintf() to avoid
+    buffer overflow.
+    - my_free() is done after checking if the pointer isn't
+      NULL already and setting it to NULL thereafter at few
+      places.
+    - Buffer is ensured to be large enough to hold the data.
+    - 'unsigned int' (aka 'uint') is replaced with 'size_t'
+    to avoid wraparound.
+    - Memory is freed (if not done so) after its alloced and
+    used.
+    - Inserted assert() for size check in InnoDb memcached
+    code (from 5.6 onwards)
+    - Other minor changes
     
-    This patch addressed all above issues.
-    
-    @ sql/sql_class.h
-    
-    Added a function to determine if the binary log is disabled to
-      the current session. This is related with issue (a) above.
-    
-    @ sql/sql_table.cc
-    
-    Added code to skip binary logging related code if the statement
-      will not be binlogged. This is related with issue (a) above.
-    
-    Added code to add the children to the query list of the table that
-      will have its CREATE TABLE generated. This is related with issue (b)
-      above.
-    
-    Added code to force the storage engine to be generated into the
-      CREATE TABLE. This is related with issue (d) above.
-    
-    @ storage/myisammrg/ha_myisammrg.cc
-    
-    Added a test to skip a table getting info about a child table if the
-      child table is not opened. This is related to issue (c) above.
+    (cherry picked from commit 3487e20959c940cbd24429afa795ebfc8a01e94f)
 
-commit 316cfd9da88bcbe17a24fa2b74500dd30290b3dd
-Author: Arun Kuruvila <arun.kuruvila@oracle.com>
-Date:   Tue Feb 23 12:10:41 2016 +0530
+commit bf4f206f697889a7ae068f7d21a4aeb6e6a7ec74
+Author: Harin Vadodaria <harin.vadodaria@oracle.com>
+Date:   Fri Apr 29 11:06:41 2016 +0530
 
-    Bug#21918190: FEDERATED TABLES CORRUPT TABLE CACHE WHEN
-                  CONNECTIONS EXPIRE
+    Bug#21973610
     
-    Description:- Server crashes with SEGSIGV because of
-    accessing invalid memory while executing SELECT, FLUSH TABLE
-    and KILL CONNECTION statements on a federated table
-    concurrently.
-    
-    Analysis:- Server gets SEGSIGV in "ha_federated::close()"
-    while accessing the members  of "net->vio". This happens
-    because of a small timing window existing in
-    "cli_safe_read()" where mysql connection is present while
-    "net->vio" structure gets freed. The following sequence will
-    reproduce the issue:-
-    * Connection 1:-
-      SELECT * FROM t1;
-      It establishes connection to the remote server using
-      "CLI_MYSQL_REAL_CONNECT()" which in turn calls
-      "cli_safe_read()". In "cli_safe_read()", connection
-      receives CR_SERVER_LOST error because of the
-      KILL CONNECTION queries executed in parallel from another
-      connection.
-    * Connection 2:-
-      FLUSH TABLE t1;
-      Meanwhile, after freeing the vio object as a part of
-      "end_server()" in "cli_safe_read()", connection 2 executes
-      "FLUSH TABLE t1" which uses mysql connection used by
-      connection 1 and gets SEGSIGV in "ha_federated::close()"
-      while accessing vio object.
-    
-    Other than this issue, there exists one more crash which
-    is also reproducible with the same repeat steps, but only
-    in debug mode. This crash occurs because of the function
-    "clear_error()" which is called inside
-    "ha_federated::close()". "clear_error()" resets the
-    diagnostic area regardless of which query triggers
-    "ha_federated::close()". SQLCOM_FLUSH queries expects
-    diagnostic area status to be "DA_EMPTY" after closing the
-    table. While queries like SQL_COM_SELECT expects
-    diagnostic area status to be "DA_OK" in case of success and
-    "DA_ERROR" in case of failure after closing the federated
-    table.
-    
-    Fix:- A condition is added to check whether "net->vio"
-    structure is present before accessing its members. For
-    fixing the other crash, the following fix approach is
-    taken:-
-    (1)"clear_error()" is called for all queries if the current
-       thd and the "table->in_use" thd are different. I.e, error
-       from mysql_close() are ignored while closing the table in
-       case the the client executing the query was not issued
-       against the FEDERATED table.
-    (2)"clear_error()" is called for SQLCOM_FLUSH queries if the
-       close table request comes from the current thd. Its
-       clever to silently ignore errors from mysql_close() while
-       closing the federated table on flush table request.
+    Post push fix : Fixing i_main.mysqlshow failure.
 
-commit c97d958a5a25f0c04dfe89df8fe4ce77ecd94599
-Author: Arun Kuruvila <arun.kuruvila@oracle.com>
-Date:   Tue Feb 23 11:54:59 2016 +0530
-
-    Bug #21699037: HANDLE_FATAL_SIGNAL (SIG=11) IN
-                   WILD_CASE_COMPARE SQL/SQL_ACL.CC:8744
-    
-    Description:- Executing GRANT PROXY command after altering
-    the user table definition results in a server crash.
-    
-    Analysis :- Altering mysql user table definition and trying
-    to execute GRANT PROXY command results in a server crash due
-    to double freeing of ACL structures(acl_users, acl_dbs,
-    acl_proxy_users). Even two consecutive FLUSH PRIVILEGES will
-    reproduce this issue. Executing FLUSH PRIVILEGES for the
-    first time after altering user table will return an error,
-    "ERROR 1105 (HY000): Unknown error", while trying to reload
-    the ACL structures. Error is caught while trying to check
-    the "password_length" inside "acl_load()". At this point of
-    execution, only "global_acl_memory" and "acl_users" are
-    newly allocated for storing new ACL information. Since
-    "acl_load()" fails here, "acl_reload()" tries to revert the
-    ACL structures to old ones. "acl_free()" is called to free
-    all the newly created ACL structures. But since "acl_load()"
-    failed just after allocating "global_acl_memory" and
-    "acl_users" structures, its wrong to call "acl_free()"
-    blindly which will free all the acl structures. Allocating
-    ACL structures before calling "acl_load()" will solve the
-    issue.
-    
-    Fix:- ACL structures are allocated before calling
-    "acl_load()". Similar approach has been done in
-    mysql-trunk.
-
-commit 99210e3604659020f65185de894384fc204a8419
-Author: Arun Kuruvila <arun.kuruvila@oracle.com>
-Date:   Tue Feb 23 11:41:03 2016 +0530
-
-    Bug#22176795 : MYSQL SEGFAULTS WHEN PERFORMING FULL TEXT
-                   SEARCH IN BOOLEAN MODE
-    
-    Description:- MySQL crashes when doing full-text search in
-    Boolean mode on a MYISAM table.
-    
-    Analysis:- Buffer overflow is happening while copying the
-    newly found key to the ftbw word buffer in
-    "_ft2_search_no_lock()"
-    (line: storage/myisam/ft_boolean_search.c:462). Memory for
-    word buffer is allocated in "ftb_query_add_word()"
-    (line: storage/myisam/ft_boolean_search.c:1064) which is
-    of size, (word_len * ftb_param->ftb->charset->mbmaxlen +
-    HA_FT_WLEN + ftb_param->ftb->info->s->rec_reflength). The
-    word buffer format is explained in line:
-    storage/myisam/ft_boolean_search.c:341. Because of the
-    presence of some special characters in the column used
-    for Boolean full text search, size of the buffer to get
-    copied becomes larger than the actual memory allocated
-    which causes buffer overflow. This lead to the memory
-    corruption of the members of 'ftb' structure which in
-    turn results in server crash.
-    
-    Fix:- A check is introduced to confirm that the size of the
-    buffer to get copied should be less than or equal to the
-    expected size. Also the memory allocated for the the ftbw
-    word should be "(word_len + 1) * ... , i.e, the word length
-    + the binary operator length which is used with the word.
-    "word_len" only gives the length of the word without
-    operator.
-
-commit fbcc66b358994792613c08bf4cb8cb64668a0a60
-Author: Ramil Kalimullin <ramil.kalimullin@oracle.com>
-Date:   Fri Feb 19 23:31:10 2016 +0400
-
-    WL#9072:  Backport WL#8785 to 5.5
-
-commit fe63fa668f7cf177f62175c360e52591ee1dce67
+commit d36cd341d121bfd9a68f90fce6dfd2526fa9a8c8
 Author: Nisha Gopalakrishnan <nisha.gopalakrishnan@oracle.com>
-Date:   Wed Feb 10 19:57:17 2016 +0530
+Date:   Fri Apr 22 10:25:16 2016 +0530
 
-    BUG#22037930: INSERT IGNORE FAILS TO IGNORE FOREIGN KEY
-                  CONSTRAINT.
+    BUG#23135731: INSERT WITH DUPLICATE KEY UPDATE REPORTS
+                  INCORRECT ERROR.
     
     Analysis
-    =======
+    ========
+    INSERT with DUPLICATE KEY UPDATE and REPLACE on a table
+    where foreign key constraint is defined fails with an
+    incorrect 'duplicate entry' error rather than foreign
+    key constraint violation error.
     
-    INSERT and UPDATE operations using the IGNORE keyword which
-    causes FOREIGN KEY constraint violations reports an error
-    despite using the IGNORE keyword.
+    As part of the bug fix for BUG#22037930, a new flag
+    'HA_CHECK_FK_ERROR' was added while checking for non fatal
+    errors to manage FK errors based on the 'IGNORE' flag. For
+    INSERT with DUPLICATE KEY UPDATE and REPLACE queries, the
+    foreign key constraint violation error was marked as non-fatal,
+    even though IGNORE was not set. Hence it continued with the
+    duplicate key processing resulting in an incorrect error.
     
-    Foreign key violation errors were not ignored and reported
-    as errors instead of warnings even when IGNORE was set.
-    
-    Fix
+    Fix:
     ===
-    Added code to ignore the foreign key violation errors and
-    report them as warnings when the IGNORE keyword is used.
+    Foreign key violation errors are treated as non fatal only when
+    the IGNORE is not set in the above mentioned queries. Hence reports
+    the appropriate foreign key violation error.
 
-commit 9f6339412368e9054df6af6ec3911206630e3720
+commit 9408ac7a301718182dbefb2fe122ae11e6e42c4c
+Author: Karthik Kamath <karthik.kamath@oracle.com>
+Date:   Tue Apr 19 14:49:27 2016 +0530
+
+    BUG#22286421: NULL POINTER DEREFERENCE
+    
+    ANALYSIS:
+    =========
+    A LEX_STRING structure pointer is processed during the
+    validation of a stored program name. During this processing,
+    there is a possibility of null pointer dereference.
+    
+    FIX:
+    ====
+    check_routine_name() is invoked by the parser by supplying a
+    non-empty string as the SP name. To avoid any potential calls
+    to check_routine_name() with NULL value, a debug assert has
+    been added to catch such cases.
+
+commit 5bdafc8efe1d2f7cf411e5705d90ac5668a88ca1
+Author: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+Date:   Mon Apr 11 11:41:47 2016 +0530
+
+    Bug#22897202: RPL_IO_THD_WAIT_FOR_DISK_SPACE HAS OCCASIONAL
+    FAILURES
+    
+    Analysis:
+    =========
+    Test script is not ensuring that "assert_grep.inc" should be
+    called only after 'Disk is full' error is written to the
+    error log.
+    
+    Test checks for "Queueing master event to the relay log"
+    state. But this state is set before invoking 'queue_event'.
+    Actual 'Disk is full' error happens at a very lower level.
+    It can happen that we might even reset the debug point
+    before even the actual disk full simulation occurs and the
+    "Disk is full" message will never appear in the error log.
+    
+    In order to guarentee that we must have some mechanism where
+    in after we write "Disk is full" error messge into the error
+    log we must signal the test to execute SSS and then reset
+    the debug point. So that test is deterministic.
+    
+    Fix:
+    ===
+    Added debug sync point to make script deterministic.
+
+commit 7b2fa28fedf715070e2dc9ed5a2a8a9dbe592cfb
+Author: Sreedhar.S <sreedhar.sreedhargadda@oracle.com>
+Date:   Thu Apr 14 14:18:23 2016 +0530
+
+    Fix for Bugs#14583183 and 19949163
+
+commit 40fe95b3ee7b3c369ebd66fe37e3081362188112
+Author: Nisha Gopalakrishnan <nisha.gopalakrishnan@oracle.com>
+Date:   Wed Mar 23 12:59:22 2016 +0530
+
+    BUG#22986277: DELETE-BUG22594514 UNSTABLE ON PB2
+    
+    Follow up patch to fix the PB2 test failure
+    pushed as part of bug#22594514
+
+commit 883f1fb45198db82ca8d10bb97eb6d31421714ed
 Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
-Date:   Mon Feb 8 11:28:20 2016 +0100
+Date:   Thu Mar 17 14:32:08 2016 +0100
 
-    Bug#22680706: 5.5 DOES NOT BUILD WITH GCC5
+    Bug#22594514: HANDLE_FATAL_SIGNAL (SIG=11) IN
+                  UNIQUE::~UNIQUE | SQL/UNIQUES.CC:355
     
-    Fix the following two build warnings so that 5.5 can be compiled
-    with GCC5.
+    Disable test case for now due to instability.
     
-    storage/innobase/dict/dict0crea.c:1143:21: error: logical not is only applied
-    to the left hand side of comparison [-Werror=logical-not-parentheses]
-       ut_a(!node->index == (err != DB_SUCCESS));
-                         ^
-    storage/innobase/log/log0recv.c:1770:20: error: logical not is only applied
-    to the left hand side of comparison [-Werror=logical-not-parentheses]
-      ut_ad(!allow_ibuf == mutex_own(&log_sys->mutex));
-                        ^
+    Reviewed-by: Erlend Dahl <erlend.dahl@oracle.com>
 
-commit 48b8bf3c70531c83b1aedd9a8598737a55d35d63
-Merge: 91ebb2b b776367
-Author: Gipson Pulla <gipson.pulla@oracle.com>
-Date:   Fri Feb 5 20:43:18 2016 +0100
+commit 85545a896ae5b2e414076118a18f72c3eb97695f
+Author: Nisha Gopalakrishnan <nisha.gopalakrishnan@oracle.com>
+Date:   Mon Mar 14 15:20:21 2016 +0530
 
-    Merge branch 'mysql-5.5.48-release' into mysql-5.5
+    BUG#22594514: HANDLE_FATAL_SIGNAL (SIG=11) IN
+                  UNIQUE::~UNIQUE | SQL/UNIQUES.CC:355
+    
+    Analysis
+    ========
+    
+    Enabling the sort_buffer_size with a large value
+    can cause operations utilizing the sort buffer
+    like DELETE as mentioned in the bug report to
+    fail. 5.5 and 5.6 versions reports OOM error
+    while in 5.7+, the server crashes.
+    
+    While initializing the mem_root for the sort buffer
+    tree, the block size for the mem_root is determined
+    from the 'sort_buffer_size' value. This unsigned
+    long value is typecasted to unsigned int, hence
+    it becomes zero. Further block_size computation
+    while initializing the mem_root results in a very
+    large block_size value. Hence while trying to
+    allocate a block during the DELETE operation,
+    an OOM error is reported. In case of 5.7+, the PFS
+    instrumentation for memory allocation, overshoots
+    the unsigned value and allocates a block of just
+    one byte. While trying to free the block of the
+    mem_root, the original block_size is used. This
+    triggers the crash since the server tries to free
+    unallocated memory.
+    
+    Fix:
+    ====
+    In order to restrict usage of such unreasonable
+    sort_buffer_size, the typecast of block size
+    to 'unsigned int' is removed and hence reports
+    OOM error across all versions for sizes
+    exceeding unsigned int range.
 
-commit 91ebb2bc66f46a7ef2efee7485fd1dcfed4b6914
+commit 2dd8b6e00b7a9cb00c2c84f69b049d537c9fd388
+Author: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+Date:   Mon Mar 7 18:19:26 2016 +0530
+
+    Bug#20685029: SLAVE IO THREAD SHOULD STOP WHEN DISK IS
+    FULL
+    Bug#21753696: MAKE SHOW SLAVE STATUS NON BLOCKING IF IO
+    THREAD WAITS FOR DISK SPACE
+    
+    Fixing a post push test issue.
+
+commit d138c733e4c4a7fd667c3b7826a908727031fe6f
 Author: Sreeharsha Ramanavarapu <sreeharsha.ramanavarapu@oracle.com>
-Date:   Fri Jan 29 08:29:06 2016 +0530
+Date:   Thu Mar 3 06:42:12 2016 +0530
 
-    Bug #18823979: PS: UCS2 + CASE WHEN THEN ELSE CRASH IN
-                   ITEM_PARAM::SAFE_CHARSET_CONVERTER
+    Bug #18740222: CRASH IN GET_INTERVAL_INFO WITH WEIRDO
+                   INTERVALS
     
     ISSUE:
     ------
-    Charset conversion on a null parameter is not handled
-    correctly.
+    Some string functions return one or a combination of the
+    parameters as their result. Here the resultant string's
+    charset could be incorrectly set to that of the chosen
+    parameter.
+    
+    This results in incorrect behavior when an ascii string is
+    expected.
     
     SOLUTION:
     ---------
-    Item_param's charset converter does not handle the case
-    where it might have to deal with a null value. This is
-    fine for other charset converters since the value is not
-    supplied to them at runtime.
+    Since an ascii string is expected, val_str_ascii should
+    explicitly convert the string.
     
-    The fix is to check if the parameter is now set to null and
-    return an Item_null object. Also, there is no need to
-    initialize Item_param's cnvitem in the constructor to a
-    string. This can be done in
-    ITEM_PARAM::SAFE_CHARSET_CONVERTER itself.
+    Part of the fix is a backport of Bug#22340858 for mysql-5.5
+    and mysql-5.6.
+
+commit 0bd6719c227addd89f997c358dee5bab90b4ad7f
+Author: Shishir Jaiswal <shishir.j.jaiswal@oracle.com>
+Date:   Tue Mar 1 13:05:14 2016 +0530
+
+    Bug#19920049 - MYSQLD_MULTI MISLEADING WHEN MY_PRINT_DEFAULTS
+                   IS NOT FOUND
     
-    Members of Item_param, cnvbuf and cnvstr, have been removed
-    and cnvitem has been made a local variable in
-    ITEM_PARAM::SAFE_CHARSET_CONVERTER.
-
-commit cd2afc34ab1051a01430885795177b759b7062a3
-Author: Ajo Robert <ajo.robert@oracle.com>
-Date:   Thu Jan 28 17:40:17 2016 +0530
-
-    Bug #16912362 LOAD DATA INFILE CLAIMS TO BE HOLDING
-    'SYSTEM LOCK' IN PROCESSLIST
+    DESCRIPTION
+    ===========
+    If script mysqld_multi and utility my_print_defaults are in
+    the same folder (not included in $PATH) and the former is
+    made to run, it complaints that the mysqld binary is absent
+    eventhough the binary exists.
     
-    Analysis
-    =========
-    Show processlist shows 'System Lock' in 'State' field while
-    LOAD DATA INFILE is running.
+    ANALYSIS
+    ========
+    We've a subroutine my_which() mimicking the behaviour of
+    POSIX "which" command. Its current behaviour is to check
+    for a given argument as follows:
+    - Step 1: Assume the argument to be a command having full
+    fledged absolute path. If it exists "as-is", return the
+    argument (which will be pathname), else proceed to Step 2.
+    - Step 2: Assume the argument to be a plain command with no
+    aboslute path. Try locating it in all of the paths
+    (mentioned in $PATH) one by one. If found return the
+    pathname. If found nowhere, return NULL.
     
-    thd->proc_info update is missing in LOAD DATA INFILE path.
-    Thus any request will get last unpdated status from lock_table()
-    during open_table().
+    Currently when my_which(my_print_defaults) is called, it
+    returns from Step 1 (since utlity exists in current
+    folder) and doesn't proceed to Step 2. This is wrong since
+    the returned value is same as the argument i.e.
+    'my_print_default' which defies the purpose of this
+    subroutine whose job is to return a pathname either in Step
+    1 or Step 2.
     
-    Fix:
-    =======
-    Update state information from LOAD DATA INFILE path.
-
-commit ba8be508b6aa7fe4df4444fd9502ebb1e3fd814b
-Author: Balasubramanian Kandasamy <balasubramanian.kandasamy@oracle.com>
-Date:   Wed Jan 27 18:42:52 2016 +0530
-
-        BUG#22600974 - SYSV INITSCRIPT FOR RHEL DON'T ENABLE MYSQLD SERVICE BY DEFAULT
+    Later when the utility is executed in subroutine
+    defaults_for_group(), it evaluates to NULL and returns the
+    same. This is because the plain command 'my_print_defaults
+    {options} ...' would execute properly only if
+    my_print_defaults exists in one of the paths (in $PATH). In
+    such a case, in the course of the flow it looks onto the
+    variable $mysqld_found which comes out to be NULL and
+    hence ethe error.
     
-        Enable mysqld service by default in sysv initscrips
-
-commit 2a38bafd514731172b79398df8ff035929ec810a
-Author: Shaohua Wang <shaohua.wang@oracle.com>
-Date:   Wed Jan 27 09:40:02 2016 +0800
-
-    Followup:BUG#22530768 Innodb freeze running REPLACE statements
+    In this case, call to my_which should fail resulting in
+    script being aborted and thus avoiding this mess.
     
-    Go back to __sync_* operations in TAS on x86.
-    
-    Patch is reviewed by Sunny over IM.
+    FIX
+    ===
+    This utility my_print_defaults should be tested only in
+    Step 2 since it does not have an absolute path. Thus added
+    a condition in Step 1 so that is gets executed iff not
+    called for my_print_defaults thus bypassing it to proceed
+    to Step 2 where the check is made for various paths (in
+    $PATH)
 
-commit 423dcdb0c4db20f0fea37fb81dde7d5277492ac4
-Author: Jon Olav Hauglid <jon.hauglid@oracle.com>
-Date:   Tue Jan 26 09:18:10 2016 +0100
+commit c3dcf8e5a8fdea776258c43a0e4a9e5ca5d5772a
+Author: Sujatha Sivakumar <sujatha.sivakumar@oracle.com>
+Date:   Tue Mar 1 12:29:51 2016 +0530
 
-    Bug#21770366 backport bug#21657078 to 5.5 and 5.6
-    
-    Post-push fix: The problem was that condition variable
-    timeouts could in some cases (slow machines and/or short
-    timeouts) be infinite.
-    
-    When the number of milliseconds to wait is computed, the
-    end time is computed before the now() time. This can result
-    in the now() time being later than the end time, leading to
-    negative timeout. Which after conversion to unsigned becomes
-    ~infinite.
-    
-    This patch fixes the problem by explicitly checking if we
-    get negative timeout and then using 0 if this is the case.
-
-commit 716b5abfe112d0505eb1c9f116f75dfc40724fd7
-Author: Deepthi Eranti_Sreenivas <deepthi.e.s@oracle.com>
-Date:   Fri Jan 22 16:51:21 2016 +0530
-
-    Bug#22086528: TEST CODE DISABLED THOUGH THE HISTORIC REASONS - BUGS - ARE FIXED
-    
-    Post push fix for 5.5 and 5.6.Disabled the test code due to Bug#22587377
-
-commit 71c98f38ba9e2be3c1e8c94c989f801c8edc3d16
-Author: Deepthi Eranti_Sreenivas <deepthi.e.s@oracle.com>
-Date:   Wed Jan 20 18:23:16 2016 +0530
-
-    Bug#22086528 : TEST CODE DISABLED THOUGH THE HISTORIC REASONS - BUGS - ARE FIXED
+    Bug#20685029: SLAVE IO THREAD SHOULD STOP WHEN DISK IS
+    FULL
+    Bug#21753696: MAKE SHOW SLAVE STATUS NON BLOCKING IF IO
+    THREAD WAITS FOR DISK SPACE
     
     Problem:
-    mysql-test/suite/rpl/t/rpl_killed_ddl.test
+    ========
+    Currently SHOW SLAVE STATUS blocks if IO thread waits for
+    disk space. This makes automation tools verifying
+    server health block on taking relevant action. Finally this
+    will create SHOW SLAVE STATUS piles.
     
-    This test contains code which was disabled because of certain bugs.
-    BUG#44041 declared to be a duplicate of Bug#45516 which was fixed 2010
-    BUG#43353 fixed 2012
-    BUG#44171 fixed 2010
+    Analysis:
+    =========
+    SHOW SLAVE STATUS hangs on mi->data_lock if relay log write
+    is waiting for free disk space while holding mi->data_lock.
+    mi->data_lock is needed to protect the format description
+    event (mi->format_description_event) which is accessed by
+    the clients running FLUSH LOGS and slave IO thread. Note
+    relay log writes don't need to be protected by
+    mi->data_lock, LOCK_log is used to protect relay log between
+    IO and SQL thread (see MYSQL_BIN_LOG::append_event). The
+    code takes mi->data_lock to protect
+    mi->format_description_event during relay log rotate which
+    might get triggered right after relay log write.
     
     Fix:
-    Enabled the test code related to the above mentioned bugs.
-
-commit c15900f266a3ccd2bb3738edee6d182ac70a8efb
-Author: Knut Anders Hatlen <knut.hatlen@oracle.com>
-Date:   Thu Jan 7 12:53:18 2016 +0100
-
-    Bug#21682356: STOP INJECTING DATA ITEMS IN AN ERROR MESSAGE
-                  GENERATED BY THE EXP() FUNCTION
+    ====
+    Release the data_lock just for the duration of writing into
+    relay log.
     
-    When generating the error message for numeric overflow, pass a flag to
-    Item::print() that prevents it from expanding constant expressions and
-    parameters to the values they evaluate to.
+    Made change to ensure the following lock order is maintained
+    to avoid deadlocks.
     
-    For consistency, also pass the flag to Item::print() when
-    Item_func_spatial_collection::fix_length_and_dec() generates an error
-    message. It doesn't make any difference at the moment, since constant
-    expressions haven't been evaluated yet when this function is called.
+    data_lock, LOCK_log
+    
+    data_lock is held during relay log rotations to protect
+    the description event.
 
-commit 0517474ea43d517a50f11ebe85ec1f04160603a7
-Author: Shaohua Wang <shaohua.wang@oracle.com>
-Date:   Tue Jan 12 15:08:09 2016 +0800
+commit 7c955a2f134178afdb5644c324c5c64a7ee3c370
+Author: Venkatesh Duggirala <venkatesh.duggirala@oracle.com>
+Date:   Tue Mar 1 11:58:45 2016 +0530
 
-    BUG#22530768 Innodb freeze running REPLACE statements
+    BUG#17018343 SLAVE CRASHES WHEN APPLYING ROW-BASED BINLOG ENTRIES IN CASCADING
+    REPLICATION
     
-    we can see from the hang stacktrace, srv_monitor_thread is blocked
-    when getting log_sys::mutex, so that sync_arr_wake_threads_if_sema_free
-    cannot get a change to break the mutex deadlock.
+    Problem: In RBR mode, merge table updates are not successfully applied on a cascading
+    replication.
     
-    The fix is simply removing any mutex wait in srv_monitor_thread.
+    Analysis & Fix: Every type of row event is preceded by one or more table_map_log_events
+    that gives the information about all the tables that are involved in the row
+    event. Server maintains the list in RPL_TABLE_LIST and it goes through all the
+    tables and checks for the compatibility between master and slave. Before
+    checking for the compatibility, it calls 'open_tables()' which takes the list
+    of all tables that needs to be locked and opened. In RBR, because of the
+    Table_map_log_event , we already have all the tables including base tables in
+    the list. But the open_tables() which is generic call takes care of appending
+    base tables if the list contains merge tables. There is an assumption in the
+    current replication layer logic that these tables (TABLE_LIST type objects) are always
+    added in the end of the list. Replication layer maintains the count of
+    tables(tables_to_lock_count) that needs to be verified for compatibility check
+    and runs through only those many tables from the list and rest of the objects
+    in linked list can be skipped. But this assumption is wrong.
+    open_tables()->..->add_children_to_list() adds base tables to the list immediately
+    after seeing the merge table in the list.
     
-    Patch is reviewed by Sunny over IM.
+    For eg: If the list passed to open_tables() is t1->t2->t3 where t3 is merge
+    table (and t1 and t2 are base tables), it adds t1'->t2' to the list after t3.
+    New table list looks like t1->t2->t3->t1'->t2'. It looks like it added at the
+    end of the list but that is not correct. If the list passed to open_tables()
+    is t3->t1->t2 where t3 is merge table (and t1 and t2 are base tables), the new
+    prepared list will be t3->t1'->t2'->t1->t2. Where t1' and t2' are of
+    TABLE_LIST objects which were added by add_children_to_list() call and replication
+    layer should not look into them. Here tables_to_lock_count  will not help as the
+    objects are added in between the list.
+    
+    Fix: After investigating add_children_list() logic (which is called from open_tables()),
+    there is no flag/logic in it to skip adding the children to the list even if the
+    children are already included in the table list. Hence to fix the issue, a
+    logic should be added in the replication layer to skip children in the list by
+    checking whether  'parent_l' is non-null or not. If it is children, we will skip 'compatibility'
+    check for that table.
+    
+    Also this patch is not removing 'tables_to_lock_count' logic for the performance issues
+    if there are any children at the end of the list, those can be easily skipped directly by
+    stopping the loop with tables_to_lock_count check.
 
-commit e54f6f28be35242322f42150f05dcd31c7a25f2b
+commit 94f1a3a8e479a50ad7d5ed2b226afeebfaf652f5
+Author: Arun Kuruvila <arun.kuruvila@oracle.com>
+Date:   Tue Mar 1 10:17:25 2016 +0530
+
+    Bug#21920657: SSL-CA FAILS SILENTLY IF THE PATH CANNOT BE
+                  FOUND
+    
+    Description:- Failure during the validation of CA
+    certificate path which is provided as an option for 'ssl-ca'
+    returns two different errors for YaSSL and OPENSSL.
+    
+    Analysis:- 'ssl-ca', option used for specifying the ssl ca
+    certificate path. Failing to validate this certificate with
+    OPENSSL returns an error, "ERROR 2026 (HY000): SSL
+    connection error: SSL_CTX_set_default_verify_paths failed".
+    While YASSL returns "ERROR 2026 (HY000): SSL connection
+    error: ASN: bad other signature confirmation". Error
+    returned by the OPENSSL is correct since
+    "SSL_CTX_load_verify_locations()" returns 0 (in case of
+    OPENSSL) for the failure and sets error as
+    "SSL_INITERR_BAD_PATHS". In case of YASSL,
+    "SSL_CTX_load_verify_locations()" returns an error number
+    which is less than or equal to 0 in case of error. Error
+    numbers for YASSL is mentioned in the file,
+    'extra/yassl/include/openssl/ssl.h'(line no : 292). Also
+    'ssl-ca' does not accept tilde home directory path
+    substitution.
+    
+    Fix:- The condition which checks for the error in the
+    "SSL_CTX_load_verify_locations()" is changed in order to
+    accommodate YASSL as well. A logic is written in
+    "mysql_ssl_set()" in order accept the tilde home directory
+    path substitution for all ssl options.
+
+commit 1c7233b1ba850cfea003f472c6c62a05009f77be
 Author: Bjorn Munch <bjorn.munch@oracle.com>
-Date:   Mon Jan 11 15:00:44 2016 +0100
+Date:   Mon Feb 29 13:58:41 2016 +0100
 
-    Raise version number after cloning 5.5.48
+    Raise version number after cloning 5.5.49
