@@ -1,7 +1,7 @@
-commit: eb7f6826eab487807b2ab54fa0998646bd8a8c51
-date: 2016-05-16 11:34:20 +0200
-build-date: 2016-05-16 11:46:49 +0200
-short: eb7f682
-branch: mysql-5.5.50-release
+commit: f105d1ed869c2a978686ebc3ed77413bb1fdabb3
+date: 2016-08-26 16:44:32 +0530
+build-date: 2016-08-26 13:24:21 +0200
+short: f105d1e
+branch: mysql-5.5.52-release
 
-MySQL source 5.5.50
+MySQL source 5.5.52
