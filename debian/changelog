@@ -1,3 +1,15 @@
+mysql-5.5 (5.5.53-0+deb8u1) jessie-security; urgency=high
+
+  * Imported upstream version 5.5.53 to fix security issues:
+    - http://www.oracle.com/technetwork/security-advisory/cpuoct2016-2881722.html
+    - CVE-2016-7440 CVE-2016-5584
+    (Closes: #841050)
+  * Packaging will now create /var/lib/mysql-files, as server will now by
+    default restrict all import/export operations to this directory. This
+    can be changed using the secure-file-priv config option.
+
+ -- Lars Tangvald <lars.tangvald@oracle.com>  Mon, 17 Oct 2016 10:49:23 +0200
+
 mysql-5.5 (5.5.52-0+deb8u1) jessie-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
