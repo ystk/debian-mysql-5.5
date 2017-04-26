@@ -1,3 +1,16 @@
+mysql-5.5 (5.5.55-0+deb8u1) jessie-security; urgency=high
+
+  * Imported upstream version 5.5.55 to fix security issues:
+    - http://www.oracle.com/technetwork/security-advisory/cpuapr2017-3236618.html
+    - CVE-2017-3302 CVE-2017-3305 CVE-2017-3308 CVE-2017-3309
+    - CVE-2017-3329 CVE-2017-3453 CVE-2017-3456 CVE-2017-3461
+    - CVE-2017-3462 CVE-2017-3463 CVE-2017-3464 CVE-2017-3600
+    (Closes: #860544, #854713)
+  * d/patches: refreshed 62_disable_tests.patch
+  * d/patches: dropped fix_test_events_2.patch. Issue fixed upstream
+
+ -- Lars Tangvald <lars.tangvald@oracle.com>  Tue, 18 Apr 2017 09:24:12 +0200
+
 mysql-5.5 (5.5.54-0+deb8u1) jessie-security; urgency=high
 
   * Imported upstream version 5.5.54 to fix security issues:
