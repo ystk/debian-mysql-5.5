@@ -1,3 +1,12 @@
+mysql-5.5 (5.5.58-0+deb8u1) jessie-security; urgency=high
+
+  * Imported upstream version 5.5.58 to fix security issues:
+    - http://www.oracle.com/technetwork/security-advisory/cpuoct2017-3236626.html
+    - CVE-2017-10268 CVE-2017-10378 CVE-2017-10379 CVE-2017-10384
+    (Closes: #878402)
+
+ -- Lars Tangvald <lars.tangvald@oracle.com>  Tue, 17 Oct 2017 10:20:55 +0200
+
 mysql-5.5 (5.5.57-0+deb8u1) jessie-security; urgency=high
 
   * Imported upstream version 5.5.57 to fix security issues:
