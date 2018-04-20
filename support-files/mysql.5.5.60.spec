@@ -1,4 +1,4 @@
-# Copyright (c) 2000, 2017, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2000, 2018, Oracle and/or its affiliates. All rights reserved.
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 %global mysql_vendor_2          Sun Microsystems, Inc.
 %global mysql_vendor            Oracle and/or its affiliates
 
-%global mysql_version   5.5.59
+%global mysql_version   5.5.60
 
 %global mysqld_user     mysql
 %global mysqld_group    mysql
@@ -242,10 +242,10 @@
 Name:           MySQL%{product_suffix}
 Summary:        MySQL: a very fast and reliable SQL database server
 Group:          Applications/Databases
-Version:        5.5.59
+Version:        5.5.60
 Release:        %{release}%{?distro_releasetag:.%{distro_releasetag}}
 Distribution:   %{distro_description}
-License:        Copyright (c) 2000, 2017, %{mysql_vendor}. All rights reserved. Under %{license_type} license as shown in the Description field.
+License:        Copyright (c) 2000, 2018, %{mysql_vendor}. All rights reserved. Under %{license_type} license as shown in the Description field.
 Source:         http://www.mysql.com/Downloads/MySQL-5.5/%{src_dir}.tar.gz
 URL:            http://www.mysql.com/
 Packager:       MySQL Release Engineering <mysql-build@oss.oracle.com> 
@@ -621,12 +621,6 @@ install -m 644 "%{malloc_lib_source}" \
 # Remove man pages we explicitly do not want to package, avoids 'unpackaged
 # files' warning.
 # This has become obsolete:  rm -f $RBR%{_mandir}/man1/make_win_bin_dist.1*
-rm -f $RBR%{_mandir}/man1/mysql-stress-test.pl.1
-rm -f $RBR%{_mandir}/man1/mysql-test-run.pl.1
-rm -f $RBR%{_mandir}/man1/mysql_client_test.1
-rm -f $RBR%{_mandir}/man1/mysql_client_test_embedded.1
-rm -f $RBR%{_mandir}/man1/mysqltest.1
-rm -f $RBR%{_mandir}/man1/mysqltest_embedded.1
 
 ##############################################################################
 #  Post processing actions, i.e. when installed
@@ -1228,6 +1222,9 @@ echo "====="                                     >> $STATUS_HISTORY
 # merging BK trees)
 ##############################################################################
 %changelog
+* Wed Jan 10 2018 Bjorn Munch <bjorn.munch@oracle.com>
+- No longer need to remove obsoleted mysqltest man pages
+
 * Tue Oct 31 2017 Bjorn Munch <bjorn.munch@oracle.com>
 - Remove obsoleted mysqltest man pages
 

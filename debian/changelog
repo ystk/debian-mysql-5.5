@@ -1,3 +1,16 @@
+mysql-5.5 (5.5.60-0+deb8u1) jessie-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Imported Upstream version 5.5.60 to fix security issues:
+    - http://www.oracle.com/technetwork/security-advisory/cpuapr2018-3678067.html
+    - CVE-2018-2755 CVE-2018-2761 CVE-2018-2771 CVE-2018-2773 CVE-2018-2781
+      CVE-2018-2813 CVE-2018-2817 CVE-2018-2818 CVE-2018-2819
+  * Don't install obsolete manpages.
+    Do not try to install anymore obsolete manpages for mysql_client_test,
+    mysql_client_test_embedded and mysqltest_embedded.
+
+ -- Salvatore Bonaccorso <carnil@debian.org>  Wed, 18 Apr 2018 22:28:36 +0200
+
 mysql-5.5 (5.5.59-0+deb8u1) jessie-security; urgency=high
 
   * Non-maintainer upload by the Security Team.

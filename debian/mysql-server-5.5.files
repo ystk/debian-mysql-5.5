@@ -39,7 +39,6 @@ usr/share/man/man1/replace.1
 usr/share/man/man1/resolveip.1
 usr/share/man/man1/resolve_stack_dump.1
 usr/share/man/man1/innochecksum.1
-usr/share/man/man1/mysqltest_embedded.1
 usr/share/man/man1/mysql_tzinfo_to_sql.1
 usr/share/mysql/debian-start.inc.sh
 usr/share/mysql/echo_stderr
