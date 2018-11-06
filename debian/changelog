@@ -1,3 +1,16 @@
+mysql-5.5 (5.5.62-0+deb8u1) jessie-security; urgency=high
+
+  * Non-maintainer upload by the LTS Team.
+  * Imported Upstream version 5.5.61 to fix security issues:
+    - https://www.oracle.com/technetwork/security-advisory/cpujul2018-4258247.html
+    - CVE-2018-2767 CVE-2018-3058 CVE-2018-3063 CVE-2018-3066 CVE-2018-3070
+    - CVE-2018-3081
+  * Imported Upstream version 5.5.62 to fix security issues:
+    - https://www.oracle.com/technetwork/security-advisory/cpuoct2018-4428296.html
+    - CVE-2018-3133 CVE-2018-3174 CVE-2018-3282
+
+ -- Roberto C. Sanchez <roberto@debian.org>  Thu, 01 Nov 2018 00:13:20 -0400
+
 mysql-5.5 (5.5.60-0+deb8u1) jessie-security; urgency=high
 
   * Non-maintainer upload by the Security Team.

@@ -24,7 +24,7 @@
 %global mysql_vendor_2          Sun Microsystems, Inc.
 %global mysql_vendor            Oracle and/or its affiliates
 
-%global mysql_version   5.5.60
+%global mysql_version   5.5.62
 
 %global mysqld_user     mysql
 %global mysqld_group    mysql
@@ -145,8 +145,8 @@
       %if "%elver" == "6" || "%elver" == "7"
         %define distro_description      Oracle Linux %elver
         %define distro_releasetag       el%elver
-        %define distro_buildreq         gcc-c++ ncurses-devel perl readline-devel time zlib-devel cmake libaio-devel
-        %define distro_requires         chkconfig coreutils grep procps shadow-utils net-tools
+        %define distro_buildreq         gcc-c++ ncurses-devel perl perl(Data::Dumper) readline-devel time zlib-devel cmake libaio-devel
+        %define distro_requires         chkconfig coreutils grep perl(Data::Dumper) procps shadow-utils net-tools
       %else
         %{error:Oracle Linux %{elver} is unsupported}
       %endif
@@ -168,8 +168,8 @@
             %if "%rhelver" == "6"
               %define distro_description    Red Hat Enterprise Linux 6
               %define distro_releasetag     rhel6
-              %define distro_buildreq       gcc-c++ ncurses-devel perl readline-devel time zlib-devel cmake libaio-devel
-              %define distro_requires       chkconfig coreutils grep procps shadow-utils net-tools
+              %define distro_buildreq       gcc-c++ ncurses-devel perl perl(Data::Dumper) readline-devel time zlib-devel cmake libaio-devel
+              %define distro_requires       chkconfig coreutils grep perl(Data::Dumper) procps shadow-utils net-tools
             %else
               %{error:Red Hat Enterprise Linux %{rhelver} is unsupported}
             %endif
@@ -203,8 +203,8 @@
   %define generic_kernel %(uname -r | cut -d. -f1-2)
   %define distro_description            Generic Linux (kernel %{generic_kernel})
   %define distro_releasetag             linux%{generic_kernel}
-  %define distro_buildreq               gcc-c++ gperf ncurses-devel perl readline-devel time zlib-devel
-  %define distro_requires               coreutils grep procps /sbin/chkconfig /usr/sbin/useradd /usr/sbin/groupadd
+  %define distro_buildreq               gcc-c++ gperf ncurses-devel perl perl(Data::Dumper) readline-devel time zlib-devel
+  %define distro_requires               coreutils grep perl(Data::Dumper) procps /sbin/chkconfig /usr/sbin/useradd /usr/sbin/groupadd
 %endif
 
 # Avoid debuginfo RPMs, leaves binaries unstripped
@@ -242,7 +242,7 @@
 Name:           MySQL%{product_suffix}
 Summary:        MySQL: a very fast and reliable SQL database server
 Group:          Applications/Databases
-Version:        5.5.60
+Version:        5.5.62
 Release:        %{release}%{?distro_releasetag:.%{distro_releasetag}}
 Distribution:   %{distro_description}
 License:        Copyright (c) 2000, 2018, %{mysql_vendor}. All rights reserved. Under %{license_type} license as shown in the Description field.
@@ -362,6 +362,7 @@ Obsoletes:      MySQL-test-classic MySQL-test-community MySQL-test-enterprise
 Obsoletes:      MySQL-test-advanced-gpl MySQL-test-enterprise-gpl
 Provides:       mysql-test = %{version}-%{release}
 Provides:       mysql-test%{?_isa} = %{version}-%{release}
+Requires:       perl(Data::Dumper)
 AutoReqProv:    no
 
 %description -n MySQL-test%{product_suffix}
